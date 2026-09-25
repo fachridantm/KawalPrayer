@@ -6,7 +6,10 @@ struct MenuBarView: View {
     @Environment(\.colorScheme) private var colorScheme
 
     var body: some View {
-        VStack(spacing: 0) {
+        VStack(spacing: DimensToken.SIZE_0) {
+            // Outivox Signature Brand Color Divider
+            GoogleColorDivider(thickness: DimensToken.SIZE_3)
+
             headerView
             Divider()
 
@@ -18,7 +21,10 @@ struct MenuBarView: View {
 
             // Iqamah countdown banner
             if case .countdown(let prayerName, let remaining) = appState.iqamahState {
-                iqamahBannerView(prayerName: prayerName, remaining: remaining)
+                iqamahBannerView(
+                    prayerName: prayerName,
+                    remaining: remaining
+                )
                 Divider()
             } else if case .finished(let prayerName) = appState.iqamahState {
                 iqamahFinishedBanner(prayerName: prayerName)
@@ -33,8 +39,8 @@ struct MenuBarView: View {
 
             footerView
         }
-        .frame(width: 360)
-        .background(Color(NSColor.windowBackgroundColor))
+        .frame(width: DimensToken.SIZE_80 * 4 + DimensToken.SIZE_40)
+        .background(OX.Color.surface(for: colorScheme))
         .environment(\.locale, appState.settings.appLanguage.locale)
     }
 
@@ -42,8 +48,11 @@ struct MenuBarView: View {
 
     private var headerView: some View {
         HStack(alignment: .center) {
-            VStack(alignment: .leading, spacing: 2) {
-                HStack(spacing: 6) {
+            VStack(
+                alignment: .leading,
+                spacing: DimensToken.SIZE_2
+            ) {
+                HStack(spacing: DimensToken.SIZE_6) {
                     Image(systemName: appState.activeMenuBarIconName)
                         .font(.headline)
                         .foregroundStyle(Color.accent(for: colorScheme))
@@ -52,7 +61,7 @@ struct MenuBarView: View {
                         .fontWeight(.bold)
                 }
 
-                HStack(spacing: 6) {
+                HStack(spacing: DimensToken.SIZE_6) {
                     Text(appState.location.cityName)
                         .font(.caption)
                         .foregroundStyle(.secondary)
@@ -65,7 +74,7 @@ struct MenuBarView: View {
                                 .controlSize(.mini)
                         } else {
                             Image(systemName: "arrow.clockwise")
-                                .font(.system(size: 10))
+                                .font(.system(size: DimensToken.SIZE_10))
                                 .foregroundStyle(.secondary)
                         }
                     }
@@ -77,19 +86,22 @@ struct MenuBarView: View {
             Spacer()
 
             if !appState.nextPrayerName.isEmpty {
-                VStack(alignment: .trailing, spacing: 2) {
+                VStack(
+                    alignment: .trailing,
+                    spacing: DimensToken.SIZE_2
+                ) {
                     Text(appState.nextPrayerName)
                         .font(.caption)
                         .foregroundStyle(.secondary)
                     Text(appState.countdownString)
                         .font(.system(.callout, design: .monospaced))
                         .fontWeight(.semibold)
-                        .foregroundStyle(Color.accent(for: colorScheme))
+                        .foregroundStyle(ColorToken.Blue)
                 }
             }
         }
-        .padding(.horizontal, 16)
-        .padding(.vertical, 12)
+        .padding(.horizontal, OX.Spacing.L)
+        .padding(.vertical, DimensToken.SIZE_12)
     }
 
     // MARK: - Iqamah Banner
@@ -97,29 +109,32 @@ struct MenuBarView: View {
     private func iqamahBannerView(prayerName: String, remaining: Int) -> some View {
         let minutes = remaining / 60
         let seconds = remaining % 60
-        return HStack {
+        return HStack(spacing: DimensToken.SIZE_10) {
             Image(systemName: "bell.badge.fill")
-                .foregroundStyle(Color.accent(for: colorScheme))
-            VStack(alignment: .leading, spacing: 1) {
+                .foregroundStyle(ColorToken.Red)
+            VStack(
+                alignment: .leading,
+                spacing: DimensToken.SIZE_2
+            ) {
                 Text(String(localized: "Iqamah \(prayerName)"))
                     .font(.caption)
                     .fontWeight(.semibold)
                 Text(String(format: "%02d:%02d", minutes, seconds))
                     .font(.system(.caption, design: .monospaced))
                     .fontWeight(.medium)
-                    .foregroundStyle(.red)
+                    .foregroundStyle(ColorToken.Red)
             }
             Spacer()
         }
-        .padding(.horizontal, 16)
-        .padding(.vertical, 8)
-        .background(Color.accentBackground(for: colorScheme))
+        .padding(.horizontal, OX.Spacing.L)
+        .padding(.vertical, OX.Spacing.S)
+        .background(ColorToken.Red10)
     }
 
     private func iqamahFinishedBanner(prayerName: String) -> some View {
-        HStack {
+        HStack(spacing: DimensToken.SIZE_10) {
             Image(systemName: "checkmark.circle.fill")
-                .foregroundStyle(.green)
+                .foregroundStyle(ColorToken.Green)
             Text(String(localized: "Waktu iqamah \(prayerName)!"))
                 .font(.caption)
                 .fontWeight(.semibold)
@@ -132,34 +147,43 @@ struct MenuBarView: View {
             }
             .buttonStyle(.plain)
         }
-        .padding(.horizontal, 16)
-        .padding(.vertical, 8)
-        .background(Color.green.opacity(0.1))
+        .padding(.horizontal, OX.Spacing.L)
+        .padding(.vertical, OX.Spacing.S)
+        .background(ColorToken.Green10)
     }
 
     // MARK: - Date & Qibla Banner
 
     private var dateAndQiblaBannerView: some View {
         HStack {
-            VStack(alignment: .leading, spacing: 2) {
+            VStack(
+                alignment: .leading,
+                spacing: DimensToken.SIZE_2
+            ) {
                 Text(String(localized: "Hijriah"))
                     .font(.caption2)
                     .foregroundStyle(.secondary)
-                Text(IslamicCalendarHelper.islamicDateString(offsetDays: appState.settings.hijriOffsetDays, lang: appState.settings.appLanguage))
-                    .font(.caption)
-                    .fontWeight(.semibold)
+                Text(IslamicCalendarHelper.islamicDateString(
+                    offsetDays: appState.settings.hijriOffsetDays,
+                    lang: appState.settings.appLanguage
+                ))
+                .font(.caption)
+                .fontWeight(.semibold)
             }
 
             Spacer()
 
-            VStack(alignment: .center, spacing: 2) {
+            VStack(
+                alignment: .center,
+                spacing: DimensToken.SIZE_2
+            ) {
                 Text(String(localized: "Arah Kiblat"))
                     .font(.caption2)
                     .foregroundStyle(.secondary)
-                HStack(spacing: 3) {
+                HStack(spacing: DimensToken.SIZE_4) {
                     Image(systemName: "safari.fill")
                         .font(.caption2)
-                        .foregroundStyle(Color.accent(for: colorScheme))
+                        .foregroundStyle(ColorToken.Green)
                     Text(appState.qibla.formattedBearing(for: appState.settings.appLanguage))
                         .font(.caption)
                         .fontWeight(.semibold)
@@ -168,17 +192,27 @@ struct MenuBarView: View {
 
             Spacer()
 
-            VStack(alignment: .trailing, spacing: 2) {
+            VStack(
+                alignment: .trailing,
+                spacing: DimensToken.SIZE_2
+            ) {
                 Text(String(localized: "Masehi"))
                     .font(.caption2)
                     .foregroundStyle(.secondary)
-                Text(Date().formatted(.dateTime.locale(appState.settings.appLanguage.locale).weekday(.abbreviated).day().month(.abbreviated).year()))
-                    .font(.caption)
-                    .fontWeight(.semibold)
+                Text(Date().formatted(
+                    .dateTime
+                        .locale(appState.settings.appLanguage.locale)
+                        .weekday(.abbreviated)
+                        .day()
+                        .month(.abbreviated)
+                        .year()
+                ))
+                .font(.caption)
+                .fontWeight(.semibold)
             }
         }
-        .padding(.horizontal, 16)
-        .padding(.vertical, 8)
+        .padding(.horizontal, OX.Spacing.L)
+        .padding(.vertical, OX.Spacing.S)
     }
 
     // MARK: - Footer
@@ -189,7 +223,7 @@ struct MenuBarView: View {
                 Button(String(localized: "Stop Adzan")) {
                     appState.stopAll()
                 }
-                .foregroundStyle(.red)
+                .foregroundStyle(ColorToken.Red)
                 .buttonStyle(.plain)
             }
 
@@ -199,23 +233,29 @@ struct MenuBarView: View {
                 StatusBarController.shared?.closePopover()
                 WindowManager.shared.showMainWindow(appState: appState)
             } label: {
-                Label(String(localized: "Buka KawalPrayer"), systemImage: "macwindow")
+                Label(
+                    String(localized: "Buka KawalPrayer"),
+                    systemImage: "macwindow"
+                )
             }
             .buttonStyle(.plain)
 
             Divider()
-                .frame(height: 12)
-                .padding(.horizontal, 4)
+                .frame(height: DimensToken.SIZE_12)
+                .padding(.horizontal, DimensToken.SIZE_4)
 
             Button {
                 appState.saveSettingsImmediately()
                 NSApplication.shared.terminate(nil)
             } label: {
-                Label(String(localized: "Keluar"), systemImage: "power")
+                Label(
+                    String(localized: "Keluar"),
+                    systemImage: "power"
+                )
             }
             .buttonStyle(.plain)
         }
-        .padding(.horizontal, 16)
-        .padding(.vertical, 10)
+        .padding(.horizontal, OX.Spacing.L)
+        .padding(.vertical, DimensToken.SIZE_10)
     }
 }

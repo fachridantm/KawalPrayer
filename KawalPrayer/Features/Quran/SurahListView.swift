@@ -19,15 +19,19 @@ struct SurahListView: View {
     }
 
     var body: some View {
-        VStack(spacing: 0) {
+        VStack(spacing: DimensToken.SIZE_0) {
             // Inline search field
-            HStack(spacing: 6) {
+            HStack(spacing: DimensToken.SIZE_6) {
                 Image(systemName: "magnifyingglass")
                     .font(.caption)
                     .foregroundStyle(.secondary)
-                TextField(String(localized: "Cari surah..."), text: $searchText)
-                    .textFieldStyle(.plain)
-                    .font(.subheadline)
+                TextField(
+                    String(localized: "Cari surah..."),
+                    text: $searchText
+                )
+                .textFieldStyle(.plain)
+                .font(.subheadline)
+
                 if !searchText.isEmpty {
                     Button {
                         searchText = ""
@@ -39,7 +43,7 @@ struct SurahListView: View {
                     .buttonStyle(.plain)
                 }
             }
-            .padding(8)
+            .padding(DimensToken.SIZE_8)
             .background(.bar)
 
             // Bookmark entry point
@@ -47,7 +51,7 @@ struct SurahListView: View {
                 Button {
                     showBookmarks.toggle()
                 } label: {
-                    HStack(spacing: 6) {
+                    HStack(spacing: DimensToken.SIZE_6) {
                         Image(systemName: showBookmarks ? "bookmark.fill" : "bookmark")
                             .font(.caption)
                             .foregroundStyle(Color.accent(for: colorScheme))
@@ -57,22 +61,25 @@ struct SurahListView: View {
                         Text("\(bookmarkCount)")
                             .font(.caption2)
                             .fontWeight(.semibold)
-                            .foregroundStyle(.white)
-                            .padding(.horizontal, 6)
-                            .padding(.vertical, 2)
-                            .background(Capsule().fill(Color.accent(for: colorScheme)))
+                            .foregroundStyle(Color.white)
+                            .padding(.horizontal, DimensToken.SIZE_6)
+                            .padding(.vertical, DimensToken.SIZE_2)
+                            .background(Capsule().fill(ColorToken.Green))
                             .id("badge_\(bookmarkCount)")
                             .transition(.asymmetric(
                                 insertion: .move(edge: .bottom).combined(with: .opacity),
                                 removal: .move(edge: .top).combined(with: .opacity)
                             ))
-                            .animation(.spring(response: 0.3, dampingFraction: 0.7), value: bookmarkCount)
+                            .animation(
+                                .spring(response: 0.3, dampingFraction: 0.7),
+                                value: bookmarkCount
+                            )
                         Image(systemName: "chevron.right")
                             .font(.caption2)
                             .foregroundStyle(.tertiary)
                     }
-                    .padding(.horizontal, 10)
-                    .padding(.vertical, 6)
+                    .padding(.horizontal, DimensToken.SIZE_10)
+                    .padding(.vertical, DimensToken.SIZE_6)
                     .contentShape(Rectangle())
                 }
                 .buttonStyle(.plain)
@@ -81,13 +88,22 @@ struct SurahListView: View {
             Divider()
 
             List(filteredSurahs) { surah in
-                SurahRow(surah: surah, isSelected: selectedSurahId == surah.id && !showBookmarks, appLanguage: appState.settings.appLanguage)
-                    .contentShape(Rectangle())
-                    .onTapGesture {
-                        selectedSurahId = surah.id
-                        onSelectSurah?(surah.id)
-                    }
-                    .listRowInsets(EdgeInsets(top: 2, leading: 8, bottom: 2, trailing: 8))
+                SurahRow(
+                    surah: surah,
+                    isSelected: selectedSurahId == surah.id && !showBookmarks,
+                    appLanguage: appState.settings.appLanguage
+                )
+                .contentShape(Rectangle())
+                .onTapGesture {
+                    selectedSurahId = surah.id
+                    onSelectSurah?(surah.id)
+                }
+                .listRowInsets(EdgeInsets(
+                    top: DimensToken.SIZE_2,
+                    leading: DimensToken.SIZE_8,
+                    bottom: DimensToken.SIZE_2,
+                    trailing: DimensToken.SIZE_8
+                ))
             }
             .listStyle(.inset)
         }
@@ -113,41 +129,54 @@ private struct SurahRow: View {
     }
 
     var body: some View {
-        HStack(spacing: 12) {
+        HStack(spacing: OX.Spacing.M) {
             Text("\(surah.id)")
                 .font(.caption)
                 .fontWeight(.semibold)
-                .foregroundStyle(isSelected ? .white.opacity(0.8) : .secondary)
-                .frame(width: 28, height: 28)
+                .foregroundStyle(isSelected ? Color.white.opacity(FloatToken.PERCENT_80) : .secondary)
+                .frame(
+                    width: DimensToken.SIZE_28,
+                    height: DimensToken.SIZE_28
+                )
                 .background(
-                    Circle().strokeBorder(isSelected ? Color.white.opacity(0.3) : Color.secondary.opacity(0.3))
+                    Circle().strokeBorder(
+                        isSelected
+                            ? Color.white.opacity(FloatToken.PERCENT_30)
+                            : Color.secondary.opacity(FloatToken.PERCENT_30)
+                    )
                 )
 
-            VStack(alignment: .leading, spacing: 2) {
+            VStack(
+                alignment: .leading,
+                spacing: DimensToken.SIZE_2
+            ) {
                 Text(surah.name)
                     .font(.body)
                     .fontWeight(.medium)
                 Text(localizedMeaning)
                     .font(.caption)
-                    .foregroundStyle(isSelected ? .white.opacity(0.7) : .secondary)
+                    .foregroundStyle(isSelected ? Color.white.opacity(FloatToken.PERCENT_70) : .secondary)
             }
 
             Spacer()
 
-            VStack(alignment: .trailing, spacing: 2) {
+            VStack(
+                alignment: .trailing,
+                spacing: DimensToken.SIZE_2
+            ) {
                 Text(surah.arabicName)
                     .font(.body)
                 Text(appLanguage == .id ? "\(surah.ayahCount) ayat" : (appLanguage == .en ? "\(surah.ayahCount) verses" : "\(surah.ayahCount) آية"))
                     .font(.caption2)
-                    .foregroundStyle(isSelected ? .white.opacity(0.7) : .secondary)
+                    .foregroundStyle(isSelected ? Color.white.opacity(FloatToken.PERCENT_70) : .secondary)
             }
         }
-        .foregroundStyle(isSelected ? .white : .primary)
-        .padding(.vertical, 6)
-        .padding(.horizontal, 8)
+        .foregroundStyle(isSelected ? Color.white : Color.primary)
+        .padding(.vertical, DimensToken.SIZE_6)
+        .padding(.horizontal, DimensToken.SIZE_8)
         .background(
-            RoundedRectangle(cornerRadius: 6)
-                .fill(isSelected ? Color.accent(for: colorScheme) : .clear)
+            RoundedRectangle(cornerRadius: OX.Radius.S)
+                .fill(isSelected ? ColorToken.Green : Color.clear)
         )
     }
 }

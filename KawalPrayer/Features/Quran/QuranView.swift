@@ -16,7 +16,7 @@ struct QuranView: View {
     var body: some View {
         @Bindable var appState = appState
 
-        HStack(spacing: 0) {
+        HStack(spacing: DimensToken.SIZE_0) {
             // Left: Surah list
             SurahListView(
                 surahs: quranService.surahs,
@@ -25,7 +25,7 @@ struct QuranView: View {
                 showBookmarks: $showBookmarks,
                 onSelectSurah: { _ in showBookmarks = false }
             )
-            .frame(width: 280)
+            .frame(width: DimensToken.SIZE_80 * 3 + DimensToken.SIZE_40)
             .clipped()
 
             Divider()
@@ -40,7 +40,10 @@ struct QuranView: View {
                         scrollToAyah = numberInSurah
                     }
                 }
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .frame(
+                    maxWidth: .infinity,
+                    maxHeight: .infinity
+                )
             } else if let surahId = selectedSurahId,
                let surah = quranService.surah(byId: surahId) {
                 Group {
@@ -60,7 +63,10 @@ struct QuranView: View {
                     }
                 }
                 .id(surahId)
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .frame(
+                    maxWidth: .infinity,
+                    maxHeight: .infinity
+                )
             } else {
                 emptyState
             }
@@ -77,14 +83,18 @@ struct QuranView: View {
     }
 
     private var emptyState: some View {
-        VStack(spacing: 12) {
+        VStack(spacing: OX.Spacing.M) {
             Image(systemName: "book.fill")
-                .font(.system(size: 48))
+                .font(.system(size: DimensToken.SIZE_48))
                 .foregroundStyle(.tertiary)
+
             Text(String(localized: "Pilih surah untuk membaca"))
                 .font(.title3)
                 .foregroundStyle(.secondary)
         }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .frame(
+            maxWidth: .infinity,
+            maxHeight: .infinity
+        )
     }
 }

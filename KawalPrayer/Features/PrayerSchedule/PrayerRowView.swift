@@ -16,21 +16,24 @@ struct PrayerRowView: View {
     }
 
     var body: some View {
-        HStack(spacing: 12) {
+        HStack(spacing: OX.Spacing.M) {
             Image(systemName: prayer.name.icon)
-                .frame(width: 20)
+                .frame(width: DimensToken.SIZE_20)
                 .foregroundStyle(rowColor)
 
-            HStack(spacing: 5) {
+            HStack(spacing: OX.Spacing.XS) {
                 Text(prayer.name.localizedName(for: appState.settings.appLanguage))
                     .fontWeight(isHighlighted ? .semibold : .regular)
                     .foregroundStyle(prayer.isPast && !isCurrent ? .secondary : .primary)
 
                 if isCurrent {
-                    Text(appState.settings.appLanguage == .id ? "(Aktif)" : (appState.settings.appLanguage == .en ? "(Active)" : "(نشط)"))
+                    Text(appState.settings.appLanguage == .id ? "Aktif" : (appState.settings.appLanguage == .en ? "Active" : "نشط"))
                         .font(.caption2)
-                        .fontWeight(.semibold)
-                        .foregroundStyle(accentColor)
+                        .fontWeight(.bold)
+                        .foregroundStyle(Color.white)
+                        .padding(.horizontal, DimensToken.SIZE_6)
+                        .padding(.vertical, DimensToken.SIZE_2)
+                        .background(Capsule().fill(ColorToken.Green))
                 }
             }
 
@@ -38,17 +41,30 @@ struct PrayerRowView: View {
 
             Text(prayer.timeString)
                 .font(.system(.body, design: .monospaced))
+                .fontWeight(isHighlighted ? .semibold : .regular)
                 .foregroundStyle(rowColor)
 
             Circle()
                 .fill(accentColor)
-                .frame(width: 6, height: 6)
-                .opacity(isHighlighted ? 1 : 0)
+                .frame(width: DimensToken.SIZE_6, height: DimensToken.SIZE_6)
+                .opacity(isHighlighted ? FloatToken.PERCENT_100 : FloatToken.PERCENT_0)
         }
-        .padding(.horizontal, 16)
-        .padding(.vertical, 9)
-        .background(isHighlighted ? Color.accentBackground(for: colorScheme) : Color.clear)
-        .opacity(prayer.isPast && !isCurrent ? 0.65 : 1.0)
+        .padding(.horizontal, OX.Spacing.L)
+        .padding(.vertical, DimensToken.SIZE_8)
+        .background(
+            isHighlighted
+                ? RoundedRectangle(cornerRadius: OX.Radius.M)
+                    .fill(Color.accentBackground(for: colorScheme))
+                    .overlay(
+                        RoundedRectangle(cornerRadius: OX.Radius.M)
+                            .strokeBorder(
+                                isCurrent ? ColorToken.Green.opacity(FloatToken.PERCENT_40) : Color.clear,
+                                lineWidth: OX.Border.WIDTH_1
+                            )
+                    )
+                : nil
+        )
+        .opacity(prayer.isPast && !isCurrent ? FloatToken.PERCENT_60 : FloatToken.PERCENT_100)
     }
 
     private var accentColor: Color { .accent(for: colorScheme) }

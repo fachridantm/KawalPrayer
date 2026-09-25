@@ -70,7 +70,7 @@ struct MushafTextView: NSViewRepresentable {
         }
 
         func updateContent(surah: Surah, fontSize: CGFloat, colorScheme: ColorScheme, selectedAyah: Int?) {
-            guard let textView = textView else { return }
+            guard textView != nil else { return }
 
             let needsFullRebuild = (lastSurahId != surah.id || lastFontSize != fontSize || lastColorScheme != colorScheme)
 
@@ -183,31 +183,46 @@ struct MushafTextView: NSViewRepresentable {
 
         private func highlightColor(isDark: Bool) -> NSColor {
             if isDark {
-                return NSColor(red: 0.16, green: 0.42, blue: 0.38, alpha: 0.65)
+                return NSColor(
+                    srgbRed: 0x00 / 255.0,
+                    green: 0x35 / 255.0,
+                    blue: 0x10 / 255.0,
+                    alpha: CGFloat(FloatToken.PERCENT_40)
+                )
             } else {
-                return NSColor(red: 0.72, green: 0.90, blue: 0.86, alpha: 0.60)
+                return NSColor(
+                    srgbRed: 0xE6 / 255.0,
+                    green: 0xEE / 255.0,
+                    blue: 0xE8 / 255.0,
+                    alpha: CGFloat(FloatToken.PERCENT_85)
+                )
             }
         }
 
         private func makeVerseBadgeImage(number: Int, fontSize: CGFloat, isDark: Bool) -> NSImage {
-            let diameter = max(24.0, fontSize * 0.85)
-            let imageSize = NSSize(width: diameter + 4, height: diameter)
+            let diameter = max(DimensToken.SIZE_24, fontSize * CGFloat(FloatToken.PERCENT_85))
+            let imageSize = NSSize(width: diameter + DimensToken.SIZE_4, height: diameter)
 
             let img = NSImage(size: imageSize, flipped: false) { rect in
-                let circleRect = NSRect(x: 2, y: 1, width: diameter - 2, height: diameter - 2)
+                let circleRect = NSRect(
+                    x: DimensToken.SIZE_2,
+                    y: DimensToken.SIZE_1,
+                    width: diameter - DimensToken.SIZE_2,
+                    height: diameter - DimensToken.SIZE_2
+                )
                 let greenColor = isDark
-                    ? NSColor(red: 0.38, green: 0.78, blue: 0.52, alpha: 1.0)
-                    : NSColor(red: 0.14, green: 0.48, blue: 0.26, alpha: 1.0)
+                    ? NSColor(srgbRed: 0x5C / 255.0, green: 0xDB / 255.0, blue: 0x6D / 255.0, alpha: 1.0)
+                    : NSColor(srgbRed: 0x34 / 255.0, green: 0xA8 / 255.0, blue: 0x53 / 255.0, alpha: 1.0)
 
                 // Circle stroke
                 let path = NSBezierPath(ovalIn: circleRect)
-                path.lineWidth = 1.6
+                path.lineWidth = OX.Border.WIDTH_1_5
                 greenColor.setStroke()
                 path.stroke()
 
                 // Inside number (clean Arabic or Latin numeral)
                 let text = "\(number)"
-                let numFontSize = max(9.0, diameter * 0.44)
+                let numFontSize = max(DimensToken.SIZE_9, diameter * CGFloat(FloatToken.PERCENT_44))
                 let font = NSFont.systemFont(ofSize: numFontSize, weight: .semibold)
                 let textAttrs: [NSAttributedString.Key: Any] = [
                     .font: font,

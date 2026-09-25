@@ -25,9 +25,9 @@ struct AyahDetailView: View {
     var body: some View {
         @Bindable var appState = appState
 
-        VStack(spacing: 0) {
+        VStack(spacing: DimensToken.SIZE_0) {
             // Header
-            VStack(spacing: 4) {
+            VStack(spacing: DimensToken.SIZE_4) {
                 Text(surah.arabicName)
                     .font(.largeTitle)
                 Text(surah.name)
@@ -40,48 +40,62 @@ struct AyahDetailView: View {
                     .foregroundStyle(.secondary)
 
                 // Controls: View mode picker & Font size slider
-                HStack(spacing: 16) {
-                    Picker("", selection: $appState.settings.quranViewMode) {
-                        Label(String(localized: "Mushaf"), systemImage: "book.pages.fill")
-                            .tag(QuranViewMode.mushaf)
-                        Label(String(localized: "Per Ayat"), systemImage: "list.bullet.rectangle.portrait.fill")
-                            .tag(QuranViewMode.verseList)
+                HStack(spacing: OX.Spacing.L) {
+                    Picker(
+                        "",
+                        selection: $appState.settings.quranViewMode
+                    ) {
+                        Label(
+                            String(localized: "Mushaf"),
+                            systemImage: "book.pages.fill"
+                        )
+                        .tag(QuranViewMode.mushaf)
+
+                        Label(
+                            String(localized: "Per Ayat"),
+                            systemImage: "list.bullet.rectangle.portrait.fill"
+                        )
+                        .tag(QuranViewMode.verseList)
                     }
                     .pickerStyle(.segmented)
-                    .frame(width: 170)
+                    .frame(width: DimensToken.SIZE_80 * 2 + DimensToken.SIZE_10)
                     .onChange(of: appState.settings.quranViewMode) {
                         appState.saveSettingsImmediately()
                     }
 
-                    HStack(spacing: 8) {
+                    HStack(spacing: OX.Spacing.S) {
                         Image(systemName: "textformat.size.smaller")
                             .font(.caption2)
                             .foregroundStyle(.secondary)
-                        Slider(value: $arabicFontSize, in: 18...40, step: 1)
-                            .frame(width: 100)
-                            .onChange(of: arabicFontSize) {
-                                appState.saveSettingsImmediately()
-                            }
+                        Slider(
+                            value: $arabicFontSize,
+                            in: 18...40,
+                            step: 1
+                        )
+                        .frame(width: DimensToken.SIZE_80 + DimensToken.SIZE_20)
+                        .onChange(of: arabicFontSize) {
+                            appState.saveSettingsImmediately()
+                        }
                         Image(systemName: "textformat.size.larger")
                             .font(.caption2)
                             .foregroundStyle(.secondary)
                     }
                 }
-                .padding(.top, 4)
+                .padding(.top, DimensToken.SIZE_4)
             }
             .frame(maxWidth: .infinity)
-            .padding(.vertical, 14)
+            .padding(.vertical, DimensToken.SIZE_14)
 
             Divider()
 
             // Ayat list
             ScrollViewReader { proxy in
                 ScrollView {
-                    LazyVStack(spacing: 16) {
+                    LazyVStack(spacing: OX.Spacing.L) {
                         // Bismillah separator
                         if showBismillah {
                             Text("بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ")
-                                .font(.system(size: 20))
+                                .font(.system(size: DimensToken.SIZE_20))
                                 .foregroundStyle(.primary)
                                 .frame(maxWidth: .infinity)
                         }
@@ -93,7 +107,10 @@ struct AyahDetailView: View {
                                 isHighlighted: highlightedAyah == ayah.numberInSurah,
                                 isBookmarked: appState.settings.quranBookmarks.contains(key),
                                 onToggleBookmark: {
-                                    withAnimation(.spring(response: 0.3, dampingFraction: 0.7)) {
+                                    withAnimation(.spring(
+                                        response: 0.3,
+                                        dampingFraction: 0.7
+                                    )) {
                                         if let index = appState.settings.quranBookmarks.firstIndex(of: key) {
                                             appState.settings.quranBookmarks.remove(at: index)
                                         } else {
@@ -106,7 +123,7 @@ struct AyahDetailView: View {
                             .id(ayah.numberInSurah)
                         }
                     }
-                    .padding(20)
+                    .padding(OX.Spacing.XL)
                 }
                 .onAppear {
                     scrollToTarget(proxy: proxy)
@@ -156,32 +173,49 @@ private struct AyahRow: View {
     @State private var starScale: CGFloat = 1.0
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 12) {
+        VStack(
+            alignment: .leading,
+            spacing: OX.Spacing.M
+        ) {
             // Ayah number badge + bookmark + copy button
             HStack {
                 Text("\(ayah.numberInSurah)")
                     .font(.caption)
                     .fontWeight(.semibold)
                     .foregroundStyle(.secondary)
-                    .frame(width: 28, height: 28)
-                    .background(Circle().strokeBorder(.quaternary))
+                    .frame(
+                        width: DimensToken.SIZE_28,
+                        height: DimensToken.SIZE_28
+                    )
+                    .background(Circle().strokeBorder(OX.Color.outline(for: colorScheme)))
+
                 Spacer()
+
                 Button {
                     onToggleBookmark()
-                    withAnimation(.spring(response: 0.25, dampingFraction: 0.4)) {
+                    withAnimation(.spring(
+                        response: 0.25,
+                        dampingFraction: 0.4
+                    )) {
                         starScale = 1.8
                     }
                     DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
-                        withAnimation(.spring(response: 0.3, dampingFraction: 0.4)) {
+                        withAnimation(.spring(
+                            response: 0.3,
+                            dampingFraction: 0.4
+                        )) {
                             starScale = 1.0
                         }
                     }
                 } label: {
                     Image(systemName: isBookmarked ? "star.fill" : "star")
                         .font(.caption)
-                        .foregroundStyle(isBookmarked ? .yellow : .secondary)
+                        .foregroundStyle(isBookmarked ? ColorToken.Yellow : .secondary)
                         .scaleEffect(starScale)
-                        .animation(.easeInOut(duration: 0.2), value: isBookmarked)
+                        .animation(
+                            .easeInOut(duration: 0.2),
+                            value: isBookmarked
+                        )
                 }
                 .buttonStyle(.plain)
                 .help(String(localized: "Bookmark ayat"))
@@ -203,7 +237,7 @@ private struct AyahRow: View {
                 } label: {
                     Image(systemName: showCopied ? "checkmark" : "doc.on.doc")
                         .font(.caption)
-                        .foregroundStyle(showCopied ? .green : .secondary)
+                        .foregroundStyle(showCopied ? ColorToken.Green : .secondary)
                 }
                 .buttonStyle(.plain)
                 .help(String(localized: "Salin ayat"))
@@ -213,28 +247,40 @@ private struct AyahRow: View {
             Text(ayah.arabicText)
                 .font(.system(size: arabicFontSize))
                 .multilineTextAlignment(.trailing)
-                .frame(maxWidth: .infinity, alignment: .trailing)
+                .frame(
+                    maxWidth: .infinity,
+                    alignment: .trailing
+                )
                 .environment(\.layoutDirection, .rightToLeft)
 
             // Indonesian translation
             Text(ayah.translationId)
                 .font(.subheadline)
                 .foregroundStyle(.primary)
-                .frame(maxWidth: .infinity, alignment: .leading)
+                .frame(
+                    maxWidth: .infinity,
+                    alignment: .leading
+                )
 
             // English translation
             Text(ayah.translationEn)
                 .font(.caption)
                 .foregroundStyle(.secondary)
-                .frame(maxWidth: .infinity, alignment: .leading)
+                .frame(
+                    maxWidth: .infinity,
+                    alignment: .leading
+                )
         }
-        .padding(12)
-        .background(Color.accentBackground(for: colorScheme).opacity(0.5))
+        .padding(DimensToken.SIZE_12)
+        .background(Color.accentBackground(for: colorScheme).opacity(FloatToken.PERCENT_50))
         .overlay(
-            RoundedRectangle(cornerRadius: 8)
-                .stroke(Color.accent(for: colorScheme), lineWidth: isHighlighted ? 2 : 0)
-                .opacity(isHighlighted ? 1 : 0)
+            RoundedRectangle(cornerRadius: OX.Radius.M)
+                .stroke(
+                    ColorToken.Green,
+                    lineWidth: isHighlighted ? OX.Border.WIDTH_2 : OX.Border.WIDTH_0_5
+                )
+                .opacity(isHighlighted ? FloatToken.PERCENT_100 : FloatToken.PERCENT_0)
         )
-        .clipShape(RoundedRectangle(cornerRadius: 8))
+        .clipShape(RoundedRectangle(cornerRadius: OX.Radius.M))
     }
 }

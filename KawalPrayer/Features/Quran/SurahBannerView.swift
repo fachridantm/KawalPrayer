@@ -6,43 +6,39 @@ struct SurahBannerView: View {
     @Environment(\.colorScheme) private var colorScheme
 
     private var bannerGreen: Color {
-        colorScheme == .dark
-            ? Color(red: 0.35, green: 0.72, blue: 0.48)
-            : Color(red: 0.12, green: 0.45, blue: 0.25)
+        colorScheme == .dark ? ColorToken.GreenHalftone : ColorToken.Green
     }
 
     private var bannerBackground: Color {
-        colorScheme == .dark
-            ? Color(red: 0.14, green: 0.16, blue: 0.14).opacity(0.8)
-            : Color(red: 0.95, green: 0.96, blue: 0.93)
+        colorScheme == .dark ? ColorToken.DarkGrey10 : ColorToken.Green10.opacity(0.60)
     }
 
     var body: some View {
         ZStack {
             // Background fill
-            RoundedRectangle(cornerRadius: 6)
+            RoundedRectangle(cornerRadius: OX.Radius.S)
                 .fill(bannerBackground)
 
             // Ornamental outer and inner borders
-            RoundedRectangle(cornerRadius: 6)
-                .stroke(bannerGreen, lineWidth: 1.5)
-                .padding(2)
+            RoundedRectangle(cornerRadius: OX.Radius.S)
+                .stroke(bannerGreen, lineWidth: OX.Border.WIDTH_1_5)
+                .padding(DimensToken.SIZE_2)
 
-            RoundedRectangle(cornerRadius: 4)
-                .stroke(bannerGreen.opacity(0.6), lineWidth: 0.8)
-                .padding(5)
+            RoundedRectangle(cornerRadius: OX.Radius.XS)
+                .stroke(bannerGreen.opacity(FloatToken.PERCENT_60), lineWidth: OX.Border.WIDTH_1)
+                .padding(DimensToken.SIZE_4)
 
             // Decorative Arabesque Pattern & Center Title
-            HStack(spacing: 8) {
+            HStack(spacing: OX.Spacing.S) {
                 // Left Arabesque Flourish
                 ArabesqueFlourish(direction: .left, color: bannerGreen)
-                    .frame(height: 32)
+                    .frame(height: DimensToken.SIZE_32)
                     .frame(maxWidth: .infinity)
 
                 // Center Title Cartouche
-                HStack(spacing: 6) {
+                HStack(spacing: OX.Spacing.XS2) {
                     Text("﴾")
-                        .font(.system(size: 20, weight: .light))
+                        .font(.system(size: DimensToken.SIZE_20, weight: .light))
                         .foregroundStyle(bannerGreen)
 
                     Text(formattedArabicTitle)
@@ -52,26 +48,26 @@ struct SurahBannerView: View {
                         .minimumScaleFactor(0.8)
 
                     Text("﴿")
-                        .font(.system(size: 20, weight: .light))
+                        .font(.system(size: DimensToken.SIZE_20, weight: .light))
                         .foregroundStyle(bannerGreen)
                 }
-                .padding(.horizontal, 14)
-                .padding(.vertical, 4)
+                .padding(.horizontal, DimensToken.SIZE_14)
+                .padding(.vertical, DimensToken.SIZE_4)
                 .background(
-                    RoundedRectangle(cornerRadius: 16)
-                        .strokeBorder(bannerGreen.opacity(0.4), lineWidth: 1)
+                    RoundedRectangle(cornerRadius: OX.Radius.L)
+                        .strokeBorder(bannerGreen.opacity(FloatToken.PERCENT_40), lineWidth: OX.Border.WIDTH_1)
                         .background(bannerBackground)
                 )
 
                 // Right Arabesque Flourish
                 ArabesqueFlourish(direction: .right, color: bannerGreen)
-                    .frame(height: 32)
+                    .frame(height: DimensToken.SIZE_32)
                     .frame(maxWidth: .infinity)
             }
-            .padding(.horizontal, 12)
+            .padding(.horizontal, OX.Spacing.M)
         }
-        .frame(height: 52)
-        .padding(.horizontal, 20)
+        .frame(height: DimensToken.SIZE_52)
+        .padding(.horizontal, OX.Spacing.XL)
     }
 
     private var formattedArabicTitle: String {

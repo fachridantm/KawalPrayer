@@ -14,13 +14,16 @@ extension AppTheme {
 }
 
 extension Color {
-    /// Accent color: Islamic Forest Green (#007200) in light mode, Warm Orange in dark mode.
+    /// Outivox Brand Accent: Google Green in light mode, vibrant GreenHalftone in dark mode.
     static func accent(for scheme: ColorScheme) -> Color {
-        scheme == .light ? Color(red: 0, green: 0.447, blue: 0) : .orange
+        scheme == .dark ? ColorToken.GreenHalftone : ColorToken.Green
     }
-    /// Background highlight row tint
+
+    /// Outivox Background highlight tint: Green10 in light mode, subtle Green90 tint in dark mode.
     static func accentBackground(for scheme: ColorScheme) -> Color {
-        scheme == .light ? Color(red: 0.941, green: 0.969, blue: 0.933) : .orange.opacity(0.08)
+        scheme == .dark
+            ? ColorToken.Green90.opacity(0.40)
+            : ColorToken.Green10.opacity(0.80)
     }
 }
 

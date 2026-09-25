@@ -6,26 +6,38 @@ struct QiblaCompassView: View {
     @Environment(\.colorScheme) private var colorScheme
 
     var body: some View {
-        HStack(spacing: 16) {
+        HStack(spacing: OX.Spacing.L) {
             ZStack {
                 Circle()
-                    .strokeBorder(Color.secondary.opacity(0.2), lineWidth: 2)
-                    .frame(width: 52, height: 52)
+                    .strokeBorder(
+                        OX.Color.outline(for: colorScheme),
+                        lineWidth: OX.Border.WIDTH_2
+                    )
+                    .frame(
+                        width: DimensToken.SIZE_52,
+                        height: DimensToken.SIZE_52
+                    )
 
                 // Compass Rose markers
                 Text(appState.settings.appLanguage == .id ? "U" : (appState.settings.appLanguage == .en ? "N" : "ش"))
-                    .font(.system(size: 8, weight: .bold))
+                    .font(.system(
+                        size: DimensToken.SIZE_8,
+                        weight: .bold
+                    ))
                     .foregroundStyle(.secondary)
-                    .offset(y: -20)
+                    .offset(y: -DimensToken.SIZE_20)
 
                 // Kaaba needle
                 Image(systemName: "location.north.fill")
-                    .font(.system(size: 20))
-                    .foregroundStyle(Color.accent(for: colorScheme))
+                    .font(.system(size: DimensToken.SIZE_20))
+                    .foregroundStyle(ColorToken.Green)
                     .rotationEffect(.degrees(appState.qibla.degrees))
             }
 
-            VStack(alignment: .leading, spacing: 3) {
+            VStack(
+                alignment: .leading,
+                spacing: DimensToken.SIZE_4
+            ) {
                 Text(appState.settings.appLanguage == .id ? "Arah Kiblat" : (appState.settings.appLanguage == .en ? "Qibla Direction" : "اتجاه القبلة"))
                     .font(.caption)
                     .foregroundStyle(.secondary)
@@ -33,7 +45,7 @@ struct QiblaCompassView: View {
                 Text(appState.qibla.formattedBearing(for: appState.settings.appLanguage))
                     .font(.headline)
                     .fontWeight(.bold)
-                    .foregroundStyle(Color.accent(for: colorScheme))
+                    .foregroundStyle(ColorToken.Green)
 
                 Text(appState.settings.appLanguage == .id
                     ? "Koordinat: \(String(format: "%.4f", appState.location.latitude)), \(String(format: "%.4f", appState.location.longitude))"
@@ -46,8 +58,17 @@ struct QiblaCompassView: View {
 
             Spacer()
         }
-        .padding(14)
-        .background(Color.accentBackground(for: colorScheme))
-        .clipShape(RoundedRectangle(cornerRadius: 10))
+        .padding(DimensToken.SIZE_14)
+        .background(
+            RoundedRectangle(cornerRadius: OX.Radius.L)
+                .fill(Color.accentBackground(for: colorScheme))
+                .overlay(
+                    RoundedRectangle(cornerRadius: OX.Radius.L)
+                        .strokeBorder(
+                            OX.Color.outline(for: colorScheme),
+                            lineWidth: OX.Border.WIDTH_1
+                        )
+                )
+        )
     }
 }

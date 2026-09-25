@@ -11,13 +11,13 @@ struct PrayerScheduleView: View {
     }
 
     var body: some View {
-        VStack(spacing: 0) {
+        VStack(spacing: DimensToken.SIZE_0) {
             ForEach(fardhuPrayers) { prayer in
                 PrayerRowView(prayer: prayer)
 
                 if prayer.id != fardhuPrayers.last?.id {
                     Divider()
-                        .padding(.horizontal, 16)
+                        .padding(.horizontal, OX.Spacing.L)
                 }
             }
         }

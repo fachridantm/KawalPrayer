@@ -40,21 +40,15 @@ struct MushafPageView: View {
     }
 
     private var parchmentBackground: Color {
-        colorScheme == .dark
-            ? Color(red: 0.11, green: 0.11, blue: 0.10)
-            : Color(red: 0.985, green: 0.975, blue: 0.950)
+        OX.Color.background(for: colorScheme)
     }
 
     private var parchmentPageInner: Color {
-        colorScheme == .dark
-            ? Color(red: 0.14, green: 0.14, blue: 0.13)
-            : Color(red: 0.995, green: 0.988, blue: 0.968)
+        OX.Color.surface(for: colorScheme)
     }
 
     private var parchmentBorder: Color {
-        colorScheme == .dark
-            ? Color(white: 0.22)
-            : Color(red: 0.88, green: 0.85, blue: 0.80)
+        OX.Color.outline(for: colorScheme)
     }
 
     var body: some View {
@@ -105,12 +99,12 @@ struct MushafPageView: View {
                             .padding(.bottom, 6)
                     }
                 }
-                .padding(.horizontal, 16)
+                .padding(.horizontal, OX.Spacing.L)
                 .background(parchmentPageInner)
                 .overlay(
-                    RoundedRectangle(cornerRadius: 8)
-                        .strokeBorder(parchmentBorder, lineWidth: 1)
-                        .padding(6)
+                    RoundedRectangle(cornerRadius: OX.Radius.S)
+                        .strokeBorder(parchmentBorder, lineWidth: OX.Border.WIDTH_1)
+                        .padding(DimensToken.SIZE_6)
                 )
 
                 // Interactive Selected Ayah Action Card & Translation Drawer
@@ -304,18 +298,26 @@ struct MushafPageView: View {
             }
             .frame(maxHeight: 120)
         }
-        .padding(14)
+        .padding(OX.Spacing.M)
         .background(
-            RoundedRectangle(cornerRadius: 12)
+            RoundedRectangle(cornerRadius: OX.Radius.L)
                 .fill(.regularMaterial)
-                .shadow(color: .black.opacity(0.18), radius: 10, x: 0, y: -2)
+                .shadow(
+                    color: .black.opacity(FloatToken.PERCENT_20),
+                    radius: DimensToken.SIZE_10,
+                    x: DimensToken.SIZE_0,
+                    y: -DimensToken.SIZE_2
+                )
         )
         .overlay(
-            RoundedRectangle(cornerRadius: 12)
-                .strokeBorder(Color.accent(for: colorScheme).opacity(0.35), lineWidth: 1)
+            RoundedRectangle(cornerRadius: OX.Radius.L)
+                .strokeBorder(
+                    Color.accent(for: colorScheme).opacity(FloatToken.PERCENT_40),
+                    lineWidth: OX.Border.WIDTH_1
+                )
         )
-        .padding(.horizontal, 14)
-        .padding(.bottom, 12)
+        .padding(.horizontal, OX.Spacing.M)
+        .padding(.bottom, OX.Spacing.M)
     }
 
     // MARK: - Actions

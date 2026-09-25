@@ -24,21 +24,23 @@ struct BookmarkListView: View {
     }
 
     var body: some View {
-        VStack(spacing: 0) {
+        VStack(spacing: DimensToken.SIZE_0) {
             // Header
-            VStack(spacing: 4) {
+            VStack(spacing: DimensToken.SIZE_4) {
                 Image(systemName: "bookmark.circle.fill")
-                    .font(.system(size: 44))
-                    .foregroundStyle(Color.accent(for: colorScheme))
+                    .font(.system(size: DimensToken.SIZE_44))
+                    .foregroundStyle(ColorToken.Green)
+
                 Text(String(localized: "Ayat Tersimpan"))
                     .font(.title2)
                     .fontWeight(.semibold)
+
                 Text(appState.settings.appLanguage == .id ? "\(cachedItems.count) ayat" : (appState.settings.appLanguage == .en ? "\(cachedItems.count) verses" : "\(cachedItems.count) آية"))
                     .font(.caption)
                     .foregroundStyle(.secondary)
             }
             .frame(maxWidth: .infinity)
-            .padding(.vertical, 16)
+            .padding(.vertical, OX.Spacing.L)
 
             Divider()
 
@@ -46,7 +48,7 @@ struct BookmarkListView: View {
                 emptyState
             } else {
                 ScrollView {
-                    LazyVStack(spacing: 12) {
+                    LazyVStack(spacing: OX.Spacing.M) {
                         ForEach(cachedItems, id: \.ayah.id) { item in
                             BookmarkRow(
                                 surah: item.surah,
@@ -67,7 +69,7 @@ struct BookmarkListView: View {
                             ))
                         }
                     }
-                    .padding(20)
+                    .padding(OX.Spacing.XL)
                 }
             }
         }
@@ -76,9 +78,9 @@ struct BookmarkListView: View {
     }
 
     private var emptyState: some View {
-        VStack(spacing: 12) {
+        VStack(spacing: OX.Spacing.M) {
             Image(systemName: "bookmark")
-                .font(.system(size: 48))
+                .font(.system(size: DimensToken.SIZE_48))
                 .foregroundStyle(.tertiary)
             Text(String(localized: "Belum ada ayat tersimpan"))
                 .font(.title3)
@@ -87,7 +89,10 @@ struct BookmarkListView: View {
                 .font(.caption)
                 .foregroundStyle(.tertiary)
         }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .frame(
+            maxWidth: .infinity,
+            maxHeight: .infinity
+        )
     }
 }
 
@@ -112,17 +117,23 @@ private struct BookmarkRow: View {
     }
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 8) {
+        VStack(
+            alignment: .leading,
+            spacing: DimensToken.SIZE_8
+        ) {
             // Header: surah name + ayah number + remove button
             HStack {
                 Text("\(surah.name) : \(ayah.numberInSurah)")
                     .font(.caption)
                     .fontWeight(.bold)
                     .foregroundStyle(.secondary)
+
                 Text("(\(localizedSurahName))")
                     .font(.caption2)
                     .foregroundStyle(.tertiary)
+
                 Spacer()
+
                 Button(action: onRemove) {
                     Image(systemName: "bookmark.slash")
                         .font(.caption)
@@ -134,9 +145,12 @@ private struct BookmarkRow: View {
 
             // Arabic text
             Text(ayah.arabicText)
-                .font(.system(size: 20))
+                .font(.system(size: DimensToken.SIZE_20))
                 .multilineTextAlignment(.trailing)
-                .frame(maxWidth: .infinity, alignment: .trailing)
+                .frame(
+                    maxWidth: .infinity,
+                    alignment: .trailing
+                )
                 .environment(\.layoutDirection, .rightToLeft)
                 .lineLimit(2)
 
@@ -146,9 +160,18 @@ private struct BookmarkRow: View {
                 .foregroundStyle(.secondary)
                 .lineLimit(2)
         }
-        .padding(12)
-        .background(Color.accentBackground(for: colorScheme).opacity(0.5))
-        .clipShape(RoundedRectangle(cornerRadius: 8))
+        .padding(DimensToken.SIZE_12)
+        .background(
+            RoundedRectangle(cornerRadius: OX.Radius.M)
+                .fill(Color.accentBackground(for: colorScheme).opacity(FloatToken.PERCENT_50))
+                .overlay(
+                    RoundedRectangle(cornerRadius: OX.Radius.M)
+                        .strokeBorder(
+                            OX.Color.outline(for: colorScheme),
+                            lineWidth: OX.Border.WIDTH_1
+                        )
+                )
+        )
         .contentShape(Rectangle())
         .onTapGesture(perform: onTap)
     }

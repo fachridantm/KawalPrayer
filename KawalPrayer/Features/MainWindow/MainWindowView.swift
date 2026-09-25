@@ -73,14 +73,23 @@ struct MainWindowView: View {
     // MARK: - Sidebar
 
     private var sidebarView: some View {
-        VStack(spacing: 0) {
+        VStack(spacing: DimensToken.SIZE_0) {
 
             // Branding
-            HStack(spacing: 10) {
-                Image(systemName: "moon.stars.fill")
-                    .font(.title2)
-                    .foregroundStyle(Color.accent(for: colorScheme))
-                VStack(alignment: .leading, spacing: 2) {
+            HStack(spacing: DimensToken.SIZE_10) {
+                Image(nsImage: NSApp.applicationIconImage)
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+                    .frame(
+                        width: DimensToken.SIZE_32,
+                        height: DimensToken.SIZE_32
+                    )
+                    .clipShape(RoundedRectangle(cornerRadius: OX.Radius.S))
+
+                VStack(
+                    alignment: .leading,
+                    spacing: DimensToken.SIZE_2
+                ) {
                     Text("KawalPrayer")
                         .font(.headline)
                         .fontWeight(.bold)
@@ -89,14 +98,17 @@ struct MainWindowView: View {
                         .foregroundStyle(.secondary)
                 }
             }
-            .frame(maxWidth: .infinity, alignment: .leading)
-            .padding(.horizontal, 16)
-            .padding(.vertical, 14)
+            .frame(
+                maxWidth: .infinity,
+                alignment: .leading
+            )
+            .padding(.horizontal, OX.Spacing.L)
+            .padding(.vertical, DimensToken.SIZE_14)
 
-            Divider()
+            GoogleColorDivider()
 
             // Nav items
-            VStack(spacing: 4) {
+            VStack(spacing: DimensToken.SIZE_4) {
                 ForEach(MainNavItem.allCases) { item in
                     SidebarNavRow(
                         item: item,
@@ -108,10 +120,10 @@ struct MainWindowView: View {
                     }
                 }
             }
-            .padding(.horizontal, 12)
-            .padding(.top, 12)
+            .padding(.horizontal, OX.Spacing.M)
+            .padding(.top, OX.Spacing.M)
 
-            Spacer(minLength: 0)
+            Spacer(minLength: DimensToken.SIZE_0)
 
             Divider()
 
@@ -120,7 +132,10 @@ struct MainWindowView: View {
                 Button {
                     WindowManager.shared.closeMainWindow()
                 } label: {
-                    Label(String(localized: "Tutup Jendela"), systemImage: "xmark.circle")
+                    Label(
+                        String(localized: "Tutup Jendela"),
+                        systemImage: "xmark.circle"
+                    )
                 }
                 .buttonStyle(.plain)
                 .foregroundStyle(.secondary)
@@ -131,15 +146,21 @@ struct MainWindowView: View {
                     appState.saveSettingsImmediately()
                     NSApplication.shared.terminate(nil)
                 } label: {
-                    Label(String(localized: "Keluar"), systemImage: "power")
+                    Label(
+                        String(localized: "Keluar"),
+                        systemImage: "power"
+                    )
                 }
                 .buttonStyle(.plain)
-                .foregroundStyle(.red)
+                .foregroundStyle(ColorToken.Red)
             }
-            .padding(.horizontal, 16)
-            .padding(.vertical, 12)
+            .padding(.horizontal, OX.Spacing.L)
+            .padding(.vertical, OX.Spacing.M)
         }
-        .navigationSplitViewColumnWidth(min: 190, ideal: 210)
+        .navigationSplitViewColumnWidth(
+            min: DimensToken.SIZE_80 * 2 + DimensToken.SIZE_30,
+            ideal: DimensToken.SIZE_80 * 2 + DimensToken.SIZE_50
+        )
     }
 
     // MARK: - Detail
@@ -198,7 +219,10 @@ private struct ScheduleDetailView: View {
 
             // Date banner: Hijriah (left) + Masehi (right)
             HStack(alignment: .center) {
-                VStack(alignment: .leading, spacing: 2) {
+                VStack(
+                    alignment: .leading,
+                    spacing: DimensToken.SIZE_2
+                ) {
                     Text(String(localized: "Tanggal Hijriah"))
                         .font(.caption)
                         .foregroundStyle(.secondary)
@@ -209,7 +233,10 @@ private struct ScheduleDetailView: View {
 
                 Spacer()
 
-                VStack(alignment: .trailing, spacing: 2) {
+                VStack(
+                    alignment: .trailing,
+                    spacing: DimensToken.SIZE_2
+                ) {
                     Text(String(localized: "Tanggal Masehi"))
                         .font(.caption)
                         .foregroundStyle(.secondary)
@@ -218,16 +245,16 @@ private struct ScheduleDetailView: View {
                         .fontWeight(.semibold)
                 }
             }
-            .padding(.horizontal, 24)
-            .padding(.vertical, 14)
+            .padding(.horizontal, OX.Spacing.XL2)
+            .padding(.vertical, DimensToken.SIZE_14)
 
             Divider()
 
             // Sub-header: City + Qibla + Next Prayer Countdown
             HStack(alignment: .center) {
-                HStack(spacing: 6) {
+                HStack(spacing: DimensToken.SIZE_6) {
                     Image(systemName: "mappin.and.ellipse")
-                        .foregroundStyle(Color.accent(for: colorScheme))
+                        .foregroundStyle(ColorToken.Green)
                     Text(appState.location.cityName)
                         .font(.subheadline)
                         .fontWeight(.medium)
@@ -250,20 +277,23 @@ private struct ScheduleDetailView: View {
                 Spacer()
 
                 if !appState.nextPrayerName.isEmpty {
-                    VStack(alignment: .trailing, spacing: 2) {
+                    VStack(
+                        alignment: .trailing,
+                        spacing: DimensToken.SIZE_2
+                    ) {
                         Text(String(localized: "Berikutnya"))
                             .font(.caption)
                             .foregroundStyle(.secondary)
                         Text("\(appState.nextPrayerName)  \(appState.countdownString)")
                             .font(.subheadline)
                             .fontWeight(.semibold)
-                            .foregroundStyle(Color.accent(for: colorScheme))
+                            .foregroundStyle(ColorToken.Blue)
                             .monospacedDigit()
                     }
                 }
             }
-            .padding(.horizontal, 24)
-            .padding(.vertical, 10)
+            .padding(.horizontal, OX.Spacing.XL2)
+            .padding(.vertical, DimensToken.SIZE_10)
 
             Divider()
 
@@ -271,32 +301,60 @@ private struct ScheduleDetailView: View {
             List {
                 QiblaCompassView()
                     .listRowSeparator(.hidden)
-                    .listRowInsets(EdgeInsets(top: 8, leading: 20, bottom: 4, trailing: 20))
+                    .listRowInsets(EdgeInsets(
+                        top: DimensToken.SIZE_8,
+                        leading: DimensToken.SIZE_20,
+                        bottom: DimensToken.SIZE_4,
+                        trailing: DimensToken.SIZE_20
+                    ))
 
                 if appState.showDoaBanner {
                     DuaAfterAdzanView()
                         .listRowSeparator(.hidden)
-                        .listRowInsets(EdgeInsets(top: 4, leading: 8, bottom: 4, trailing: 8))
+                        .listRowInsets(EdgeInsets(
+                            top: DimensToken.SIZE_4,
+                            leading: DimensToken.SIZE_8,
+                            bottom: DimensToken.SIZE_4,
+                            trailing: DimensToken.SIZE_8
+                        ))
                 }
                 if case .countdown(let prayerName, let remaining) = appState.iqamahState {
                     IqamahBannerRow(prayerName: prayerName, remaining: remaining)
                         .listRowSeparator(.hidden)
-                        .listRowInsets(EdgeInsets(top: 4, leading: 20, bottom: 4, trailing: 20))
+                        .listRowInsets(EdgeInsets(
+                            top: DimensToken.SIZE_4,
+                            leading: DimensToken.SIZE_20,
+                            bottom: DimensToken.SIZE_4,
+                            trailing: DimensToken.SIZE_20
+                        ))
                 }
                 if case .finished(let prayerName) = appState.iqamahState {
                     IqamahFinishedRow(prayerName: prayerName, onDismiss: { appState.iqamahState = .idle })
                         .listRowSeparator(.hidden)
-                        .listRowInsets(EdgeInsets(top: 4, leading: 20, bottom: 4, trailing: 20))
+                        .listRowInsets(EdgeInsets(
+                            top: DimensToken.SIZE_4,
+                            leading: DimensToken.SIZE_20,
+                            bottom: DimensToken.SIZE_4,
+                            trailing: DimensToken.SIZE_20
+                        ))
                 }
                 ForEach(fardhuPrayers) { prayer in
                     DesktopPrayerRow(prayer: prayer)
                         .listRowSeparator(.hidden)
-                        .listRowInsets(EdgeInsets(top: 4, leading: 20, bottom: 4, trailing: 20))
+                        .listRowInsets(EdgeInsets(
+                            top: DimensToken.SIZE_4,
+                            leading: DimensToken.SIZE_20,
+                            bottom: DimensToken.SIZE_4,
+                            trailing: DimensToken.SIZE_20
+                        ))
                 }
             }
             .listStyle(.plain)
         }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .frame(
+            maxWidth: .infinity,
+            maxHeight: .infinity
+        )
         .onAppear { refreshDateStrings() }
         .onChange(of: appState.prayerTimes) { refreshDateStrings() }
         .onChange(of: appState.settings.appLanguage) { refreshDateStrings() }
@@ -314,25 +372,37 @@ private struct IqamahBannerRow: View {
     let remaining: Int
 
     var body: some View {
-        HStack {
+        HStack(spacing: DimensToken.SIZE_10) {
             Image(systemName: "bell.badge.fill")
                 .font(.title3)
-                .foregroundStyle(Color.accent(for: colorScheme))
-            VStack(alignment: .leading, spacing: 2) {
+                .foregroundStyle(ColorToken.Red)
+            VStack(
+                alignment: .leading,
+                spacing: DimensToken.SIZE_2
+            ) {
                 Text(String(localized: "Iqamah \(prayerName)"))
                     .font(.subheadline)
                     .fontWeight(.semibold)
                 Text(String(format: "%02d:%02d", remaining / 60, remaining % 60))
                     .font(.system(.subheadline, design: .monospaced))
                     .fontWeight(.medium)
-                    .foregroundStyle(.red)
+                    .foregroundStyle(ColorToken.Red)
             }
             Spacer()
         }
-        .padding(.vertical, 8)
-        .padding(.horizontal, 12)
-        .background(Color.accentBackground(for: colorScheme))
-        .clipShape(RoundedRectangle(cornerRadius: 8))
+        .padding(.vertical, DimensToken.SIZE_8)
+        .padding(.horizontal, DimensToken.SIZE_12)
+        .background(
+            RoundedRectangle(cornerRadius: OX.Radius.M)
+                .fill(ColorToken.Red10)
+                .overlay(
+                    RoundedRectangle(cornerRadius: OX.Radius.M)
+                        .strokeBorder(
+                            ColorToken.Red.opacity(FloatToken.PERCENT_30),
+                            lineWidth: OX.Border.WIDTH_1
+                        )
+                )
+        )
     }
 }
 
@@ -344,10 +414,10 @@ private struct IqamahFinishedRow: View {
     let onDismiss: () -> Void
 
     var body: some View {
-        HStack {
+        HStack(spacing: DimensToken.SIZE_10) {
             Image(systemName: "checkmark.circle.fill")
                 .font(.title3)
-                .foregroundStyle(.green)
+                .foregroundStyle(ColorToken.Green)
             Text(String(localized: "Waktu iqamah \(prayerName)!"))
                 .font(.subheadline)
                 .fontWeight(.semibold)
@@ -360,10 +430,19 @@ private struct IqamahFinishedRow: View {
             }
             .buttonStyle(.plain)
         }
-        .padding(.vertical, 8)
-        .padding(.horizontal, 12)
-        .background(Color.green.opacity(0.1))
-        .clipShape(RoundedRectangle(cornerRadius: 8))
+        .padding(.vertical, DimensToken.SIZE_8)
+        .padding(.horizontal, DimensToken.SIZE_12)
+        .background(
+            RoundedRectangle(cornerRadius: OX.Radius.M)
+                .fill(ColorToken.Green10)
+                .overlay(
+                    RoundedRectangle(cornerRadius: OX.Radius.M)
+                        .strokeBorder(
+                            ColorToken.Green.opacity(FloatToken.PERCENT_30),
+                            lineWidth: OX.Border.WIDTH_1
+                        )
+                )
+        )
     }
 }
 
@@ -385,33 +464,47 @@ private struct DesktopPrayerRow: View {
     }
 
     var body: some View {
-        HStack(spacing: 16) {
+        HStack(spacing: OX.Spacing.L) {
             Image(systemName: prayer.name.icon)
                 .font(.title3)
-                .frame(width: 30)
+                .frame(width: DimensToken.SIZE_30)
                 .foregroundStyle(rowColor)
 
-            VStack(alignment: .leading, spacing: 2) {
-                HStack(spacing: 6) {
+            VStack(
+                alignment: .leading,
+                spacing: DimensToken.SIZE_2
+            ) {
+                HStack(spacing: DimensToken.SIZE_6) {
                     Text(prayer.name.localizedName(for: appState.settings.appLanguage))
                         .font(.body)
                         .fontWeight(isHighlighted ? .semibold : .regular)
 
                     if isCurrent {
-                        Text(appState.settings.appLanguage == .id ? "(Aktif)" : (appState.settings.appLanguage == .en ? "(Active)" : "(نشط)"))
+                        Text(appState.settings.appLanguage == .id ? "Aktif" : (appState.settings.appLanguage == .en ? "Active" : "نشط"))
                             .font(.caption2)
-                            .fontWeight(.semibold)
-                            .foregroundStyle(accentColor)
+                            .fontWeight(.bold)
+                            .foregroundStyle(Color.white)
+                            .padding(.horizontal, DimensToken.SIZE_6)
+                            .padding(.vertical, DimensToken.SIZE_2)
+                            .background(Capsule().fill(ColorToken.Green))
+                    } else if prayer.isNext {
+                        Text(appState.settings.appLanguage == .id ? "Berikutnya" : (appState.settings.appLanguage == .en ? "Next" : "التالية"))
+                            .font(.caption2)
+                            .fontWeight(.bold)
+                            .foregroundStyle(Color.white)
+                            .padding(.horizontal, DimensToken.SIZE_6)
+                            .padding(.vertical, DimensToken.SIZE_2)
+                            .background(Capsule().fill(ColorToken.Blue))
                     }
                 }
 
                 Group {
                     if isCurrent {
                         Text(appState.settings.appLanguage == .id ? "Waktu sholat saat ini" : (appState.settings.appLanguage == .en ? "Current prayer time" : "وقت الصلاة الحالي"))
-                            .foregroundStyle(accentColor)
+                            .foregroundStyle(ColorToken.Green)
                     } else if prayer.isNext {
                         Text(appState.settings.appLanguage == .id ? "Waktu berikutnya" : (appState.settings.appLanguage == .en ? "Next prayer" : "الصلاة التالية"))
-                            .foregroundStyle(accentColor)
+                            .foregroundStyle(ColorToken.Blue)
                     } else if prayer.isPast {
                         Text(appState.settings.appLanguage == .id ? "Sudah lewat" : (appState.settings.appLanguage == .en ? "Passed" : "انتهى"))
                     }
@@ -428,21 +521,50 @@ private struct DesktopPrayerRow: View {
                 .foregroundStyle(rowColor)
 
             Circle()
-                .fill(accentColor)
-                .frame(width: 8, height: 8)
-                .opacity(isHighlighted ? 1 : 0)
+                .fill(statusIndicatorColor)
+                .frame(
+                    width: DimensToken.SIZE_8,
+                    height: DimensToken.SIZE_8
+                )
+                .opacity(isHighlighted ? FloatToken.PERCENT_100 : FloatToken.PERCENT_0)
         }
-        .padding(.vertical, 8)
-        .padding(.horizontal, 12)
-        .background(isHighlighted ? Color.accentBackground(for: colorScheme) : Color.clear)
-        .clipShape(RoundedRectangle(cornerRadius: 8))
-        .opacity(prayer.isPast && !isCurrent ? 0.65 : 1.0)
+        .padding(.vertical, DimensToken.SIZE_10)
+        .padding(.horizontal, DimensToken.SIZE_14)
+        .background(
+            isCurrent
+                ? RoundedRectangle(cornerRadius: OX.Radius.M)
+                    .fill(OX.Color.prayerActiveContainer(for: colorScheme))
+                    .overlay(
+                        RoundedRectangle(cornerRadius: OX.Radius.M)
+                            .strokeBorder(
+                                ColorToken.Green.opacity(FloatToken.PERCENT_40),
+                                lineWidth: OX.Border.WIDTH_1
+                            )
+                    )
+                : (prayer.isNext
+                    ? RoundedRectangle(cornerRadius: OX.Radius.M)
+                        .fill(OX.Color.nextPrayerContainer(for: colorScheme))
+                        .overlay(
+                            RoundedRectangle(cornerRadius: OX.Radius.M)
+                                .strokeBorder(
+                                    ColorToken.Blue.opacity(FloatToken.PERCENT_40),
+                                    lineWidth: OX.Border.WIDTH_1
+                                )
+                        )
+                    : nil)
+        )
+        .opacity(prayer.isPast && !isCurrent ? FloatToken.PERCENT_65 : FloatToken.PERCENT_100)
     }
 
-    private var accentColor: Color { .accent(for: colorScheme) }
+    private var statusIndicatorColor: Color {
+        if isCurrent { return ColorToken.Green }
+        if prayer.isNext { return ColorToken.Blue }
+        return .clear
+    }
 
     private var rowColor: Color {
-        if isHighlighted { return accentColor }
+        if isCurrent { return ColorToken.Green }
+        if prayer.isNext { return ColorToken.Blue }
         if prayer.isPast { return .secondary }
         return .primary
     }
@@ -471,40 +593,76 @@ private struct AboutView: View {
     }
 
     var body: some View {
-        VStack(spacing: 20) {
+        VStack(spacing: DimensToken.SIZE_20) {
             Spacer()
 
-            Image(systemName: "moon.stars.fill")
-                .font(.system(size: 64))
-                .foregroundStyle(Color.accent(for: colorScheme))
+            Image(nsImage: NSApp.applicationIconImage)
+                .resizable()
+                .aspectRatio(contentMode: .fit)
+                .frame(
+                    width: DimensToken.SIZE_80,
+                    height: DimensToken.SIZE_80
+                )
+                .clipShape(RoundedRectangle(cornerRadius: OX.Radius.XL))
+                .shadow(
+                    color: Color.black.opacity(FloatToken.PERCENT_15),
+                    radius: DimensToken.SIZE_8,
+                    x: DimensToken.SIZE_0,
+                    y: DimensToken.SIZE_4
+                )
 
-            VStack(spacing: 6) {
+            VStack(spacing: DimensToken.SIZE_6) {
                 Text("KawalPrayer")
                     .font(.largeTitle)
                     .fontWeight(.bold)
+
                 Text(appState.settings.appLanguage == .id ? "Versi \(appVersion)" : (appState.settings.appLanguage == .en ? "Version \(appVersion)" : "الإصدار \(appVersion)"))
                     .font(.subheadline)
                     .foregroundStyle(.secondary)
+
+                Text("by Outivox")
+                    .font(.caption)
+                    .fontWeight(.semibold)
+                    .foregroundStyle(ColorToken.Green)
+                    .padding(.horizontal, DimensToken.SIZE_8)
+                    .padding(.vertical, DimensToken.SIZE_2)
+                    .background(
+                        Capsule()
+                            .fill(ColorToken.Green10)
+                            .overlay(
+                                Capsule()
+                                    .strokeBorder(
+                                        ColorToken.Green.opacity(FloatToken.PERCENT_30),
+                                        lineWidth: OX.Border.WIDTH_1
+                                    )
+                            )
+                    )
             }
+
+            GoogleColorDivider(thickness: DimensToken.SIZE_3)
+                .frame(width: DimensToken.SIZE_80 * 2)
 
             Text(aboutDescription)
                 .font(.body)
                 .foregroundStyle(.secondary)
                 .multilineTextAlignment(.center)
-                .padding(.horizontal, 40)
+                .padding(.horizontal, DimensToken.SIZE_40)
 
             Divider()
-                .padding(.horizontal, 80)
+                .padding(.horizontal, DimensToken.SIZE_80)
 
-            VStack(spacing: 8) {
-                Text(appState.settings.appLanguage == .id ? "Dibuat dengan SwiftUI & Swift 6" : (appState.settings.appLanguage == .en ? "Built with SwiftUI & Swift 6" : "تم التطوير باستخدام SwiftUI و Swift 6"))
+            VStack(spacing: DimensToken.SIZE_8) {
+                Text(appState.settings.appLanguage == .id ? "Dibuat dengan SwiftUI & Swift 6 • Outivox Design Token System" : (appState.settings.appLanguage == .en ? "Built with SwiftUI & Swift 6 • Outivox Design Token System" : "تم التطوير باستخدام SwiftUI و Swift 6 • نظام Outivox للتصميم"))
                     .font(.caption)
                     .foregroundStyle(.tertiary)
             }
 
             Spacer()
         }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .frame(
+            maxWidth: .infinity,
+            maxHeight: .infinity
+        )
     }
 }
 
@@ -519,16 +677,22 @@ private struct SidebarNavRow: View {
     let action: () -> Void
 
     var body: some View {
-        Label(item.localizedName(for: appLanguage), systemImage: item.icon)
-            .frame(maxWidth: .infinity, alignment: .leading)
-            .padding(.vertical, 6)
-            .padding(.horizontal, 8)
-            .foregroundStyle(isSelected ? .white : Color.primary.opacity(0.85))
-            .background(
-                RoundedRectangle(cornerRadius: 6)
-                    .fill(isSelected ? Color.accent(for: colorScheme) : .clear)
-            )
-            .contentShape(RoundedRectangle(cornerRadius: 6))
-            .onTapGesture(perform: action)
+        Label(
+            item.localizedName(for: appLanguage),
+            systemImage: item.icon
+        )
+        .frame(
+            maxWidth: .infinity,
+            alignment: .leading
+        )
+        .padding(.vertical, DimensToken.SIZE_6)
+        .padding(.horizontal, DimensToken.SIZE_8)
+        .foregroundStyle(isSelected ? Color.white : Color.primary.opacity(FloatToken.PERCENT_85))
+        .background(
+            RoundedRectangle(cornerRadius: OX.Radius.S)
+                .fill(isSelected ? ColorToken.Green : Color.clear)
+        )
+        .contentShape(RoundedRectangle(cornerRadius: OX.Radius.S))
+        .onTapGesture(perform: action)
     }
 }
