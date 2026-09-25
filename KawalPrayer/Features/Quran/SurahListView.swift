@@ -137,7 +137,7 @@ private struct SurahRow: View {
             VStack(alignment: .trailing, spacing: 2) {
                 Text(surah.arabicName)
                     .font(.body)
-                Text(String(localized: "\(surah.ayahCount) ayat"))
+                Text(appLanguage == .id ? "\(surah.ayahCount) ayat" : (appLanguage == .en ? "\(surah.ayahCount) verses" : "\(surah.ayahCount) آية"))
                     .font(.caption2)
                     .foregroundStyle(isSelected ? .white.opacity(0.7) : .secondary)
             }

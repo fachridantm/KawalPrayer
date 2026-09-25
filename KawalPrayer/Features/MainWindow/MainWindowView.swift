@@ -17,13 +17,37 @@ enum MainNavItem: String, CaseIterable, Identifiable {
         }
     }
 
-    var localizedName: String {
+    func localizedName(for lang: AppLanguage) -> String {
         switch self {
-        case .schedule: String(localized: "Jadwal Sholat")
-        case .quran:    String(localized: "Al-Quran")
-        case .settings: String(localized: "Pengaturan")
-        case .about:    String(localized: "Tentang")
+        case .schedule:
+            switch lang {
+            case .id: "Jadwal Sholat"
+            case .en: "Prayer Schedule"
+            case .ar: "جدول الصلاة"
+            }
+        case .quran:
+            switch lang {
+            case .id: "Al-Quran"
+            case .en: "Quran"
+            case .ar: "القرآن الكريم"
+            }
+        case .settings:
+            switch lang {
+            case .id: "Pengaturan"
+            case .en: "Settings"
+            case .ar: "الإعدادات"
+            }
+        case .about:
+            switch lang {
+            case .id: "Tentang"
+            case .en: "About"
+            case .ar: "حول"
+            }
         }
+    }
+
+    var localizedName: String {
+        localizedName(for: .id)
     }
 }
 
@@ -43,6 +67,7 @@ struct MainWindowView: View {
         }
         .navigationSplitViewStyle(.balanced)
         .frame(minWidth: 680, minHeight: 480)
+        .environment(\.locale, appState.settings.appLanguage.locale)
     }
 
     // MARK: - Sidebar
@@ -76,7 +101,8 @@ struct MainWindowView: View {
                     SidebarNavRow(
                         item: item,
                         isSelected: selection == item,
-                        colorScheme: colorScheme
+                        colorScheme: colorScheme,
+                        appLanguage: appState.settings.appLanguage
                     ) {
                         selection = item
                     }
@@ -136,7 +162,7 @@ struct MainWindowView: View {
                 .opacity(selection == .about ? 1 : 0)
                 .allowsHitTesting(selection == .about)
         }
-        .navigationTitle(selection.localizedName)
+        .navigationTitle(selection.localizedName(for: appState.settings.appLanguage))
     }
 }
 
@@ -149,14 +175,16 @@ private struct ScheduleDetailView: View {
 
     @State private var islamicDate: String = ""
     @State private var gregorianDate: String = ""
-    @State private var cachedDay: Int = 0
 
     private func refreshDateStrings() {
-        let today = Calendar.current.component(.day, from: Date())
-        guard today != cachedDay else { return }
-        cachedDay = today
-        islamicDate = IslamicCalendarHelper.islamicDateString(offsetDays: appState.settings.hijriOffsetDays)
-        gregorianDate = Date().formatted(.dateTime.weekday(.wide).day().month(.wide).year())
+        islamicDate = IslamicCalendarHelper.islamicDateString(
+            offsetDays: appState.settings.hijriOffsetDays,
+            lang: appState.settings.appLanguage
+        )
+        let locale = appState.settings.appLanguage.locale
+        gregorianDate = Date().formatted(
+            .dateTime.locale(locale).weekday(.wide).day().month(.wide).year()
+        )
     }
 
     private var fardhuPrayers: [PrayerTime] {
@@ -271,6 +299,8 @@ private struct ScheduleDetailView: View {
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .onAppear { refreshDateStrings() }
         .onChange(of: appState.prayerTimes) { refreshDateStrings() }
+        .onChange(of: appState.settings.appLanguage) { refreshDateStrings() }
+        .onChange(of: appState.settings.hijriOffsetDays) { refreshDateStrings() }
     }
 }
 
@@ -363,12 +393,12 @@ private struct DesktopPrayerRow: View {
 
             VStack(alignment: .leading, spacing: 2) {
                 HStack(spacing: 6) {
-                    Text(prayer.name.localizedName)
+                    Text(prayer.name.localizedName(for: appState.settings.appLanguage))
                         .font(.body)
                         .fontWeight(isHighlighted ? .semibold : .regular)
 
                     if isCurrent {
-                        Text(String(localized: "(Aktif)"))
+                        Text(appState.settings.appLanguage == .id ? "(Aktif)" : (appState.settings.appLanguage == .en ? "(Active)" : "(نشط)"))
                             .font(.caption2)
                             .fontWeight(.semibold)
                             .foregroundStyle(accentColor)
@@ -377,13 +407,13 @@ private struct DesktopPrayerRow: View {
 
                 Group {
                     if isCurrent {
-                        Text(String(localized: "Waktu sholat saat ini"))
+                        Text(appState.settings.appLanguage == .id ? "Waktu sholat saat ini" : (appState.settings.appLanguage == .en ? "Current prayer time" : "وقت الصلاة الحالي"))
                             .foregroundStyle(accentColor)
                     } else if prayer.isNext {
-                        Text(String(localized: "Waktu berikutnya"))
+                        Text(appState.settings.appLanguage == .id ? "Waktu berikutnya" : (appState.settings.appLanguage == .en ? "Next prayer" : "الصلاة التالية"))
                             .foregroundStyle(accentColor)
                     } else if prayer.isPast {
-                        Text(String(localized: "Sudah lewat"))
+                        Text(appState.settings.appLanguage == .id ? "Sudah lewat" : (appState.settings.appLanguage == .en ? "Passed" : "انتهى"))
                     }
                 }
                 .font(.caption)
@@ -422,10 +452,22 @@ private struct DesktopPrayerRow: View {
 
 private struct AboutView: View {
 
+    @Environment(AppState.self) private var appState
     @Environment(\.colorScheme) private var colorScheme
 
     private var appVersion: String {
         Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "1.0.0"
+    }
+
+    private var aboutDescription: String {
+        switch appState.settings.appLanguage {
+        case .id:
+            return "Aplikasi pengingat waktu sholat dan adzan menu bar untuk macOS.\nBekerja senyap di background tanpa mengganggu dock.\nDilengkapi Al-Quran offline, arah kiblat, doa setelah adzan, dan pengaman waktu Kemenag RI."
+        case .en:
+            return "Menu bar prayer times & adzan app for macOS.\nRuns quietly in the background without cluttering the Dock.\nEquipped with offline Quran, Qibla direction, Dua after Adzan, and safety margin adjustments."
+        case .ar:
+            return "تطبيق تنبيه مواقيت الصلاة والأذان لشريط القوائم على نظام macOS.\nيعمل في الخلفية بدون الظهور في Dock.\nمزوّد بالقرآن الكريم بدون إنترنت، واتجاه القبلة، والدعاء بعد الأذان، وضوابط مواقيت الصلاة."
+        }
     }
 
     var body: some View {
@@ -440,12 +482,12 @@ private struct AboutView: View {
                 Text("KawalPrayer")
                     .font(.largeTitle)
                     .fontWeight(.bold)
-                Text(String(localized: "Versi \(appVersion)"))
+                Text(appState.settings.appLanguage == .id ? "Versi \(appVersion)" : (appState.settings.appLanguage == .en ? "Version \(appVersion)" : "الإصدار \(appVersion)"))
                     .font(.subheadline)
                     .foregroundStyle(.secondary)
             }
 
-            Text(String(localized: "Aplikasi pengingat waktu sholat dan adzan menu bar untuk macOS.\nBekerja senyap di background tanpa mengganggu dock.\nDilengkapi Al-Quran offline, arah kiblat, doa setelah adzan, dan pengaman waktu Kemenag RI."))
+            Text(aboutDescription)
                 .font(.body)
                 .foregroundStyle(.secondary)
                 .multilineTextAlignment(.center)
@@ -455,7 +497,7 @@ private struct AboutView: View {
                 .padding(.horizontal, 80)
 
             VStack(spacing: 8) {
-                Text(String(localized: "Dibuat dengan SwiftUI & Swift 6"))
+                Text(appState.settings.appLanguage == .id ? "Dibuat dengan SwiftUI & Swift 6" : (appState.settings.appLanguage == .en ? "Built with SwiftUI & Swift 6" : "تم التطوير باستخدام SwiftUI و Swift 6"))
                     .font(.caption)
                     .foregroundStyle(.tertiary)
             }
@@ -473,10 +515,11 @@ private struct SidebarNavRow: View {
     let item: MainNavItem
     let isSelected: Bool
     let colorScheme: ColorScheme
+    let appLanguage: AppLanguage
     let action: () -> Void
 
     var body: some View {
-        Label(item.localizedName, systemImage: item.icon)
+        Label(item.localizedName(for: appLanguage), systemImage: item.icon)
             .frame(maxWidth: .infinity, alignment: .leading)
             .padding(.vertical, 6)
             .padding(.horizontal, 8)

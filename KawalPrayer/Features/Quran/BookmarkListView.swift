@@ -33,7 +33,7 @@ struct BookmarkListView: View {
                 Text(String(localized: "Ayat Tersimpan"))
                     .font(.title2)
                     .fontWeight(.semibold)
-                Text(String(localized: "\(cachedItems.count) ayat"))
+                Text(appState.settings.appLanguage == .id ? "\(cachedItems.count) ayat" : (appState.settings.appLanguage == .en ? "\(cachedItems.count) verses" : "\(cachedItems.count) آية"))
                     .font(.caption)
                     .foregroundStyle(.secondary)
             }

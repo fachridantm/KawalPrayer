@@ -13,7 +13,7 @@ struct QiblaCompassView: View {
                     .frame(width: 52, height: 52)
 
                 // Compass Rose markers
-                Text("U")
+                Text(appState.settings.appLanguage == .id ? "U" : (appState.settings.appLanguage == .en ? "N" : "ش"))
                     .font(.system(size: 8, weight: .bold))
                     .foregroundStyle(.secondary)
                     .offset(y: -20)
@@ -26,16 +26,20 @@ struct QiblaCompassView: View {
             }
 
             VStack(alignment: .leading, spacing: 3) {
-                Text(String(localized: "Arah Kiblat"))
+                Text(appState.settings.appLanguage == .id ? "Arah Kiblat" : (appState.settings.appLanguage == .en ? "Qibla Direction" : "اتجاه القبلة"))
                     .font(.caption)
                     .foregroundStyle(.secondary)
 
-                Text(appState.qibla.formattedBearing)
+                Text(appState.qibla.formattedBearing(for: appState.settings.appLanguage))
                     .font(.headline)
                     .fontWeight(.bold)
                     .foregroundStyle(Color.accent(for: colorScheme))
 
-                Text(String(localized: "Koordinat: \(String(format: "%.4f", appState.location.latitude)), \(String(format: "%.4f", appState.location.longitude))"))
+                Text(appState.settings.appLanguage == .id
+                    ? "Koordinat: \(String(format: "%.4f", appState.location.latitude)), \(String(format: "%.4f", appState.location.longitude))"
+                    : (appState.settings.appLanguage == .en
+                        ? "Coordinates: \(String(format: "%.4f", appState.location.latitude)), \(String(format: "%.4f", appState.location.longitude))"
+                        : "الإحداثيات: \(String(format: "%.4f", appState.location.latitude))، \(String(format: "%.4f", appState.location.longitude))"))
                     .font(.caption2)
                     .foregroundStyle(.secondary)
             }

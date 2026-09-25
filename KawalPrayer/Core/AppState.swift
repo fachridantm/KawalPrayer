@@ -192,8 +192,9 @@ final class AppState {
                             withIdentifiers: ["prayer_\(prayer.name.rawValue)"]
                         )
                         NotificationService.shared.sendAdzanNotification(
-                            for: prayer.name.localizedName,
-                            timeString: prayer.timeString
+                            for: prayer.name.localizedName(for: self.settings.appLanguage),
+                            timeString: prayer.timeString,
+                            lang: self.settings.appLanguage
                         )
                     }
                 }
@@ -274,7 +275,7 @@ final class AppState {
             iqamahState = .finished(prayerName: iqamahPrayerName)
             iqamahEndTime = nil
             dismissDoaBanner()
-            NotificationService.shared.sendIqamahNotification(for: iqamahPrayerName)
+            NotificationService.shared.sendIqamahNotification(for: iqamahPrayerName, lang: settings.appLanguage)
             updateMenuBarDisplayText()
             return
         }
@@ -326,10 +327,11 @@ final class AppState {
         let m = (Int(diff) % 3600) / 60
         let s = Int(diff) % 60
 
-        nextPrayerName  = next.name.localizedName
+        nextPrayerName  = next.name.localizedName(for: settings.appLanguage)
         nextPrayerShortTime = next.shortTimeString
+        let hourUnit = settings.appLanguage == .id ? "j" : "h"
         countdownString = h > 0
-            ? String(format: "%dj %02dm", h, m)
+            ? String(format: "%d%@ %02dm", h, hourUnit, m)
             : String(format: "%02dm %02ds", m, s)
 
         updateMenuBarDisplayText()
@@ -344,7 +346,8 @@ final class AppState {
         if case .countdown(let prayerName, let remaining) = iqamahState {
             let m = remaining / 60
             let s = remaining % 60
-            menuBarDisplayText = String(localized: "Iqamah \(prayerName) • \(String(format: "%02d:%02d", m, s))")
+            let iqamahLabel = settings.appLanguage == .ar ? "إقامة" : "Iqamah"
+            menuBarDisplayText = "\(iqamahLabel) \(prayerName) • \(String(format: "%02d:%02d", m, s))"
         } else if !nextPrayerName.isEmpty {
             switch settings.menuBarDisplayMode {
             case .iconNameCountdown:

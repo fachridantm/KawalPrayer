@@ -35,6 +35,7 @@ struct MenuBarView: View {
         }
         .frame(width: 360)
         .background(Color(NSColor.windowBackgroundColor))
+        .environment(\.locale, appState.settings.appLanguage.locale)
     }
 
     // MARK: - Header
@@ -144,7 +145,7 @@ struct MenuBarView: View {
                 Text(String(localized: "Hijriah"))
                     .font(.caption2)
                     .foregroundStyle(.secondary)
-                Text(IslamicCalendarHelper.islamicDateString(offsetDays: appState.settings.hijriOffsetDays))
+                Text(IslamicCalendarHelper.islamicDateString(offsetDays: appState.settings.hijriOffsetDays, lang: appState.settings.appLanguage))
                     .font(.caption)
                     .fontWeight(.semibold)
             }
@@ -159,7 +160,7 @@ struct MenuBarView: View {
                     Image(systemName: "safari.fill")
                         .font(.caption2)
                         .foregroundStyle(Color.accent(for: colorScheme))
-                    Text(appState.qibla.formattedBearing)
+                    Text(appState.qibla.formattedBearing(for: appState.settings.appLanguage))
                         .font(.caption)
                         .fontWeight(.semibold)
                 }
@@ -171,7 +172,7 @@ struct MenuBarView: View {
                 Text(String(localized: "Masehi"))
                     .font(.caption2)
                     .foregroundStyle(.secondary)
-                Text(Date().formatted(.dateTime.weekday(.abbreviated).day().month(.abbreviated).year()))
+                Text(Date().formatted(.dateTime.locale(appState.settings.appLanguage.locale).weekday(.abbreviated).day().month(.abbreviated).year()))
                     .font(.caption)
                     .fontWeight(.semibold)
             }

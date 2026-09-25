@@ -2,10 +2,21 @@ import Foundation
 
 struct QiblaDirection: Equatable {
     let degrees: Double
-    let cardinalDirection: String
+    let cardinalDirectionId: String
+    let cardinalDirectionEn: String
+
+    var cardinalDirection: String { cardinalDirectionId }
+
+    func cardinalDirection(for lang: AppLanguage) -> String {
+        lang == .id ? cardinalDirectionId : cardinalDirectionEn
+    }
+
+    func formattedBearing(for lang: AppLanguage = .id) -> String {
+        "\(Int(degrees.rounded()))° \(cardinalDirection(for: lang))"
+    }
 
     var formattedBearing: String {
-        "\(Int(degrees.rounded()))° \(cardinalDirection)"
+        formattedBearing(for: .id)
     }
 }
 
@@ -30,18 +41,24 @@ enum QiblaCalculator {
             azimuth += 360.0
         }
 
-        let cardinal = cardinalDirection(from: azimuth)
-        return QiblaDirection(degrees: azimuth, cardinalDirection: cardinal)
-    }
-
-    private static func cardinalDirection(from degrees: Double) -> String {
-        let directions = [
+        let idDirections = [
             "U", "UTL", "TL", "TTL",
             "T", "TTG", "TG", "STG",
             "S", "SBD", "BD", "BBD",
             "B", "BLB", "BL", "UBL"
         ]
-        let index = Int((degrees + 11.25) / 22.5) % 16
-        return directions[index]
+        let enDirections = [
+            "N", "NNE", "NE", "ENE",
+            "E", "ESE", "SE", "SSE",
+            "S", "SSW", "SW", "WSW",
+            "W", "WNW", "NW", "NNW"
+        ]
+
+        let index = Int((azimuth + 11.25) / 22.5) % 16
+        return QiblaDirection(
+            degrees: azimuth,
+            cardinalDirectionId: idDirections[index],
+            cardinalDirectionEn: enDirections[index]
+        )
     }
 }

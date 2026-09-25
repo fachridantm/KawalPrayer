@@ -27,6 +27,7 @@ final class WindowManager: NSObject, NSWindowDelegate {
 
         let contentView = MainWindowView()
             .environment(appState)
+            .environment(\.locale, appState.settings.appLanguage.locale)
 
         let window = NSWindow(
             contentRect: NSRect(x: 0, y: 0, width: 740, height: 540),

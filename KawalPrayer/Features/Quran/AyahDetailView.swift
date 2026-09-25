@@ -31,7 +31,9 @@ struct AyahDetailView: View {
                 Text(surah.name)
                     .font(.title2)
                     .fontWeight(.semibold)
-                Text("\(localizedMeaning) — \(surah.ayahCount) \(String(localized: "Ayat")) — \(surah.revelationType)")
+                let versesLabel = appState.settings.appLanguage == .id ? "Ayat" : (appState.settings.appLanguage == .en ? "Verses" : "آيات")
+                let revType = appState.settings.appLanguage == .en ? (surah.revelationType == "Makkiyah" ? "Meccan" : "Medinan") : surah.revelationType
+                Text("\(localizedMeaning) — \(surah.ayahCount) \(versesLabel) — \(revType)")
                     .font(.caption)
                     .foregroundStyle(.secondary)
 

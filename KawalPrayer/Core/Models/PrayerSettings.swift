@@ -26,10 +26,29 @@ enum AppTheme: String, Codable, CaseIterable {
     }
 
     var localizedName: String {
+        localizedName(for: .id)
+    }
+
+    func localizedName(for lang: AppLanguage) -> String {
         switch self {
-        case .system: String(localized: "Sistem")
-        case .light:  String(localized: "Terang")
-        case .dark:   String(localized: "Gelap")
+        case .system:
+            switch lang {
+            case .id: "Sistem"
+            case .en: "System"
+            case .ar: "النظام"
+            }
+        case .light:
+            switch lang {
+            case .id: "Terang"
+            case .en: "Light"
+            case .ar: "فاتح"
+            }
+        case .dark:
+            switch lang {
+            case .id: "Gelap"
+            case .en: "Dark"
+            case .ar: "داكن"
+            }
         }
     }
 }
@@ -44,27 +63,61 @@ enum MenuBarDisplayMode: String, Codable, CaseIterable, Identifiable {
     var id: String { rawValue }
 
     var localizedName: String {
+        localizedName(for: .id)
+    }
+
+    func localizedName(for lang: AppLanguage) -> String {
         switch self {
         case .iconNameCountdown:
-            return String(localized: "Icon + Nama + Hitung Mundur (Default)")
+            switch lang {
+            case .id: "Icon + Nama + Hitung Mundur (Default)"
+            case .en: "Icon + Name + Countdown (Default)"
+            case .ar: "أيقونة + الاسم + العد التنازلي (افتراضي)"
+            }
         case .iconCountdown:
-            return String(localized: "Icon + Hitung Mundur")
+            switch lang {
+            case .id: "Icon + Hitung Mundur"
+            case .en: "Icon + Countdown"
+            case .ar: "أيقونة + العد التنازلي"
+            }
         case .iconName:
-            return String(localized: "Icon + Nama Sholat")
+            switch lang {
+            case .id: "Icon + Nama Sholat"
+            case .en: "Icon + Prayer Name"
+            case .ar: "أيقونة + اسم الصلاة"
+            }
         case .iconTime:
-            return String(localized: "Icon + Waktu Sholat")
+            switch lang {
+            case .id: "Icon + Waktu Sholat"
+            case .en: "Icon + Prayer Time"
+            case .ar: "أيقونة + وقت الصلاة"
+            }
         case .iconOnly:
-            return String(localized: "Hanya Icon")
+            switch lang {
+            case .id: "Hanya Icon"
+            case .en: "Icon Only"
+            case .ar: "أيقونة فقط"
+            }
         }
     }
 
     var samplePreview: String {
+        samplePreview(for: .id)
+    }
+
+    func samplePreview(for lang: AppLanguage) -> String {
+        let prayer = lang == .id ? "Subuh" : (lang == .en ? "Fajr" : "الفجر")
         switch self {
-        case .iconNameCountdown: return "Subuh • 00:45"
+        case .iconNameCountdown: return "\(prayer) • 00:45"
         case .iconCountdown:     return "00:45"
-        case .iconName:          return "Subuh"
-        case .iconTime:          return "Subuh 04:35"
-        case .iconOnly:          return "(Hanya Icon)"
+        case .iconName:          return prayer
+        case .iconTime:          return "\(prayer) 04:35"
+        case .iconOnly:
+            switch lang {
+            case .id: return "(Hanya Icon)"
+            case .en: return "(Icon Only)"
+            case .ar: return "(أيقونة فقط)"
+            }
         }
     }
 }
@@ -77,13 +130,29 @@ enum MenuBarIconSource: String, Codable, CaseIterable, Identifiable {
     var id: String { rawValue }
 
     var localizedName: String {
+        localizedName(for: .id)
+    }
+
+    func localizedName(for lang: AppLanguage) -> String {
         switch self {
         case .currentPrayer:
-            return String(localized: "Ikon Sholat Saat Ini / Aktif (Default)")
+            switch lang {
+            case .id: "Ikon Sholat Saat Ini / Aktif (Default)"
+            case .en: "Current / Active Prayer Icon (Default)"
+            case .ar: "أيقونة الصلاة الحالية / النشطة (افتراضي)"
+            }
         case .nextPrayer:
-            return String(localized: "Ikon Sholat Berikutnya (Target)")
+            switch lang {
+            case .id: "Ikon Sholat Berikutnya (Target)"
+            case .en: "Next Prayer Icon (Target)"
+            case .ar: "أيقونة الصلاة القادمة (الهدف)"
+            }
         case .staticMoon:
-            return String(localized: "Tetap Ikon Bulan Bintang")
+            switch lang {
+            case .id: "Tetap Ikon Bulan Bintang"
+            case .en: "Static Moon & Stars Icon"
+            case .ar: "أيقونة الهلال والنجوم الثابتة"
+            }
         }
     }
 }
@@ -118,12 +187,21 @@ enum CalculationMethod: String, Codable, CaseIterable {
     var ishaInterval: Double { 90.0 }
 
     var localizedName: String {
+        localizedName(for: .id)
+    }
+
+    func localizedName(for lang: AppLanguage) -> String {
         switch self {
-        case .kemenagRI: String(localized: "Kemenag RI")
-        case .mwl:       String(localized: "Muslim World League")
-        case .isna:      String(localized: "ISNA")
-        case .ummAlQura: String(localized: "Umm al-Qura")
-        case .egypt:     String(localized: "Egyptian")
+        case .kemenagRI: "Kemenag RI"
+        case .mwl:       "Muslim World League"
+        case .isna:      "ISNA"
+        case .ummAlQura: "Umm al-Qura"
+        case .egypt:
+            switch lang {
+            case .id: "Egyptian (Mesir)"
+            case .en: "Egyptian General Authority"
+            case .ar: "الهيئة المصرية العامة للمساحة"
+            }
         }
     }
 }
@@ -142,6 +220,18 @@ enum AppLanguage: String, Codable, CaseIterable {
     }
 
     var localeIdentifier: String { rawValue }
+
+    var locale: Locale {
+        Locale(identifier: rawValue)
+    }
+
+    var bundle: Bundle {
+        if let path = Bundle.main.path(forResource: rawValue, ofType: "lproj"),
+           let bundle = Bundle(path: path) {
+            return bundle
+        }
+        return Bundle.main
+    }
 
     static var systemDefault: AppLanguage {
         guard let preferred = Locale.preferredLanguages.first else { return .id }
@@ -178,6 +268,10 @@ struct PrayerSettings: Codable, Equatable {
     var quranLastSurahId        : Int?                    = nil
     var quranArabicFontSize     : Double                  = 26
     var quranBookmarks          : [String]                = []
+
+    var locale: Locale {
+        appLanguage.locale
+    }
 
     init() {}
 

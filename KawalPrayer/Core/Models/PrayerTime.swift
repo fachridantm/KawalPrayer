@@ -33,6 +33,38 @@ enum PrayerName: String, CaseIterable, Codable, Identifiable {
         case .isha:    String(localized: "Isya")
         }
     }
+
+    func localizedName(for lang: AppLanguage) -> String {
+        switch lang {
+        case .id:
+            switch self {
+            case .fajr:    "Subuh"
+            case .sunrise: "Syuruq"
+            case .dhuhr:   "Dzuhur"
+            case .asr:     "Ashar"
+            case .maghrib: "Maghrib"
+            case .isha:    "Isya"
+            }
+        case .en:
+            switch self {
+            case .fajr:    "Fajr"
+            case .sunrise: "Sunrise"
+            case .dhuhr:   "Dhuhr"
+            case .asr:     "Asr"
+            case .maghrib: "Maghrib"
+            case .isha:    "Isha"
+            }
+        case .ar:
+            switch self {
+            case .fajr:    "الفجر"
+            case .sunrise: "الشروق"
+            case .dhuhr:   "الظهر"
+            case .asr:     "العصر"
+            case .maghrib: "المغرب"
+            case .isha:    "العشاء"
+            }
+        }
+    }
 }
 
 struct PrayerTime: Identifiable, Equatable {

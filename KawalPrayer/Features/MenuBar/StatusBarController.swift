@@ -47,6 +47,7 @@ final class StatusBarController: NSObject {
 
         let rootView = MenuBarView()
             .environment(appState)
+            .environment(\.locale, appState.settings.appLanguage.locale)
 
         popover.contentViewController = NSHostingController(rootView: rootView)
     }

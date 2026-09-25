@@ -24,19 +24,19 @@ struct SettingsView: View {
             Section(String(localized: "Tampilan Menu Bar")) {
                 Picker(String(localized: "Format Teks Menu Bar"), selection: $settings.menuBarDisplayMode) {
                     ForEach(MenuBarDisplayMode.allCases) { mode in
-                        Text("\(mode.localizedName) (\(mode.samplePreview))").tag(mode)
+                        Text("\(mode.localizedName(for: settings.appLanguage)) (\(mode.samplePreview(for: settings.appLanguage)))").tag(mode)
                     }
                 }
 
                 Picker(String(localized: "Ikon Menu Bar"), selection: $settings.menuBarIconSource) {
                     ForEach(MenuBarIconSource.allCases) { source in
-                        Text(source.localizedName).tag(source)
+                        Text(source.localizedName(for: settings.appLanguage)).tag(source)
                     }
                 }
 
                 Picker(String(localized: "Tema Aplikasi"), selection: $settings.appTheme) {
                     ForEach(AppTheme.allCases, id: \.self) { theme in
-                        Label(theme.localizedName, systemImage: theme.icon).tag(theme)
+                        Label(theme.localizedName(for: settings.appLanguage), systemImage: theme.icon).tag(theme)
                     }
                 }
                 .pickerStyle(.segmented)
@@ -65,7 +65,7 @@ struct SettingsView: View {
             // MARK: Notifikasi per Sholat
             Section(String(localized: "Notifikasi per Waktu Sholat")) {
                 ForEach(fardhuPrayerNames) { prayer in
-                    Toggle(prayer.localizedName, isOn: Binding(
+                    Toggle(prayer.localizedName(for: settings.appLanguage), isOn: Binding(
                         get: { !settings.mutedPrayers.contains(prayer) },
                         set: { enabled in
                             if enabled { settings.mutedPrayers.remove(prayer) }
@@ -187,7 +187,7 @@ struct SettingsView: View {
                 LabeledContent(String(localized: "Lokasi saat ini"), value: appState.location.cityName)
                     .foregroundStyle(.secondary)
 
-                LabeledContent(String(localized: "Arah Kiblat"), value: appState.qibla.formattedBearing)
+                LabeledContent(String(localized: "Arah Kiblat"), value: appState.qibla.formattedBearing(for: settings.appLanguage))
                     .foregroundStyle(.secondary)
             }
 
@@ -195,7 +195,7 @@ struct SettingsView: View {
             Section(String(localized: "Metode Hisab & Koreksi")) {
                 Picker(String(localized: "Metode Hisab"), selection: $settings.calculationMethod) {
                     ForEach(CalculationMethod.allCases, id: \.self) { method in
-                        Text(method.localizedName).tag(method)
+                        Text(method.localizedName(for: settings.appLanguage)).tag(method)
                     }
                 }
 
@@ -216,7 +216,7 @@ struct SettingsView: View {
                     step: 1
                 )
 
-                Picker("Madhab Ashar", selection: $settings.asrMadhab) {
+                Picker(String(localized: "Madhab Ashar"), selection: $settings.asrMadhab) {
                     ForEach(AsrMadhab.allCases, id: \.self) { madhab in
                         Text(madhab.rawValue).tag(madhab)
                     }
@@ -249,6 +249,8 @@ struct SettingsView: View {
                 .onChange(of: settings.appLanguage) { _, newLang in
                     UserDefaults.standard.set([newLang.localeIdentifier], forKey: "AppleLanguages")
                     UserDefaults.standard.synchronize()
+                    appState.settings.appLanguage = newLang
+                    appState.saveSettingsImmediately()
                     showRestartAlert = true
                 }
 
@@ -274,6 +276,7 @@ struct SettingsView: View {
 
         }
         .formStyle(.grouped)
+        .environment(\.locale, settings.appLanguage.locale)
         .onAppear {
             settings = appState.settings
             manualCity = appState.location.cityName

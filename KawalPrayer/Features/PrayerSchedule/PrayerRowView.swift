@@ -22,12 +22,12 @@ struct PrayerRowView: View {
                 .foregroundStyle(rowColor)
 
             HStack(spacing: 5) {
-                Text(prayer.name.localizedName)
+                Text(prayer.name.localizedName(for: appState.settings.appLanguage))
                     .fontWeight(isHighlighted ? .semibold : .regular)
                     .foregroundStyle(prayer.isPast && !isCurrent ? .secondary : .primary)
 
                 if isCurrent {
-                    Text(String(localized: "(Aktif)"))
+                    Text(appState.settings.appLanguage == .id ? "(Aktif)" : (appState.settings.appLanguage == .en ? "(Active)" : "(نشط)"))
                         .font(.caption2)
                         .fontWeight(.semibold)
                         .foregroundStyle(accentColor)

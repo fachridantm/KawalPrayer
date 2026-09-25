@@ -5,10 +5,11 @@ final class QiblaCalculatorTests: XCTestCase {
 
     func testJakartaQiblaDirection() {
         // Jakarta coordinates: -6.2088, 106.8456
-        // Expected Qibla bearing from Jakarta is approximately 295° (West-Northwest / BL)
+        // Expected Qibla bearing from Jakarta is approximately 295° (West-Northwest / BLB / WNW)
         let qibla = QiblaCalculator.calculate(latitude: -6.2088, longitude: 106.8456)
         XCTAssertEqual(qibla.degrees, 295.0, accuracy: 2.0, "Qibla Jakarta harus ~295°")
-        XCTAssertEqual(qibla.cardinalDirection, "BL", "Arah Jakarta adalah Barat Laut (BL)")
+        XCTAssertEqual(qibla.cardinalDirection(for: .id), "BLB", "Arah Jakarta dalam Bahasa Indonesia adalah Barat Laut Barat (BLB)")
+        XCTAssertEqual(qibla.cardinalDirection(for: .en), "WNW", "Arah Jakarta dalam Bahasa Inggris adalah West-Northwest (WNW)")
     }
 
     func testTokyoQiblaDirection() {

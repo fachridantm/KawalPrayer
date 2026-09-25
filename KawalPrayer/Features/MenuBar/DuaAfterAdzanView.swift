@@ -25,7 +25,7 @@ struct DuaAfterAdzanView: View {
 
             ForEach(Array(appState.currentDuas.enumerated()), id: \.offset) { _, dua in
                 VStack(spacing: 6) {
-                    Text(dua.title)
+                    Text(dua.title(for: appState.settings.appLanguage))
                         .font(.caption2)
                         .fontWeight(.medium)
                         .foregroundStyle(Color.accent(for: colorScheme))
@@ -42,7 +42,7 @@ struct DuaAfterAdzanView: View {
                         .multilineTextAlignment(.center)
                         .fixedSize(horizontal: false, vertical: true)
 
-                    Text(dua.translation)
+                    Text(dua.translation(for: appState.settings.appLanguage))
                         .font(.caption2)
                         .foregroundStyle(.secondary)
                         .italic()

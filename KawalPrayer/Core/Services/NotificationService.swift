@@ -19,16 +19,30 @@ final class NotificationService: NSObject {
 
     // MARK: - Setup & Categories
 
-    func setupNotificationCategories() {
+    func setupNotificationCategories(for lang: AppLanguage = .id) {
+        let stopTitle: String
+        let dismissTitle: String
+        switch lang {
+        case .id:
+            stopTitle = "Hentikan Adzan"
+            dismissTitle = "Tutup"
+        case .en:
+            stopTitle = "Stop Adzan"
+            dismissTitle = "Dismiss"
+        case .ar:
+            stopTitle = "إيقاف الأذان"
+            dismissTitle = "إغلاق"
+        }
+
         let stopAction = UNNotificationAction(
             identifier: Self.actionStopAdzan,
-            title: String(localized: "Hentikan Adzan"),
+            title: stopTitle,
             options: [] // executes in background without activating full app
         )
 
         let dismissAction = UNNotificationAction(
             identifier: Self.actionDismiss,
-            title: String(localized: "Tutup"),
+            title: dismissTitle,
             options: [.destructive]
         )
 
@@ -63,11 +77,23 @@ final class NotificationService: NSObject {
         let center = UNUserNotificationCenter.current()
         let prayerIds = PrayerName.allCases.map { "prayer_\($0.rawValue)" }
         center.removePendingNotificationRequests(withIdentifiers: prayerIds)
+        setupNotificationCategories(for: settings.appLanguage)
 
         for prayer in prayerTimes where prayer.name.isFardhu && !prayer.isPast && !settings.mutedPrayers.contains(prayer.name) {
             let content = UNMutableNotificationContent()
-            content.title = String(localized: "Waktu \(prayer.name.localizedName)")
-            content.body = String(localized: "Saatnya \(prayer.name.localizedName) — \(prayer.timeString)")
+            let pName = prayer.name.localizedName(for: settings.appLanguage)
+            switch settings.appLanguage {
+            case .id:
+                content.title = "Waktu \(pName)"
+                content.body = "Saatnya \(pName) — \(prayer.timeString)"
+            case .en:
+                content.title = "\(pName) Time"
+                content.body = "Time for \(pName) — \(prayer.timeString)"
+            case .ar:
+                content.title = "وقت صلاة \(pName)"
+                content.body = "حان وقت صلاة \(pName) — \(prayer.timeString)"
+            }
+
             content.sound = nil // Audio handled by AudioService
             content.categoryIdentifier = Self.categoryPrayerAlert
 
@@ -96,10 +122,20 @@ final class NotificationService: NSObject {
 
     // MARK: - Adzan Notification (Real-time with interactive actions)
 
-    func sendAdzanNotification(for prayerName: String, timeString: String) {
+    func sendAdzanNotification(for prayerName: String, timeString: String, lang: AppLanguage = .id) {
+        setupNotificationCategories(for: lang)
         let content = UNMutableNotificationContent()
-        content.title = String(localized: "Waktu \(prayerName)")
-        content.body = String(localized: "Saatnya \(prayerName) — \(timeString)")
+        switch lang {
+        case .id:
+            content.title = "Waktu \(prayerName)"
+            content.body = "Saatnya \(prayerName) — \(timeString)"
+        case .en:
+            content.title = "\(prayerName) Time"
+            content.body = "Time for \(prayerName) — \(timeString)"
+        case .ar:
+            content.title = "وقت صلاة \(prayerName)"
+            content.body = "حان وقت صلاة \(prayerName) — \(timeString)"
+        }
         content.sound = nil
         content.categoryIdentifier = Self.categoryPrayerAlert
 
@@ -144,10 +180,19 @@ final class NotificationService: NSObject {
 
     // MARK: - Iqamah Notification
 
-    func sendIqamahNotification(for prayerName: String) {
+    func sendIqamahNotification(for prayerName: String, lang: AppLanguage = .id) {
         let content = UNMutableNotificationContent()
-        content.title = String(localized: "Iqamah \(prayerName) Selesai")
-        content.body = String(localized: "Saatnya mendirikan sholat")
+        switch lang {
+        case .id:
+            content.title = "Iqamah \(prayerName) Selesai"
+            content.body = "Saatnya mendirikan sholat"
+        case .en:
+            content.title = "\(prayerName) Iqamah Completed"
+            content.body = "Time to establish prayer"
+        case .ar:
+            content.title = "انتهت إقامة صلاة \(prayerName)"
+            content.body = "حان وقت إقامة الصلاة"
+        }
         content.sound = .default
 
         let id = "iqamah_\(prayerName)_\(Int(Date().timeIntervalSince1970))"
