@@ -22,9 +22,15 @@ struct SettingsView: View {
 
             // MARK: Menu Bar & Tampilan
             Section(String(localized: "Tampilan Menu Bar")) {
-                Picker(String(localized: "Format Menu Bar"), selection: $settings.menuBarDisplayMode) {
+                Picker(String(localized: "Format Teks Menu Bar"), selection: $settings.menuBarDisplayMode) {
                     ForEach(MenuBarDisplayMode.allCases) { mode in
                         Text("\(mode.localizedName) (\(mode.samplePreview))").tag(mode)
+                    }
+                }
+
+                Picker(String(localized: "Ikon Menu Bar"), selection: $settings.menuBarIconSource) {
+                    ForEach(MenuBarIconSource.allCases) { source in
+                        Text(source.localizedName).tag(source)
                     }
                 }
 

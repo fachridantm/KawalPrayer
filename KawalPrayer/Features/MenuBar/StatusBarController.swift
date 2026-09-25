@@ -36,7 +36,7 @@ final class StatusBarController: NSObject {
         button.action = #selector(togglePopover(_:))
         button.sendAction(on: [.leftMouseUp, .rightMouseUp])
 
-        updateTitle()
+        updateStatusItem()
     }
 
     private func setupPopover() {
@@ -53,7 +53,7 @@ final class StatusBarController: NSObject {
 
     private func observeAppState() {
         appState.onStatusBarTitleChanged = { [weak self] in
-            self?.updateTitle()
+            self?.updateStatusItem()
         }
 
         appState.onShowPopoverRequested = { [weak self] in
@@ -61,8 +61,17 @@ final class StatusBarController: NSObject {
         }
     }
 
-    func updateTitle() {
+    func updateStatusItem() {
         guard let button = statusItem.button else { return }
+
+        // Dynamic icon based on active current prayer or user settings
+        let iconName = appState.activeMenuBarIconName
+        let config = NSImage.SymbolConfiguration(pointSize: 13, weight: .medium)
+        if let image = NSImage(systemSymbolName: iconName, accessibilityDescription: "KawalPrayer")?.withSymbolConfiguration(config) {
+            image.isTemplate = true
+            button.image = image
+            button.imagePosition = .imageLeading
+        }
 
         let text = appState.menuBarDisplayText
         if text.isEmpty {

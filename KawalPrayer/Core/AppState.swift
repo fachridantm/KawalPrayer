@@ -33,6 +33,32 @@ final class AppState {
     var nextPrayerShortTime  : String = ""
     var menuBarDisplayText   : String = ""
 
+    // The prayer that has started and is currently active / ongoing
+    var currentPrayer: PrayerTime? {
+        let now = Date()
+        let fardhu = prayerTimes.filter { $0.name.isFardhu }
+        guard !fardhu.isEmpty else { return nil }
+
+        let past = fardhu.filter { $0.time <= now }
+        if let current = past.last {
+            return current
+        } else {
+            return fardhu.first(where: { $0.name == .isha })
+        }
+    }
+
+    // Dynamic icon name for Menu Bar based on settings
+    var activeMenuBarIconName: String {
+        switch settings.menuBarIconSource {
+        case .currentPrayer:
+            return currentPrayer?.name.icon ?? "moon.stars.fill"
+        case .nextPrayer:
+            return nextPrayer?.name.icon ?? "moon.stars.fill"
+        case .staticMoon:
+            return "moon.stars.fill"
+        }
+    }
+
     // Doa setelah adzan
     var showDoaBanner        : Bool = false
     var currentDuas          : [Dua] = []
@@ -309,10 +335,11 @@ final class AppState {
         updateMenuBarDisplayText()
     }
 
-    // MARK: - Menu Bar Display Text
+    private var lastReportedIconName: String = ""
 
     func updateMenuBarDisplayText() {
         let previous = menuBarDisplayText
+        let currentIcon = activeMenuBarIconName
 
         if case .countdown(let prayerName, let remaining) = iqamahState {
             let m = remaining / 60
@@ -335,7 +362,8 @@ final class AppState {
             menuBarDisplayText = ""
         }
 
-        if previous != menuBarDisplayText {
+        if previous != menuBarDisplayText || lastReportedIconName != currentIcon {
+            lastReportedIconName = currentIcon
             onStatusBarTitleChanged?()
         }
     }

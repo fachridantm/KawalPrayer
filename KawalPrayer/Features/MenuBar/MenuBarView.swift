@@ -42,9 +42,14 @@ struct MenuBarView: View {
     private var headerView: some View {
         HStack(alignment: .center) {
             VStack(alignment: .leading, spacing: 2) {
-                Text("KawalPrayer")
-                    .font(.headline)
-                    .fontWeight(.bold)
+                HStack(spacing: 6) {
+                    Image(systemName: appState.activeMenuBarIconName)
+                        .font(.headline)
+                        .foregroundStyle(Color.accent(for: colorScheme))
+                    Text("KawalPrayer")
+                        .font(.headline)
+                        .fontWeight(.bold)
+                }
 
                 HStack(spacing: 6) {
                     Text(appState.location.cityName)

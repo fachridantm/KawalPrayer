@@ -2,9 +2,18 @@ import SwiftUI
 
 struct PrayerRowView: View {
 
+    @Environment(AppState.self) private var appState
     @Environment(\.colorScheme) private var colorScheme
 
     let prayer: PrayerTime
+
+    private var isCurrent: Bool {
+        appState.currentPrayer?.name == prayer.name
+    }
+
+    private var isHighlighted: Bool {
+        isCurrent || prayer.isNext
+    }
 
     var body: some View {
         HStack(spacing: 12) {
@@ -12,9 +21,18 @@ struct PrayerRowView: View {
                 .frame(width: 20)
                 .foregroundStyle(rowColor)
 
-            Text(prayer.name.localizedName)
-                .fontWeight(prayer.isNext ? .semibold : .regular)
-                .foregroundStyle(prayer.isPast ? .secondary : .primary)
+            HStack(spacing: 5) {
+                Text(prayer.name.localizedName)
+                    .fontWeight(isHighlighted ? .semibold : .regular)
+                    .foregroundStyle(prayer.isPast && !isCurrent ? .secondary : .primary)
+
+                if isCurrent {
+                    Text(String(localized: "(Aktif)"))
+                        .font(.caption2)
+                        .fontWeight(.semibold)
+                        .foregroundStyle(accentColor)
+                }
+            }
 
             Spacer()
 
@@ -25,18 +43,18 @@ struct PrayerRowView: View {
             Circle()
                 .fill(accentColor)
                 .frame(width: 6, height: 6)
-                .opacity(prayer.isNext ? 1 : 0)
+                .opacity(isHighlighted ? 1 : 0)
         }
         .padding(.horizontal, 16)
         .padding(.vertical, 9)
-        .background(prayer.isNext ? Color.accentBackground(for: colorScheme) : Color.clear)
-        .opacity(prayer.isPast ? 0.65 : 1.0)
+        .background(isHighlighted ? Color.accentBackground(for: colorScheme) : Color.clear)
+        .opacity(prayer.isPast && !isCurrent ? 0.65 : 1.0)
     }
 
     private var accentColor: Color { .accent(for: colorScheme) }
 
     private var rowColor: Color {
-        if prayer.isNext { return accentColor }
+        if isHighlighted { return accentColor }
         if prayer.isPast { return .secondary }
         return .primary
     }

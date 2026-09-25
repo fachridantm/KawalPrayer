@@ -60,11 +60,30 @@ enum MenuBarDisplayMode: String, Codable, CaseIterable, Identifiable {
 
     var samplePreview: String {
         switch self {
-        case .iconNameCountdown: return "🌙 Subuh • 00:45"
-        case .iconCountdown:     return "🌙 00:45"
-        case .iconName:          return "🌙 Subuh"
-        case .iconTime:          return "🌙 Subuh 04:35"
-        case .iconOnly:          return "🌙"
+        case .iconNameCountdown: return "Subuh • 00:45"
+        case .iconCountdown:     return "00:45"
+        case .iconName:          return "Subuh"
+        case .iconTime:          return "Subuh 04:35"
+        case .iconOnly:          return "(Hanya Icon)"
+        }
+    }
+}
+
+enum MenuBarIconSource: String, Codable, CaseIterable, Identifiable {
+    case currentPrayer = "current_prayer"
+    case nextPrayer    = "next_prayer"
+    case staticMoon    = "static_moon"
+
+    var id: String { rawValue }
+
+    var localizedName: String {
+        switch self {
+        case .currentPrayer:
+            return String(localized: "Ikon Sholat Saat Ini / Aktif (Default)")
+        case .nextPrayer:
+            return String(localized: "Ikon Sholat Berikutnya (Target)")
+        case .staticMoon:
+            return String(localized: "Tetap Ikon Bulan Bintang")
         }
     }
 }
@@ -136,6 +155,7 @@ struct PrayerSettings: Codable, Equatable {
     var isNotificationEnabled   : Bool                    = true
     var isCountdownEnabled      : Bool                    = true
     var menuBarDisplayMode      : MenuBarDisplayMode      = .iconNameCountdown
+    var menuBarIconSource       : MenuBarIconSource       = .currentPrayer
     var useAutoLocation         : Bool                    = true
     var notificationOffset      : Int                     = 0
     var appTheme                : AppTheme                = .system
@@ -167,6 +187,7 @@ struct PrayerSettings: Codable, Equatable {
         isNotificationEnabled   = try c.decodeIfPresent(Bool.self,                  forKey: .isNotificationEnabled)   ?? true
         isCountdownEnabled      = try c.decodeIfPresent(Bool.self,                  forKey: .isCountdownEnabled)      ?? true
         menuBarDisplayMode      = try c.decodeIfPresent(MenuBarDisplayMode.self,    forKey: .menuBarDisplayMode)      ?? .iconNameCountdown
+        menuBarIconSource       = try c.decodeIfPresent(MenuBarIconSource.self,     forKey: .menuBarIconSource)       ?? .currentPrayer
         useAutoLocation         = try c.decodeIfPresent(Bool.self,                  forKey: .useAutoLocation)         ?? true
         notificationOffset      = try c.decodeIfPresent(Int.self,                   forKey: .notificationOffset)      ?? 0
         appTheme                = try c.decodeIfPresent(AppTheme.self,              forKey: .appTheme)                ?? .system

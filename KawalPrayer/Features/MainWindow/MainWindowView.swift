@@ -341,9 +341,18 @@ private struct IqamahFinishedRow: View {
 
 private struct DesktopPrayerRow: View {
 
+    @Environment(AppState.self) private var appState
     @Environment(\.colorScheme) private var colorScheme
 
     let prayer: PrayerTime
+
+    private var isCurrent: Bool {
+        appState.currentPrayer?.name == prayer.name
+    }
+
+    private var isHighlighted: Bool {
+        isCurrent || prayer.isNext
+    }
 
     var body: some View {
         HStack(spacing: 16) {
@@ -353,15 +362,28 @@ private struct DesktopPrayerRow: View {
                 .foregroundStyle(rowColor)
 
             VStack(alignment: .leading, spacing: 2) {
-                Text(prayer.name.localizedName)
-                    .font(.body)
-                    .fontWeight(prayer.isNext ? .semibold : .regular)
+                HStack(spacing: 6) {
+                    Text(prayer.name.localizedName)
+                        .font(.body)
+                        .fontWeight(isHighlighted ? .semibold : .regular)
+
+                    if isCurrent {
+                        Text(String(localized: "(Aktif)"))
+                            .font(.caption2)
+                            .fontWeight(.semibold)
+                            .foregroundStyle(accentColor)
+                    }
+                }
+
                 Group {
-                    if prayer.isPast {
-                        Text(String(localized: "Sudah lewat"))
+                    if isCurrent {
+                        Text(String(localized: "Waktu sholat saat ini"))
+                            .foregroundStyle(accentColor)
                     } else if prayer.isNext {
                         Text(String(localized: "Waktu berikutnya"))
-                            .foregroundStyle(Color.accent(for: colorScheme))
+                            .foregroundStyle(accentColor)
+                    } else if prayer.isPast {
+                        Text(String(localized: "Sudah lewat"))
                     }
                 }
                 .font(.caption)
@@ -378,19 +400,19 @@ private struct DesktopPrayerRow: View {
             Circle()
                 .fill(accentColor)
                 .frame(width: 8, height: 8)
-                .opacity(prayer.isNext ? 1 : 0)
+                .opacity(isHighlighted ? 1 : 0)
         }
         .padding(.vertical, 8)
         .padding(.horizontal, 12)
-        .background(prayer.isNext ? Color.accentBackground(for: colorScheme) : Color.clear)
+        .background(isHighlighted ? Color.accentBackground(for: colorScheme) : Color.clear)
         .clipShape(RoundedRectangle(cornerRadius: 8))
-        .opacity(prayer.isPast ? 0.65 : 1.0)
+        .opacity(prayer.isPast && !isCurrent ? 0.65 : 1.0)
     }
 
     private var accentColor: Color { .accent(for: colorScheme) }
 
     private var rowColor: Color {
-        if prayer.isNext { return accentColor }
+        if isHighlighted { return accentColor }
         if prayer.isPast { return .secondary }
         return .primary
     }

@@ -2,6 +2,7 @@
   "sourceLanguage" : "id",
   "strings" : {
     "\"Ya Allah, Tuhan pemilik seruan yang sempurna ini dan sholat yang akan ditegakkan, karuniakanlah kepada Muhammad wasilah dan keutamaan, dan bangkitkanlah beliau ke tempat terpuji yang telah Engkau janjikan.\"" : {
+      "extractionState" : "stale",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -56,12 +57,12 @@
         }
       }
     },
-    "%@ • %@" : {
+    "%@ (%@)" : {
       "localizations" : {
         "id" : {
           "stringUnit" : {
             "state" : "new",
-            "value" : "%1$@ • %2$@"
+            "value" : "%1$@ (%2$@)"
           }
         }
       }
@@ -72,7 +73,10 @@
     "%lld ayat" : {
 
     },
-    "KawalPrayer" : {
+    "%lld%%" : {
+
+    },
+    "Aktifkan Audio Adzan" : {
 
     },
     "Aktifkan Iqamah Timer" : {
@@ -98,6 +102,7 @@
       }
     },
     "Aktifkan Suara" : {
+      "extractionState" : "stale",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -122,7 +127,7 @@
     "Al-Quran" : {
 
     },
-    "Allāhumma Rabba hāżihid da'watit tāmmah, waṣ-ṣalātil qā'imah, āti Muḥammadanil wasīlata wal faḍīlah, wab'aṡhu maqāman maḥmūdanil lażī wa'adtah." : {
+    "Aplikasi pengingat waktu sholat dan adzan menu bar untuk macOS.\nBekerja senyap di background tanpa mengganggu dock.\nDilengkapi Al-Quran offline, arah kiblat, doa setelah adzan, dan pengaman waktu Kemenag RI." : {
 
     },
     "Aplikasi perlu di-restart agar perubahan bahasa diterapkan. Restart sekarang?" : {
@@ -147,6 +152,9 @@
         }
       }
     },
+    "Arah Kiblat" : {
+
+    },
     "Ashar" : {
       "localizations" : {
         "ar" : {
@@ -170,6 +178,7 @@
       }
     },
     "Ashar hari ini" : {
+      "extractionState" : "stale",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -371,6 +380,7 @@
       }
     },
     "Buka App" : {
+      "extractionState" : "stale",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -392,7 +402,14 @@
         }
       }
     },
+    "Buka KawalPrayer" : {
+
+    },
+    "Buka otomatis saat Login (Startup)" : {
+
+    },
     "Buka saat Login" : {
+      "extractionState" : "stale",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -437,6 +454,7 @@
       }
     },
     "Countdown di Status Bar" : {
+      "extractionState" : "stale",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -457,6 +475,9 @@
           }
         }
       }
+    },
+    "Dibuat dengan SwiftUI & Swift 6" : {
+
     },
     "Doa Setelah Adzan" : {
       "localizations" : {
@@ -481,6 +502,7 @@
       }
     },
     "Doa tidak akan otomatis hilang" : {
+      "extractionState" : "stale",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -501,6 +523,9 @@
           }
         }
       }
+    },
+    "Doa tidak akan otomatis hilang sampai ditutup" : {
+
     },
     "Durasi %lld menit" : {
       "localizations" : {
@@ -612,7 +637,7 @@
         }
       }
     },
-    "Fajr" : {
+    "Format Menu Bar" : {
 
     },
     "Gelap" : {
@@ -637,6 +662,9 @@
         }
       }
     },
+    "Hanya Icon" : {
+
+    },
     "Hapus bookmark" : {
       "localizations" : {
         "ar" : {
@@ -659,6 +687,12 @@
         }
       }
     },
+    "Hentikan" : {
+
+    },
+    "Hentikan Adzan" : {
+
+    },
     "Hijriah" : {
       "localizations" : {
         "ar" : {
@@ -680,6 +714,18 @@
           }
         }
       }
+    },
+    "Icon + Hitung Mundur" : {
+
+    },
+    "Icon + Nama + Hitung Mundur (Default)" : {
+
+    },
+    "Icon + Nama Sholat" : {
+
+    },
+    "Icon + Waktu Sholat" : {
+
     },
     "Iqamah" : {
 
@@ -841,6 +887,9 @@
         }
       }
     },
+    "KawalPrayer" : {
+
+    },
     "Keluar" : {
       "localizations" : {
         "ar" : {
@@ -907,7 +956,21 @@
         }
       }
     },
+    "Koordinat: %@, %@" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Koordinat: %1$@, %2$@"
+          }
+        }
+      }
+    },
+    "Koreksi Tanggal Hijriah: %@ hari" : {
+
+    },
     "Lihat di GitHub" : {
+      "extractionState" : "stale",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -930,6 +993,7 @@
       }
     },
     "Lokasi" : {
+      "extractionState" : "stale",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -951,7 +1015,14 @@
         }
       }
     },
+    "Lokasi & GPS" : {
+
+    },
+    "Lokasi Otomatis (GPS & Pergerakan)" : {
+
+    },
     "Lokasi Otomatis (GPS)" : {
+      "extractionState" : "stale",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -995,7 +1066,7 @@
         }
       }
     },
-    "Madhab" : {
+    "Madhab Ashar" : {
 
     },
     "Madhab berhasil diubah ke %@. Waktu Ashar hari ini: %@" : {
@@ -1065,6 +1136,7 @@
       }
     },
     "Maghrib + %lld menit" : {
+      "extractionState" : "stale",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -1108,7 +1180,11 @@
         }
       }
     },
+    "Mendeteksi Lokasi..." : {
+
+    },
     "Metode" : {
+      "extractionState" : "stale",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -1151,6 +1227,9 @@
           }
         }
       }
+    },
+    "Metode Hisab & Koreksi" : {
+
     },
     "Muharram" : {
       "localizations" : {
@@ -1241,6 +1320,7 @@
       }
     },
     "Notif %lld menit sebelum" : {
+      "extractionState" : "stale",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -1261,6 +1341,9 @@
           }
         }
       }
+    },
+    "Notif %lld menit sebelum sholat" : {
+
     },
     "Notifikasi" : {
       "localizations" : {
@@ -1309,6 +1392,9 @@
     "OK" : {
 
     },
+    "Pengaman Waktu (Ihtiyat): +%lld menit" : {
+
+    },
     "Pengaturan" : {
       "localizations" : {
         "ar" : {
@@ -1332,6 +1418,7 @@
       }
     },
     "Pengingat waktu sholat yang sederhana untuk macOS.\nMetode Kemenag RI — Fajr 20°, Isya 18°." : {
+      "extractionState" : "stale",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -1352,6 +1439,15 @@
           }
         }
       }
+    },
+    "Perbarui Lokasi" : {
+
+    },
+    "Perbarui Lokasi GPS" : {
+
+    },
+    "Perbarui Lokasi GPS Sekarang" : {
+
     },
     "Perubahan bahasa memerlukan restart aplikasi" : {
       "localizations" : {
@@ -1419,7 +1515,7 @@
         }
       }
     },
-    "Preview" : {
+    "Pop-up Doa di Menu Bar Setelah Adzan" : {
 
     },
     "Rabi'ul Akhir" : {
@@ -1690,7 +1786,7 @@
         }
       }
     },
-    "Stop" : {
+    "Standar Kemenag RI menggunakan pengaman waktu +2 menit agar sesuai jadwal masjid." : {
 
     },
     "Stop Adzan" : {
@@ -1716,6 +1812,7 @@
       }
     },
     "Stop Semua Notifikasi" : {
+      "extractionState" : "stale",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -1736,6 +1833,9 @@
           }
         }
       }
+    },
+    "Stop Semua Notifikasi & Audio" : {
+
     },
     "Suara Adzan" : {
       "localizations" : {
@@ -1870,6 +1970,7 @@
       }
     },
     "Tampilan" : {
+      "extractionState" : "stale",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -1891,7 +1992,14 @@
         }
       }
     },
+    "Tampilan Menu Bar" : {
+
+    },
+    "Tampilkan di Dock saat Jendela Terbuka" : {
+
+    },
     "Tampilkan Doa Setelah Adzan" : {
+      "extractionState" : "stale",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -1914,6 +2022,7 @@
       }
     },
     "Tampilkan Syuruq" : {
+      "extractionState" : "stale",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -1934,6 +2043,9 @@
           }
         }
       }
+    },
+    "Tampilkan Waktu Syuruq" : {
+
     },
     "Tanggal Hijriah" : {
       "localizations" : {
@@ -1980,6 +2092,7 @@
       }
     },
     "Tema" : {
+      "extractionState" : "stale",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -2000,6 +2113,9 @@
           }
         }
       }
+    },
+    "Tema Aplikasi" : {
+
     },
     "Tentang" : {
       "localizations" : {
@@ -2045,6 +2161,18 @@
         }
       }
     },
+    "Tutup" : {
+
+    },
+    "Tutup Jendela" : {
+
+    },
+    "U" : {
+
+    },
+    "Uji Suara Adzan" : {
+
+    },
     "Umm al-Qura" : {
       "localizations" : {
         "ar" : {
@@ -2088,6 +2216,9 @@
           }
         }
       }
+    },
+    "Volume Adzan" : {
+
     },
     "Waktu %@" : {
       "localizations" : {
@@ -2157,9 +2288,6 @@
       }
     },
     "Waktu iqamah %@!" : {
-
-    },
-    "اللَّهُمَّ رَبَّ هَذِهِ الدَّعْوَةِ التَّامَّةِ وَالصَّلَاةِ الْقَائِمَةِ آتِ مُحَمَّدًا الْوَسِيلَةَ وَالْفَضِيلَةَ وَابْعَثْهُ مَقَامًا مَحْمُودًا الَّذِي وَعَدْتَهُ" : {
 
     },
     "بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ" : {
