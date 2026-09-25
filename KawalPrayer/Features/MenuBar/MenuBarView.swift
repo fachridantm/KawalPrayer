@@ -65,6 +65,8 @@ struct MenuBarView: View {
                     Text(appState.location.cityName)
                         .font(.caption)
                         .foregroundStyle(.secondary)
+                        .lineLimit(1)
+                        .truncationMode(.tail)
 
                     Button {
                         appState.requestLocationRefresh()

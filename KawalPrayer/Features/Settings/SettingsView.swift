@@ -327,10 +327,11 @@ struct SettingsView: View {
                   let place = placemarks.first,
                   let coord = place.location?.coordinate else { return }
             let tz = Double(TimeZone.current.secondsFromGMT() / 3600)
+            let formattedCity = LocationHelper.formatCityAndDistrict(from: place)
             appState.location = LocationModel(
                 latitude : coord.latitude,
                 longitude: coord.longitude,
-                cityName : place.locality ?? manualCity,
+                cityName : formattedCity.isEmpty ? manualCity : formattedCity,
                 timezone : tz
             )
             appState.saveSettingsImmediately()

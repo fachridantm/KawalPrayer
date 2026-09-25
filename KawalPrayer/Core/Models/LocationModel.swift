@@ -7,9 +7,9 @@ struct LocationModel: Codable, Equatable {
     var timezone : Double
 
     static let defaultLocation = LocationModel(
-        latitude : -6.2088,
-        longitude: 106.8456,
-        cityName : "Jakarta",
+        latitude : -6.1754,
+        longitude: 106.8272,
+        cityName : "Central Jakarta, Gambir",
         timezone : 7.0
     )
 }

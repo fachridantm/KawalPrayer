@@ -64,9 +64,9 @@ final class LocationService: NSObject {
                 return
             }
             guard let place = placemarks?.first else { return }
-            let detectedCity = place.locality ?? place.subAdministrativeArea ?? place.administrativeArea ?? "Unknown"
-            self.cityName = detectedCity
-            self.onLocationUpdated?(location, detectedCity)
+            let formattedLocation = LocationHelper.formatCityAndDistrict(from: place)
+            self.cityName = formattedLocation
+            self.onLocationUpdated?(location, formattedLocation)
         }
     }
 }

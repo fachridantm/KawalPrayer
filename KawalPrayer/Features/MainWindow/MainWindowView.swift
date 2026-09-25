@@ -96,6 +96,8 @@ struct MainWindowView: View {
                     Text(appState.location.cityName)
                         .font(.caption)
                         .foregroundStyle(.secondary)
+                        .lineLimit(1)
+                        .truncationMode(.tail)
                 }
             }
             .frame(

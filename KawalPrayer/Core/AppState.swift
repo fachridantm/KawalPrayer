@@ -386,6 +386,7 @@ final class AppState {
                 )
                 if loc != self.location {
                     self.location = loc
+                    self.saveLocationToStorage()
                     self.recalculateQibla()
                     self.refreshPrayerTimes()
                     NSLog("[KawalPrayer] Location updated automatically to: \(newCity)")
@@ -432,10 +433,19 @@ final class AppState {
 
     func saveSettings() {
         saveDebounceTimer?.invalidate()
-        saveDebounceTimer = Timer.scheduledTimer(withTimeInterval: 0.5, repeats: false) { [weak self] _ in
+        saveDebounceTimer = Timer.scheduledTimer(
+            withTimeInterval: 0.5,
+            repeats: false
+        ) { [weak self] _ in
             Task { @MainActor [weak self] in
                 self?.commitSaveSettings()
             }
+        }
+    }
+
+    private func saveLocationToStorage() {
+        if let data = try? JSONEncoder().encode(location) {
+            UserDefaults.standard.set(data, forKey: "kawal_cached_location")
         }
     }
 
@@ -447,6 +457,7 @@ final class AppState {
            let data = try? JSONEncoder().encode(location) {
             UserDefaults.standard.set(data, forKey: "kawal_manual_location")
         }
+        saveLocationToStorage()
         applyLaunchAtLogin(settings.launchAtLogin)
         recalculateQibla()
         refreshPrayerTimes()
@@ -473,6 +484,9 @@ final class AppState {
         if !settings.useAutoLocation,
            let data = UserDefaults.standard.data(forKey: "kawal_manual_location"),
            let decoded = try? JSONDecoder().decode(LocationModel.self, from: data) {
+            location = decoded
+        } else if let data = UserDefaults.standard.data(forKey: "kawal_cached_location"),
+                  let decoded = try? JSONDecoder().decode(LocationModel.self, from: data) {
             location = decoded
         }
         settings.launchAtLogin = SMAppService.mainApp.status == .enabled
