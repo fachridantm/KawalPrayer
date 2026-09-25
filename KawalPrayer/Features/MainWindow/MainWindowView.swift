@@ -168,7 +168,9 @@ struct MainWindowView: View {
     // MARK: - Detail
 
     private var detailView: some View {
-        ZStack {
+        @Bindable var appState = appState
+
+        return ZStack {
             ScheduleDetailView()
                 .opacity(selection == .schedule ? 1 : 0)
                 .allowsHitTesting(selection == .schedule)
@@ -186,6 +188,51 @@ struct MainWindowView: View {
                 .allowsHitTesting(selection == .about)
         }
         .navigationTitle(selection.localizedName(for: appState.settings.appLanguage))
+        .toolbar {
+            if selection == .quran {
+                ToolbarItemGroup(placement: .primaryAction) {
+                    Picker(
+                        "",
+                        selection: $appState.settings.quranViewMode
+                    ) {
+                        Label(
+                            String(localized: "Mushaf"),
+                            systemImage: "book.pages.fill"
+                        )
+                        .tag(QuranViewMode.mushaf)
+
+                        Label(
+                            String(localized: "Per Ayat"),
+                            systemImage: "list.bullet.rectangle.portrait.fill"
+                        )
+                        .tag(QuranViewMode.verseList)
+                    }
+                    .pickerStyle(.segmented)
+                    .help(String(localized: "Pilihan Tampilan Al-Quran"))
+
+                    HStack(spacing: DimensToken.SIZE_6) {
+                        Image(systemName: "textformat.size.smaller")
+                            .font(.caption2)
+                            .foregroundStyle(.secondary)
+
+                        Slider(
+                            value: $appState.settings.quranArabicFontSize,
+                            in: 18...42,
+                            step: 1
+                        )
+                        .frame(width: DimensToken.SIZE_80)
+                        .onChange(of: appState.settings.quranArabicFontSize) {
+                            appState.saveSettingsImmediately()
+                        }
+
+                        Image(systemName: "textformat.size.larger")
+                            .font(.caption2)
+                            .foregroundStyle(.secondary)
+                    }
+                    .help(String(localized: "Ukuran Huruf Arab"))
+                }
+            }
+        }
     }
 }
 
@@ -357,6 +404,7 @@ private struct ScheduleDetailView: View {
             maxWidth: .infinity,
             maxHeight: .infinity
         )
+        .padding(.top, DimensToken.SIZE_52)
         .onAppear { refreshDateStrings() }
         .onChange(of: appState.prayerTimes) { refreshDateStrings() }
         .onChange(of: appState.settings.appLanguage) { refreshDateStrings() }

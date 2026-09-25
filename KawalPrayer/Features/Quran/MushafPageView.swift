@@ -134,9 +134,12 @@ struct MushafPageView: View {
     // MARK: - Top Bar
 
     private var topBar: some View {
-        HStack(spacing: 12) {
+        HStack(spacing: OX.Spacing.M) {
             // Surah Name (Left)
-            VStack(alignment: .leading, spacing: 2) {
+            VStack(
+                alignment: .leading,
+                spacing: DimensToken.SIZE_2
+            ) {
                 Text(surah.name)
                     .font(.headline)
                     .fontWeight(.semibold)
@@ -150,7 +153,7 @@ struct MushafPageView: View {
             Spacer()
 
             // Center/Right: Page & Juz Label
-            HStack(spacing: 6) {
+            HStack(spacing: DimensToken.SIZE_6) {
                 let pageLabel = appState.settings.appLanguage == .id ? "Halaman" : (appState.settings.appLanguage == .en ? "Page" : "صفحة")
                 let juzLabel = appState.settings.appLanguage == .ar ? "الجزء \(QuranReferenceHelper.easternArabicNumerals(from: currentJuz))" : "Juz' \(currentJuz)"
 
@@ -170,29 +173,33 @@ struct MushafPageView: View {
                     .tag(QuranViewMode.verseList)
             }
             .pickerStyle(.segmented)
-            .frame(width: 170)
+            .frame(width: DimensToken.SIZE_80 * 2 + DimensToken.SIZE_10)
             .onChange(of: viewMode) { _, newMode in
                 appState.settings.quranViewMode = newMode
                 appState.saveSettingsImmediately()
             }
 
             // Arabic Font Size Slider
-            HStack(spacing: 6) {
+            HStack(spacing: DimensToken.SIZE_6) {
                 Image(systemName: "textformat.size.smaller")
                     .font(.caption2)
                     .foregroundStyle(.secondary)
-                Slider(value: $arabicFontSize, in: 18...42, step: 1)
-                    .frame(width: 80)
-                    .onChange(of: arabicFontSize) {
-                        appState.saveSettingsImmediately()
-                    }
+                Slider(
+                    value: $arabicFontSize,
+                    in: 18...42,
+                    step: 1
+                )
+                .frame(width: DimensToken.SIZE_80)
+                .onChange(of: arabicFontSize) {
+                    appState.saveSettingsImmediately()
+                }
                 Image(systemName: "textformat.size.larger")
                     .font(.caption2)
                     .foregroundStyle(.secondary)
             }
         }
-        .padding(.horizontal, 16)
-        .padding(.vertical, 10)
+        .padding(.horizontal, OX.Spacing.L)
+        .padding(.vertical, DimensToken.SIZE_10)
         .background(.bar)
     }
 
