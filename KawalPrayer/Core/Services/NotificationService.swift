@@ -96,6 +96,9 @@ final class NotificationService: NSObject {
 
             content.sound = nil // Audio handled by AudioService
             content.categoryIdentifier = Self.categoryPrayerAlert
+            if let attachment = createIconAttachment() {
+                content.attachments = [attachment]
+            }
 
             var fireDate = prayer.time
             if settings.notificationOffset > 0 {
@@ -138,6 +141,9 @@ final class NotificationService: NSObject {
         }
         content.sound = nil
         content.categoryIdentifier = Self.categoryPrayerAlert
+        if let attachment = createIconAttachment() {
+            content.attachments = [attachment]
+        }
 
         let notifId = "adzan_\(prayerName)_\(Int(Date().timeIntervalSince1970))"
         activeAdzanNotificationIds.insert(notifId)
@@ -194,6 +200,9 @@ final class NotificationService: NSObject {
             content.body = "حان وقت إقامة الصلاة"
         }
         content.sound = .default
+        if let attachment = createIconAttachment() {
+            content.attachments = [attachment]
+        }
 
         let id = "iqamah_\(prayerName)_\(Int(Date().timeIntervalSince1970))"
         let request = UNNotificationRequest(identifier: id, content: content, trigger: nil)
@@ -203,6 +212,34 @@ final class NotificationService: NSObject {
             DispatchQueue.main.asyncAfter(deadline: .now() + 20) {
                 center.removeDeliveredNotifications(withIdentifiers: [id])
             }
+        }
+    }
+
+    // MARK: - Notification Icon Attachment
+
+    func createIconAttachment() -> UNNotificationAttachment? {
+        let bundleURL = Bundle.main.url(forResource: "NotificationIcon", withExtension: "png")
+            ?? Bundle(for: NotificationService.self).url(forResource: "NotificationIcon", withExtension: "png")
+
+        guard let sourceURL = bundleURL else {
+            return nil
+        }
+
+        let tempDir = FileManager.default.temporaryDirectory
+        let tempURL = tempDir.appendingPathComponent("notif_icon_\(UUID().uuidString).png")
+        do {
+            if FileManager.default.fileExists(atPath: tempURL.path) {
+                try FileManager.default.removeItem(at: tempURL)
+            }
+            try FileManager.default.copyItem(at: sourceURL, to: tempURL)
+            return try UNNotificationAttachment(
+                identifier: "prayer_notification_icon",
+                url: tempURL,
+                options: nil
+            )
+        } catch {
+            NSLog("[KawalPrayer] Failed to create notification icon attachment: \(error.localizedDescription)")
+            return nil
         }
     }
 

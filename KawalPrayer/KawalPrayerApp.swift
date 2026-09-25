@@ -42,6 +42,12 @@ final class AppDelegate: NSObject, NSApplicationDelegate, UNUserNotificationCent
         // Apply language override
         UserDefaults.standard.set([appState.settings.appLanguage.localeIdentifier], forKey: "AppleLanguages")
 
+        // Set application icon
+        if let iconImage = NSImage(named: "AppIcon")
+            ?? NSImage(contentsOf: Bundle.main.url(forResource: "NotificationIcon", withExtension: "png") ?? URL(fileURLWithPath: "")) {
+            NSApp.applicationIconImage = iconImage
+        }
+
         // Set notification delegate
         UNUserNotificationCenter.current().delegate = self
 
