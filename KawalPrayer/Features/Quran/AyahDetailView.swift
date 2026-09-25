@@ -117,49 +117,55 @@ struct AyahDetailView: View {
 
             Spacer()
 
-            // View Mode Switcher
-            Picker(
-                "",
-                selection: $viewMode
-            ) {
-                Label(
-                    String(localized: "Mushaf"),
-                    systemImage: "book.pages.fill"
-                )
-                .tag(QuranViewMode.mushaf)
+            // Right Controls
+            HStack(spacing: OX.Spacing.L) {
+                // View Mode Switcher
+                Picker(
+                    "",
+                    selection: $viewMode
+                ) {
+                    Label(
+                        String(localized: "Mushaf"),
+                        systemImage: "book.pages.fill"
+                    )
+                    .tag(QuranViewMode.mushaf)
 
-                Label(
-                    String(localized: "Per Ayat"),
-                    systemImage: "list.bullet.rectangle.portrait.fill"
+                    Label(
+                        String(localized: "Per Ayat"),
+                        systemImage: "list.bullet.rectangle.portrait.fill"
+                    )
+                    .tag(QuranViewMode.verseList)
+                }
+                .pickerStyle(.segmented)
+                .fixedSize(
+                    horizontal: true,
+                    vertical: false
                 )
-                .tag(QuranViewMode.verseList)
-            }
-            .pickerStyle(.segmented)
-            .frame(width: DimensToken.SIZE_80 * 2 + DimensToken.SIZE_10)
-            .onChange(of: viewMode) { _, newMode in
-                appState.settings.quranViewMode = newMode
-                appState.saveSettingsImmediately()
-            }
-
-            // Arabic Font Size Slider
-            HStack(spacing: DimensToken.SIZE_6) {
-                Image(systemName: "textformat.size.smaller")
-                    .font(.caption2)
-                    .foregroundStyle(.secondary)
-
-                Slider(
-                    value: $arabicFontSize,
-                    in: 18...42,
-                    step: 1
-                )
-                .frame(width: DimensToken.SIZE_80)
-                .onChange(of: arabicFontSize) {
+                .onChange(of: viewMode) { _, newMode in
+                    appState.settings.quranViewMode = newMode
                     appState.saveSettingsImmediately()
                 }
 
-                Image(systemName: "textformat.size.larger")
-                    .font(.caption2)
-                    .foregroundStyle(.secondary)
+                // Arabic Font Size Slider
+                HStack(spacing: DimensToken.SIZE_6) {
+                    Image(systemName: "textformat.size.smaller")
+                        .font(.caption2)
+                        .foregroundStyle(.secondary)
+
+                    Slider(
+                        value: $arabicFontSize,
+                        in: 18...42,
+                        step: 1
+                    )
+                    .frame(width: DimensToken.SIZE_80)
+                    .onChange(of: arabicFontSize) {
+                        appState.saveSettingsImmediately()
+                    }
+
+                    Image(systemName: "textformat.size.larger")
+                        .font(.caption2)
+                        .foregroundStyle(.secondary)
+                }
             }
         }
         .padding(.horizontal, OX.Spacing.L)
