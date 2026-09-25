@@ -30,15 +30,30 @@ final class WindowManager: NSObject, NSWindowDelegate {
             .environment(\.locale, appState.settings.appLanguage.locale)
 
         let window = NSWindow(
-            contentRect: NSRect(x: 0, y: 0, width: 740, height: 540),
-            styleMask: [.titled, .closable, .miniaturizable, .resizable],
+            contentRect: NSRect(
+                x: 0,
+                y: 0,
+                width: 1000,
+                height: 660
+            ),
+            styleMask: [
+                .titled,
+                .closable,
+                .miniaturizable,
+                .resizable
+            ],
             backing: .buffered,
             defer: false
         )
 
         window.title = "KawalPrayer"
-        window.minSize = NSSize(width: 640, height: 460)
+        window.minSize = NSSize(
+            width: 820,
+            height: 540
+        )
         window.isReleasedWhenClosed = false
+        window.titleVisibility = .visible
+        window.titlebarAppearsTransparent = false
         window.center()
         window.delegate = self
         window.contentViewController = NSHostingController(rootView: contentView)

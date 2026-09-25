@@ -6,6 +6,7 @@ struct AyahDetailView: View {
     let surah: Surah
     @Binding var arabicFontSize: Double
     @Binding var scrollToAyah: Int?
+    @Binding var viewMode: QuranViewMode
 
     @Environment(AppState.self) private var appState
     @State private var highlightedAyah: Int?
@@ -26,65 +27,8 @@ struct AyahDetailView: View {
         @Bindable var appState = appState
 
         VStack(spacing: DimensToken.SIZE_0) {
-            // Header
-            VStack(spacing: DimensToken.SIZE_4) {
-                Text(surah.arabicName)
-                    .font(.largeTitle)
-                Text(surah.name)
-                    .font(.title2)
-                    .fontWeight(.semibold)
-                let versesLabel = appState.settings.appLanguage == .id ? "Ayat" : (appState.settings.appLanguage == .en ? "Verses" : "آيات")
-                let revType = appState.settings.appLanguage == .en ? (surah.revelationType == "Makkiyah" ? "Meccan" : "Medinan") : surah.revelationType
-                Text("\(localizedMeaning) — \(surah.ayahCount) \(versesLabel) — \(revType)")
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
-
-                // Controls: View mode picker & Font size slider
-                HStack(spacing: OX.Spacing.L) {
-                    Picker(
-                        "",
-                        selection: $appState.settings.quranViewMode
-                    ) {
-                        Label(
-                            String(localized: "Mushaf"),
-                            systemImage: "book.pages.fill"
-                        )
-                        .tag(QuranViewMode.mushaf)
-
-                        Label(
-                            String(localized: "Per Ayat"),
-                            systemImage: "list.bullet.rectangle.portrait.fill"
-                        )
-                        .tag(QuranViewMode.verseList)
-                    }
-                    .pickerStyle(.segmented)
-                    .frame(width: DimensToken.SIZE_80 * 2 + DimensToken.SIZE_10)
-                    .onChange(of: appState.settings.quranViewMode) {
-                        appState.saveSettingsImmediately()
-                    }
-
-                    HStack(spacing: OX.Spacing.S) {
-                        Image(systemName: "textformat.size.smaller")
-                            .font(.caption2)
-                            .foregroundStyle(.secondary)
-                        Slider(
-                            value: $arabicFontSize,
-                            in: 18...40,
-                            step: 1
-                        )
-                        .frame(width: DimensToken.SIZE_80 + DimensToken.SIZE_20)
-                        .onChange(of: arabicFontSize) {
-                            appState.saveSettingsImmediately()
-                        }
-                        Image(systemName: "textformat.size.larger")
-                            .font(.caption2)
-                            .foregroundStyle(.secondary)
-                    }
-                }
-                .padding(.top, DimensToken.SIZE_4)
-            }
-            .frame(maxWidth: .infinity)
-            .padding(.vertical, DimensToken.SIZE_14)
+            // Top Navigation & Mode Switcher Bar
+            topBar
 
             Divider()
 
@@ -92,6 +36,22 @@ struct AyahDetailView: View {
             ScrollViewReader { proxy in
                 ScrollView {
                     LazyVStack(spacing: OX.Spacing.L) {
+                        // Surah Header Banner
+                        VStack(spacing: DimensToken.SIZE_4) {
+                            Text(surah.arabicName)
+                                .font(.largeTitle)
+                            Text(surah.name)
+                                .font(.title2)
+                                .fontWeight(.semibold)
+                            let versesLabel = appState.settings.appLanguage == .id ? "Ayat" : (appState.settings.appLanguage == .en ? "Verses" : "آيات")
+                            let revType = appState.settings.appLanguage == .en ? (surah.revelationType == "Makkiyah" ? "Meccan" : "Medinan") : surah.revelationType
+                            Text("\(localizedMeaning) — \(surah.ayahCount) \(versesLabel) — \(revType)")
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                        }
+                        .frame(maxWidth: .infinity)
+                        .padding(.vertical, DimensToken.SIZE_14)
+
                         // Bismillah separator
                         if showBismillah {
                             Text("بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ")
@@ -133,6 +93,78 @@ struct AyahDetailView: View {
                 }
             }
         }
+    }
+
+    // MARK: - Top Bar
+
+    private var topBar: some View {
+        HStack(spacing: OX.Spacing.M) {
+            // Surah Name (Left)
+            VStack(
+                alignment: .leading,
+                spacing: DimensToken.SIZE_2
+            ) {
+                Text(surah.name)
+                    .font(.headline)
+                    .fontWeight(.semibold)
+
+                let versesLabel = appState.settings.appLanguage == .id ? "Ayat" : (appState.settings.appLanguage == .en ? "Verses" : "آيات")
+                let revType = appState.settings.appLanguage == .en ? (surah.revelationType == "Makkiyah" ? "Meccan" : "Medinan") : surah.revelationType
+                Text("\(localizedMeaning) • \(surah.ayahCount) \(versesLabel) • \(revType)")
+                    .font(.caption2)
+                    .foregroundStyle(.secondary)
+            }
+
+            Spacer()
+
+            // View Mode Switcher
+            Picker(
+                "",
+                selection: $viewMode
+            ) {
+                Label(
+                    String(localized: "Mushaf"),
+                    systemImage: "book.pages.fill"
+                )
+                .tag(QuranViewMode.mushaf)
+
+                Label(
+                    String(localized: "Per Ayat"),
+                    systemImage: "list.bullet.rectangle.portrait.fill"
+                )
+                .tag(QuranViewMode.verseList)
+            }
+            .pickerStyle(.segmented)
+            .frame(width: DimensToken.SIZE_80 * 2 + DimensToken.SIZE_10)
+            .onChange(of: viewMode) { _, newMode in
+                appState.settings.quranViewMode = newMode
+                appState.saveSettingsImmediately()
+            }
+
+            // Arabic Font Size Slider
+            HStack(spacing: DimensToken.SIZE_6) {
+                Image(systemName: "textformat.size.smaller")
+                    .font(.caption2)
+                    .foregroundStyle(.secondary)
+
+                Slider(
+                    value: $arabicFontSize,
+                    in: 18...42,
+                    step: 1
+                )
+                .frame(width: DimensToken.SIZE_80)
+                .onChange(of: arabicFontSize) {
+                    appState.saveSettingsImmediately()
+                }
+
+                Image(systemName: "textformat.size.larger")
+                    .font(.caption2)
+                    .foregroundStyle(.secondary)
+            }
+        }
+        .padding(.horizontal, OX.Spacing.L)
+        .padding(.vertical, DimensToken.SIZE_10)
+        .background(.bar)
     }
 
     private func scrollToTarget(proxy: ScrollViewProxy) {

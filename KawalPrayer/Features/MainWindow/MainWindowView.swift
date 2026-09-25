@@ -66,7 +66,10 @@ struct MainWindowView: View {
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
         }
         .navigationSplitViewStyle(.balanced)
-        .frame(minWidth: 680, minHeight: 480)
+        .frame(
+            minWidth: 820,
+            minHeight: 540
+        )
         .environment(\.locale, appState.settings.appLanguage.locale)
     }
 
@@ -168,71 +171,19 @@ struct MainWindowView: View {
     // MARK: - Detail
 
     private var detailView: some View {
-        @Bindable var appState = appState
-
-        return ZStack {
-            ScheduleDetailView()
-                .opacity(selection == .schedule ? 1 : 0)
-                .allowsHitTesting(selection == .schedule)
-
-            QuranView(isActive: selection == .quran)
-                .opacity(selection == .quran ? 1 : 0)
-                .allowsHitTesting(selection == .quran)
-
-            SettingsView(isActive: selection == .settings)
-                .opacity(selection == .settings ? 1 : 0)
-                .allowsHitTesting(selection == .settings)
-
-            AboutView()
-                .opacity(selection == .about ? 1 : 0)
-                .allowsHitTesting(selection == .about)
-        }
-        .navigationTitle(selection.localizedName(for: appState.settings.appLanguage))
-        .toolbar {
-            if selection == .quran {
-                ToolbarItemGroup(placement: .primaryAction) {
-                    Picker(
-                        "",
-                        selection: $appState.settings.quranViewMode
-                    ) {
-                        Label(
-                            String(localized: "Mushaf"),
-                            systemImage: "book.pages.fill"
-                        )
-                        .tag(QuranViewMode.mushaf)
-
-                        Label(
-                            String(localized: "Per Ayat"),
-                            systemImage: "list.bullet.rectangle.portrait.fill"
-                        )
-                        .tag(QuranViewMode.verseList)
-                    }
-                    .pickerStyle(.segmented)
-                    .help(String(localized: "Pilihan Tampilan Al-Quran"))
-
-                    HStack(spacing: DimensToken.SIZE_6) {
-                        Image(systemName: "textformat.size.smaller")
-                            .font(.caption2)
-                            .foregroundStyle(.secondary)
-
-                        Slider(
-                            value: $appState.settings.quranArabicFontSize,
-                            in: 18...42,
-                            step: 1
-                        )
-                        .frame(width: DimensToken.SIZE_80)
-                        .onChange(of: appState.settings.quranArabicFontSize) {
-                            appState.saveSettingsImmediately()
-                        }
-
-                        Image(systemName: "textformat.size.larger")
-                            .font(.caption2)
-                            .foregroundStyle(.secondary)
-                    }
-                    .help(String(localized: "Ukuran Huruf Arab"))
-                }
+        Group {
+            switch selection {
+            case .schedule:
+                ScheduleDetailView()
+            case .quran:
+                QuranView(isActive: true)
+            case .settings:
+                SettingsView(isActive: true)
+            case .about:
+                AboutView()
             }
         }
+        .navigationTitle(selection.localizedName(for: appState.settings.appLanguage))
     }
 }
 

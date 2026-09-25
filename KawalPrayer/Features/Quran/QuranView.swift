@@ -58,7 +58,8 @@ struct QuranView: View {
                         AyahDetailView(
                             surah: surah,
                             arabicFontSize: $appState.settings.quranArabicFontSize,
-                            scrollToAyah: $scrollToAyah
+                            scrollToAyah: $scrollToAyah,
+                            viewMode: $appState.settings.quranViewMode
                         )
                     }
                 }

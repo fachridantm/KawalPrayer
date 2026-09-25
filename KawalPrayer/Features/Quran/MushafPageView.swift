@@ -145,32 +145,32 @@ struct MushafPageView: View {
                     .fontWeight(.semibold)
 
                 let versesLabel = appState.settings.appLanguage == .id ? "Ayat" : (appState.settings.appLanguage == .en ? "Verses" : "آيات")
-                Text("\(surah.ayahCount) \(versesLabel)")
+                let pageLabel = appState.settings.appLanguage == .id ? "Halaman" : (appState.settings.appLanguage == .en ? "Page" : "صفحة")
+                let juzLabel = appState.settings.appLanguage == .ar ? "الجزء \(QuranReferenceHelper.easternArabicNumerals(from: currentJuz))" : "Juz' \(currentJuz)"
+
+                Text("\(pageLabel) \(startPage), \(juzLabel) • \(surah.ayahCount) \(versesLabel)")
                     .font(.caption2)
                     .foregroundStyle(.secondary)
             }
 
             Spacer()
 
-            // Center/Right: Page & Juz Label
-            HStack(spacing: DimensToken.SIZE_6) {
-                let pageLabel = appState.settings.appLanguage == .id ? "Halaman" : (appState.settings.appLanguage == .en ? "Page" : "صفحة")
-                let juzLabel = appState.settings.appLanguage == .ar ? "الجزء \(QuranReferenceHelper.easternArabicNumerals(from: currentJuz))" : "Juz' \(currentJuz)"
-
-                Text("\(pageLabel) \(startPage), \(juzLabel)")
-                    .font(.subheadline)
-                    .fontWeight(.medium)
-                    .foregroundStyle(.secondary)
-            }
-
-            Spacer()
-
             // View Mode Switcher
-            Picker("", selection: $viewMode) {
-                Label(String(localized: "Mushaf"), systemImage: "book.pages.fill")
-                    .tag(QuranViewMode.mushaf)
-                Label(String(localized: "Per Ayat"), systemImage: "list.bullet.rectangle.portrait.fill")
-                    .tag(QuranViewMode.verseList)
+            Picker(
+                "",
+                selection: $viewMode
+            ) {
+                Label(
+                    String(localized: "Mushaf"),
+                    systemImage: "book.pages.fill"
+                )
+                .tag(QuranViewMode.mushaf)
+
+                Label(
+                    String(localized: "Per Ayat"),
+                    systemImage: "list.bullet.rectangle.portrait.fill"
+                )
+                .tag(QuranViewMode.verseList)
             }
             .pickerStyle(.segmented)
             .frame(width: DimensToken.SIZE_80 * 2 + DimensToken.SIZE_10)
@@ -184,6 +184,7 @@ struct MushafPageView: View {
                 Image(systemName: "textformat.size.smaller")
                     .font(.caption2)
                     .foregroundStyle(.secondary)
+
                 Slider(
                     value: $arabicFontSize,
                     in: 18...42,
@@ -193,6 +194,7 @@ struct MushafPageView: View {
                 .onChange(of: arabicFontSize) {
                     appState.saveSettingsImmediately()
                 }
+
                 Image(systemName: "textformat.size.larger")
                     .font(.caption2)
                     .foregroundStyle(.secondary)

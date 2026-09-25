@@ -299,6 +299,7 @@ struct SettingsView: View {
 
         }
         .formStyle(.grouped)
+        .padding(.top, DimensToken.SIZE_52)
         .environment(\.locale, settings.appLanguage.locale)
         .onAppear {
             settings = appState.settings
