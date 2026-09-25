@@ -113,7 +113,7 @@ struct MenuBarView: View {
         let seconds = remaining % 60
         return HStack(spacing: DimensToken.SIZE_10) {
             Image(systemName: "bell.badge.fill")
-                .foregroundStyle(ColorToken.Red)
+                .foregroundStyle(OX.Color.iqamahAlert(for: colorScheme))
             VStack(
                 alignment: .leading,
                 spacing: DimensToken.SIZE_2
@@ -121,25 +121,39 @@ struct MenuBarView: View {
                 Text(String(localized: "Iqamah \(prayerName)"))
                     .font(.caption)
                     .fontWeight(.semibold)
+                    .foregroundStyle(OX.Color.onSurface(for: colorScheme))
                 Text(String(format: "%02d:%02d", minutes, seconds))
                     .font(.system(.caption, design: .monospaced))
                     .fontWeight(.medium)
-                    .foregroundStyle(ColorToken.Red)
+                    .foregroundStyle(OX.Color.iqamahAlert(for: colorScheme))
             }
             Spacer()
         }
-        .padding(.horizontal, OX.Spacing.L)
-        .padding(.vertical, OX.Spacing.S)
-        .background(ColorToken.Red10)
+        .padding(.horizontal, DimensToken.SIZE_12)
+        .padding(.vertical, DimensToken.SIZE_8)
+        .background(
+            RoundedRectangle(cornerRadius: OX.Radius.M)
+                .fill(OX.Color.iqamahContainer(for: colorScheme))
+                .overlay(
+                    RoundedRectangle(cornerRadius: OX.Radius.M)
+                        .strokeBorder(
+                            OX.Color.iqamahBorder(for: colorScheme),
+                            lineWidth: OX.Border.WIDTH_1
+                        )
+                )
+        )
+        .padding(.horizontal, DimensToken.SIZE_12)
+        .padding(.vertical, DimensToken.SIZE_6)
     }
 
     private func iqamahFinishedBanner(prayerName: String) -> some View {
         HStack(spacing: DimensToken.SIZE_10) {
             Image(systemName: "checkmark.circle.fill")
-                .foregroundStyle(ColorToken.Green)
+                .foregroundStyle(Color.accent(for: colorScheme))
             Text(String(localized: "Waktu iqamah \(prayerName)!"))
                 .font(.caption)
                 .fontWeight(.semibold)
+                .foregroundStyle(OX.Color.onSurface(for: colorScheme))
             Spacer()
             Button {
                 appState.iqamahState = .idle
@@ -149,9 +163,21 @@ struct MenuBarView: View {
             }
             .buttonStyle(.plain)
         }
-        .padding(.horizontal, OX.Spacing.L)
-        .padding(.vertical, OX.Spacing.S)
-        .background(ColorToken.Green10)
+        .padding(.horizontal, DimensToken.SIZE_12)
+        .padding(.vertical, DimensToken.SIZE_8)
+        .background(
+            RoundedRectangle(cornerRadius: OX.Radius.M)
+                .fill(OX.Color.iqamahFinishedContainer(for: colorScheme))
+                .overlay(
+                    RoundedRectangle(cornerRadius: OX.Radius.M)
+                        .strokeBorder(
+                            OX.Color.iqamahFinishedBorder(for: colorScheme),
+                            lineWidth: OX.Border.WIDTH_1
+                        )
+                )
+        )
+        .padding(.horizontal, DimensToken.SIZE_12)
+        .padding(.vertical, DimensToken.SIZE_6)
     }
 
     // MARK: - Date & Qibla Banner

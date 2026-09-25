@@ -119,6 +119,11 @@ The unified interface for spacing, radii, borders, and adaptive colors:
 - `OX.Color.prayerActiveContainer(for: scheme)` = Dark: `Green90` (40%), Light: `Green10` (85%)
 - `OX.Color.nextPrayer(for: scheme)` = `ColorToken.Blue`
 - `OX.Color.nextPrayerContainer(for: scheme)` = Dark: `Blue90` (40%), Light: `Blue10` (85%)
+- `OX.Color.iqamahAlert(for: scheme)` = Dark: `RedHalftone`, Light: `Red`
+- `OX.Color.iqamahContainer(for: scheme)` = Dark: `Red90` (40%), Light: `Red10` (85%)
+- `OX.Color.iqamahBorder(for: scheme)` = Dark: `Red` (40%), Light: `Red` (30%)
+- `OX.Color.iqamahFinishedContainer(for: scheme)` = Dark: `Green90` (40%), Light: `Green10` (85%)
+- `OX.Color.iqamahFinishedBorder(for: scheme)` = Dark: `Green` (40%), Light: `Green` (30%)
 
 ---
 

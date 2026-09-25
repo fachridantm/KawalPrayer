@@ -376,7 +376,7 @@ private struct IqamahBannerRow: View {
         HStack(spacing: DimensToken.SIZE_10) {
             Image(systemName: "bell.badge.fill")
                 .font(.title3)
-                .foregroundStyle(ColorToken.Red)
+                .foregroundStyle(OX.Color.iqamahAlert(for: colorScheme))
             VStack(
                 alignment: .leading,
                 spacing: DimensToken.SIZE_2
@@ -384,10 +384,11 @@ private struct IqamahBannerRow: View {
                 Text(String(localized: "Iqamah \(prayerName)"))
                     .font(.subheadline)
                     .fontWeight(.semibold)
+                    .foregroundStyle(OX.Color.onSurface(for: colorScheme))
                 Text(String(format: "%02d:%02d", remaining / 60, remaining % 60))
                     .font(.system(.subheadline, design: .monospaced))
                     .fontWeight(.medium)
-                    .foregroundStyle(ColorToken.Red)
+                    .foregroundStyle(OX.Color.iqamahAlert(for: colorScheme))
             }
             Spacer()
         }
@@ -395,11 +396,11 @@ private struct IqamahBannerRow: View {
         .padding(.horizontal, DimensToken.SIZE_12)
         .background(
             RoundedRectangle(cornerRadius: OX.Radius.M)
-                .fill(ColorToken.Red10)
+                .fill(OX.Color.iqamahContainer(for: colorScheme))
                 .overlay(
                     RoundedRectangle(cornerRadius: OX.Radius.M)
                         .strokeBorder(
-                            ColorToken.Red.opacity(FloatToken.PERCENT_30),
+                            OX.Color.iqamahBorder(for: colorScheme),
                             lineWidth: OX.Border.WIDTH_1
                         )
                 )
@@ -411,6 +412,8 @@ private struct IqamahBannerRow: View {
 
 private struct IqamahFinishedRow: View {
 
+    @Environment(\.colorScheme) private var colorScheme
+
     let prayerName: String
     let onDismiss: () -> Void
 
@@ -418,10 +421,11 @@ private struct IqamahFinishedRow: View {
         HStack(spacing: DimensToken.SIZE_10) {
             Image(systemName: "checkmark.circle.fill")
                 .font(.title3)
-                .foregroundStyle(ColorToken.Green)
+                .foregroundStyle(Color.accent(for: colorScheme))
             Text(String(localized: "Waktu iqamah \(prayerName)!"))
                 .font(.subheadline)
                 .fontWeight(.semibold)
+                .foregroundStyle(OX.Color.onSurface(for: colorScheme))
             Spacer()
             Button {
                 onDismiss()
@@ -435,11 +439,11 @@ private struct IqamahFinishedRow: View {
         .padding(.horizontal, DimensToken.SIZE_12)
         .background(
             RoundedRectangle(cornerRadius: OX.Radius.M)
-                .fill(ColorToken.Green10)
+                .fill(OX.Color.iqamahFinishedContainer(for: colorScheme))
                 .overlay(
                     RoundedRectangle(cornerRadius: OX.Radius.M)
                         .strokeBorder(
-                            ColorToken.Green.opacity(FloatToken.PERCENT_30),
+                            OX.Color.iqamahFinishedBorder(for: colorScheme),
                             lineWidth: OX.Border.WIDTH_1
                         )
                 )
@@ -624,12 +628,12 @@ private struct AboutView: View {
                 Text("by Outivox")
                     .font(.caption)
                     .fontWeight(.semibold)
-                    .foregroundStyle(ColorToken.Green)
+                    .foregroundStyle(Color.accent(for: colorScheme))
                     .padding(.horizontal, DimensToken.SIZE_8)
                     .padding(.vertical, DimensToken.SIZE_2)
                     .background(
                         Capsule()
-                            .fill(ColorToken.Green10)
+                            .fill(Color.accentBackground(for: colorScheme))
                             .overlay(
                                 Capsule()
                                     .strokeBorder(

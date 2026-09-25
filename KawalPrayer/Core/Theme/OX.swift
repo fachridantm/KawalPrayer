@@ -101,5 +101,35 @@ public enum OX {
                 ? ColorToken.Blue90.opacity(FloatToken.PERCENT_40)
                 : ColorToken.Blue10.opacity(FloatToken.PERCENT_85)
         }
+
+        // Iqamah / Urgent Alert Highlight
+        public static func iqamahAlert(for scheme: ColorScheme) -> SwiftUI.Color {
+            scheme == .dark ? ColorToken.RedHalftone : ColorToken.Red
+        }
+
+        public static func iqamahContainer(for scheme: ColorScheme) -> SwiftUI.Color {
+            scheme == .dark
+                ? ColorToken.Red90.opacity(FloatToken.PERCENT_40)
+                : ColorToken.Red10.opacity(FloatToken.PERCENT_85)
+        }
+
+        public static func iqamahBorder(for scheme: ColorScheme) -> SwiftUI.Color {
+            scheme == .dark
+                ? ColorToken.Red.opacity(FloatToken.PERCENT_40)
+                : ColorToken.Red.opacity(FloatToken.PERCENT_30)
+        }
+
+        // Iqamah Finished Highlight
+        public static func iqamahFinishedContainer(for scheme: ColorScheme) -> SwiftUI.Color {
+            scheme == .dark
+                ? ColorToken.Green90.opacity(FloatToken.PERCENT_40)
+                : ColorToken.Green10.opacity(FloatToken.PERCENT_85)
+        }
+
+        public static func iqamahFinishedBorder(for scheme: ColorScheme) -> SwiftUI.Color {
+            scheme == .dark
+                ? ColorToken.Green.opacity(FloatToken.PERCENT_40)
+                : ColorToken.Green.opacity(FloatToken.PERCENT_30)
+        }
     }
 }

@@ -35,8 +35,8 @@ enum IqamahState: Equatable {
 2. Computes `iqamahEndTime = Date().addingTimeInterval(minutes * 60)`.
 3. Every second, `updateIqamahCountdown()` updates remaining time:
    - Status bar text changes to: `Iqamah <Prayer> • MM:SS`.
-   - Menu bar popover displays red Outivox card (`ColorToken.Red10` and `ColorToken.Red`).
+   - Menu bar popover displays adaptive red Outivox card (`OX.Color.iqamahContainer` and `OX.Color.iqamahAlert`).
 4. When countdown reaches 0:
    - Sets `iqamahState = .finished`.
    - Sends notification: *"Waktu iqamah <Prayer>!"*.
-   - Plays chime alert and updates UI to green finished badge (`ColorToken.Green10`).
+   - Plays chime alert and updates UI to green finished badge (`OX.Color.iqamahFinishedContainer`).
