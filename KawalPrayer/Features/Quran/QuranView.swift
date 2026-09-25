@@ -73,6 +73,7 @@ struct QuranView: View {
                 emptyState
             }
         }
+        .padding(.top, DimensToken.SIZE_52)
         .onAppear {
             if let lastId = appState.settings.quranLastSurahId {
                 selectedSurahId = lastId
