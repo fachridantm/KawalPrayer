@@ -25,7 +25,7 @@ struct QuranView: View {
                 showBookmarks: $showBookmarks,
                 onSelectSurah: { _ in showBookmarks = false }
             )
-            .frame(width: DimensToken.SIZE_80 * 3 + DimensToken.SIZE_40)
+            .frame(width: DimensToken.SIZE_80 * 3 + DimensToken.SIZE_16)
             .clipped()
 
             Divider()
@@ -68,6 +68,7 @@ struct QuranView: View {
                     maxWidth: .infinity,
                     maxHeight: .infinity
                 )
+                .clipped()
             } else {
                 emptyState
             }

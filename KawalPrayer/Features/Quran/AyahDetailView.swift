@@ -97,74 +97,131 @@ struct AyahDetailView: View {
 
     // MARK: - Top Bar
 
-    private var topBar: some View {
-        HStack(spacing: OX.Spacing.M) {
-            // Surah Name (Left)
-            VStack(
-                alignment: .leading,
-                spacing: DimensToken.SIZE_2
-            ) {
-                Text(surah.name)
-                    .font(.headline)
-                    .fontWeight(.semibold)
+    private var topBarMetadataText: String {
+        let versesLabel = appState.settings.appLanguage == .id ? "Ayat" : (appState.settings.appLanguage == .en ? "Verses" : "آيات")
+        let revType = appState.settings.appLanguage == .en ? (surah.revelationType == "Makkiyah" ? "Meccan" : "Medinan") : surah.revelationType
+        return "\(localizedMeaning) • \(surah.ayahCount) \(versesLabel) • \(revType)"
+    }
 
-                let versesLabel = appState.settings.appLanguage == .id ? "Ayat" : (appState.settings.appLanguage == .en ? "Verses" : "آيات")
-                let revType = appState.settings.appLanguage == .en ? (surah.revelationType == "Makkiyah" ? "Meccan" : "Medinan") : surah.revelationType
-                Text("\(localizedMeaning) • \(surah.ayahCount) \(versesLabel) • \(revType)")
-                    .font(.caption2)
-                    .foregroundStyle(.secondary)
+    private var viewModePicker: some View {
+        Picker(
+            "",
+            selection: $viewMode
+        ) {
+            Label(
+                String(localized: "Mushaf"),
+                systemImage: "book.pages.fill"
+            )
+            .tag(QuranViewMode.mushaf)
+
+            Label(
+                String(localized: "Per Ayat"),
+                systemImage: "list.bullet.rectangle.portrait.fill"
+            )
+            .tag(QuranViewMode.verseList)
+        }
+        .labelsHidden()
+        .pickerStyle(.segmented)
+        .fixedSize(
+            horizontal: true,
+            vertical: false
+        )
+        .onChange(of: viewMode) { _, newMode in
+            appState.settings.quranViewMode = newMode
+            appState.saveSettingsImmediately()
+        }
+    }
+
+    private var fontSizeSlider: some View {
+        HStack(spacing: DimensToken.SIZE_6) {
+            Image(systemName: "textformat.size.smaller")
+                .font(.caption2)
+                .foregroundStyle(.secondary)
+
+            Slider(
+                value: $arabicFontSize,
+                in: 18...42,
+                step: 1
+            )
+            .frame(width: DimensToken.SIZE_72)
+            .onChange(of: arabicFontSize) {
+                appState.saveSettingsImmediately()
             }
 
-            Spacer()
+            Image(systemName: "textformat.size.larger")
+                .font(.caption2)
+                .foregroundStyle(.secondary)
+        }
+        .fixedSize(
+            horizontal: true,
+            vertical: false
+        )
+    }
 
-            // Right Controls
-            HStack(spacing: OX.Spacing.L) {
-                // View Mode Switcher
-                Picker(
-                    "",
-                    selection: $viewMode
+    private var topBar: some View {
+        ViewThatFits(in: .horizontal) {
+            // Wide layout: Single horizontal bar
+            HStack(spacing: OX.Spacing.M) {
+                VStack(
+                    alignment: .leading,
+                    spacing: DimensToken.SIZE_2
                 ) {
-                    Label(
-                        String(localized: "Mushaf"),
-                        systemImage: "book.pages.fill"
-                    )
-                    .tag(QuranViewMode.mushaf)
+                    Text(surah.name)
+                        .font(.headline)
+                        .fontWeight(.semibold)
+                        .lineLimit(1)
 
-                    Label(
-                        String(localized: "Per Ayat"),
-                        systemImage: "list.bullet.rectangle.portrait.fill"
-                    )
-                    .tag(QuranViewMode.verseList)
+                    Text(topBarMetadataText)
+                        .font(.caption2)
+                        .foregroundStyle(.secondary)
+                        .lineLimit(1)
                 }
-                .pickerStyle(.segmented)
                 .fixedSize(
                     horizontal: true,
                     vertical: false
                 )
-                .onChange(of: viewMode) { _, newMode in
-                    appState.settings.quranViewMode = newMode
-                    appState.saveSettingsImmediately()
+
+                Spacer(minLength: OX.Spacing.M)
+
+                HStack(spacing: OX.Spacing.L) {
+                    viewModePicker
+                    fontSizeSlider
+                }
+                .fixedSize(
+                    horizontal: true,
+                    vertical: false
+                )
+            }
+
+            // Compact layout: Two rows for small windows
+            VStack(
+                alignment: .leading,
+                spacing: DimensToken.SIZE_8
+            ) {
+                HStack(
+                    alignment: .firstTextBaseline,
+                    spacing: OX.Spacing.S
+                ) {
+                    Text(surah.name)
+                        .font(.headline)
+                        .fontWeight(.semibold)
+                        .lineLimit(1)
+
+                    Spacer(minLength: OX.Spacing.S)
+
+                    Text(topBarMetadataText)
+                        .font(.caption2)
+                        .foregroundStyle(.secondary)
+                        .lineLimit(1)
+                        .truncationMode(.tail)
                 }
 
-                // Arabic Font Size Slider
-                HStack(spacing: DimensToken.SIZE_6) {
-                    Image(systemName: "textformat.size.smaller")
-                        .font(.caption2)
-                        .foregroundStyle(.secondary)
+                HStack(spacing: OX.Spacing.M) {
+                    viewModePicker
 
-                    Slider(
-                        value: $arabicFontSize,
-                        in: 18...42,
-                        step: 1
-                    )
-                    .frame(width: DimensToken.SIZE_80)
-                    .onChange(of: arabicFontSize) {
-                        appState.saveSettingsImmediately()
-                    }
+                    Spacer(minLength: OX.Spacing.M)
 
-                    Image(systemName: "textformat.size.larger")
-                        .font(.caption2)
-                        .foregroundStyle(.secondary)
+                    fontSizeSlider
                 }
             }
         }

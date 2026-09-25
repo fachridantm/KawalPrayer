@@ -153,12 +153,14 @@ private struct SurahRow: View {
                 Text(surah.name)
                     .font(.body)
                     .fontWeight(.medium)
+                    .lineLimit(1)
                 Text(localizedMeaning)
                     .font(.caption)
                     .foregroundStyle(isSelected ? Color.white.opacity(FloatToken.PERCENT_70) : .secondary)
+                    .lineLimit(1)
             }
 
-            Spacer()
+            Spacer(minLength: OX.Spacing.XS)
 
             VStack(
                 alignment: .trailing,
@@ -166,9 +168,11 @@ private struct SurahRow: View {
             ) {
                 Text(surah.arabicName)
                     .font(.body)
+                    .lineLimit(1)
                 Text(appLanguage == .id ? "\(surah.ayahCount) ayat" : (appLanguage == .en ? "\(surah.ayahCount) verses" : "\(surah.ayahCount) آية"))
                     .font(.caption2)
                     .foregroundStyle(isSelected ? Color.white.opacity(FloatToken.PERCENT_70) : .secondary)
+                    .lineLimit(1)
             }
         }
         .foregroundStyle(isSelected ? Color.white : Color.primary)
