@@ -113,11 +113,7 @@ enum MenuBarDisplayMode: String, Codable, CaseIterable, Identifiable {
         case .iconName:          return prayer
         case .iconTime:          return "\(prayer) 04:35"
         case .iconOnly:
-            switch lang {
-            case .id: return "(Hanya Icon)"
-            case .en: return "(Icon Only)"
-            case .ar: return "(أيقونة فقط)"
-            }
+            return ""
         }
     }
 }

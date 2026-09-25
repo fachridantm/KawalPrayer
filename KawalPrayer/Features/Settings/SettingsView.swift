@@ -22,9 +22,16 @@ struct SettingsView: View {
 
             // MARK: Menu Bar & Tampilan
             Section(String(localized: "Tampilan Menu Bar")) {
-                Picker(String(localized: "Format Teks Menu Bar"), selection: $settings.menuBarDisplayMode) {
+                Picker(
+                    String(localized: "Format Teks Menu Bar"),
+                    selection: $settings.menuBarDisplayMode
+                ) {
                     ForEach(MenuBarDisplayMode.allCases) { mode in
-                        Text("\(mode.localizedName(for: settings.appLanguage)) (\(mode.samplePreview(for: settings.appLanguage)))").tag(mode)
+                        let preview = mode.samplePreview(for: settings.appLanguage)
+                        let title = preview.isEmpty
+                            ? mode.localizedName(for: settings.appLanguage)
+                            : "\(mode.localizedName(for: settings.appLanguage)) (\(preview))"
+                        Text(title).tag(mode)
                     }
                 }
 

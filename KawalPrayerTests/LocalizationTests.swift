@@ -28,7 +28,7 @@ final class LocalizationTests: XCTestCase {
 
         let iconOnly = MenuBarDisplayMode.iconOnly
         XCTAssertEqual(iconOnly.localizedName(for: .en), "Icon Only")
-        XCTAssertEqual(iconOnly.samplePreview(for: .en), "(Icon Only)")
+        XCTAssertEqual(iconOnly.samplePreview(for: .en), "")
     }
 
     func testMenuBarIconSourceEnglish() {
