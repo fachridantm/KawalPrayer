@@ -22,15 +22,17 @@ struct Dua: Identifiable, Equatable {
 }
 
 extension Dua {
+    static let afterAdzan = Dua(
+        titleId: "Doa Setelah Mendengar Adzan — HR. Bukhari 608",
+        titleEn: "Dua After Hearing Adhan — Sahih al-Bukhari 608",
+        arabic: "اللَّهُمَّ رَبَّ هَذِهِ الدَّعْوَةِ التَّامَّةِ، وَالصَّلَاةِ الْقَائِمَةِ، آتِ مُحَمَّدًا الْوَسِيلَةَ وَالْفَضِيلَةَ، وَابْعَثْهُ مَقَامًا مَحْمُودًا الَّذِي وَعَدْتَهُ،",
+        transliteration: "Allahumma Rabba hadhihi-dda` watit-tammah, was-salatil qa'imah, ati Muhammadan al-wasilata wal-fadilah, wa b`ath-hu maqaman mahmudan-il-ladhi wa`adtahu",
+        translationId: "Ya Allah! Tuhan pemilik seruan yang sempurna ini dan sholat yang akan didirikan, berikanlah kepada Muhammad hak syafaat dan keutamaan, serta bangkitkanlah beliau ke tempat terpuji yang telah Engkau janjikan kepadanya, niscaya syafaatku baginya dihalalkan pada hari kiamat.",
+        translationEn: "O Allah! Lord of this perfect call (perfect by not ascribing partners to You) and of the regular prayer which is going to be established, give Muhammad the right of intercession and illustriousness, and resurrect him to the best and the highest place in Paradise that You promised him (of)], then my intercession for him will be allowed on the Day of Resurrection\"."
+    )
+
     static let all: [Dua] = [
-        Dua(
-            titleId: "Doa Setelah Adzan — HR. Bukhari",
-            titleEn: "Supplication After the Call to Prayer (Adzan) — Sahih al-Bukhari",
-            arabic: "اللَّهُمَّ رَبَّ هَذِهِ الدَّعْوَةِ التَّامَّةِ وَالصَّلَاةِ الْقَائِمَةِ آتِ مُحَمَّدًا الْوَسِيلَةَ وَالْفَضِيلَةَ وَابْعَثْهُ مَقَامًا مَحْمُودًا الَّذِي وَعَدْتَهُ",
-            transliteration: "Allāhumma Rabba hāżihid da'watit tāmmah, waṣ-ṣalātil qā'imah, āti Muḥammadanil wasīlata wal faḍīlah, wab'aṡhu maqāman maḥmūdanil lażī wa'adtah.",
-            translationId: "Ya Allah, Tuhan pemilik seruan yang sempurna ini dan sholat yang akan ditegakkan, karuniakanlah kepada Muhammad wasilah dan keutamaan, dan bangkitkanlah beliau ke tempat terpuji yang telah Engkau janjikan.",
-            translationEn: "O Allah, Lord of this perfect call and the prayer to be offered, grant Muhammad the privilege and eminence, and raise him to the praiseworthy station that You have promised him."
-        ),
+        afterAdzan,
         Dua(
             titleId: "Keutamaan Antara Adzan & Iqamah — HR. Abu Dawud, Tirmidzi",
             titleEn: "Virtue of Supplication Between Adzan & Iqamah — Abu Dawud & at-Tirmidhi",

@@ -168,6 +168,7 @@
       }
     },
     "%@ (%@)" : {
+      "extractionState" : "stale",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -2593,6 +2594,28 @@
         }
       }
     },
+    "Pilihan Tampilan Al-Quran" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "خيارات عرض القرآن"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Quran View Options"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pilihan Tampilan Al-Quran"
+          }
+        }
+      }
+    },
     "Pop-up Doa di Menu Bar Setelah Adzan" : {
       "localizations" : {
         "ar" : {
@@ -3646,6 +3669,28 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Uji Suara Adzan"
+          }
+        }
+      }
+    },
+    "Ukuran Huruf Arab" : {
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "حجم الخط العربي"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Arabic Font Size"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ukuran Huruf Arab"
           }
         }
       }

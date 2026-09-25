@@ -39,11 +39,11 @@ final class LocalizationTests: XCTestCase {
 
     func testDuaModelEnglish() {
         let firstDua = Dua.all[0]
-        XCTAssertEqual(firstDua.title(for: .en), "Supplication After the Call to Prayer (Adzan) — Sahih al-Bukhari")
-        XCTAssertTrue(firstDua.translation(for: .en).contains("O Allah, Lord of this perfect call"))
+        XCTAssertEqual(firstDua.title(for: .en), "Dua After Hearing Adhan — Sahih al-Bukhari 608")
+        XCTAssertTrue(firstDua.translation(for: .en).contains("O Allah! Lord of this perfect call"))
 
-        XCTAssertEqual(firstDua.title(for: .id), "Doa Setelah Adzan — HR. Bukhari")
-        XCTAssertTrue(firstDua.translation(for: .id).contains("Ya Allah, Tuhan pemilik seruan yang sempurna ini"))
+        XCTAssertEqual(firstDua.title(for: .id), "Doa Setelah Mendengar Adzan — HR. Bukhari 608")
+        XCTAssertTrue(firstDua.translation(for: .id).contains("Ya Allah! Tuhan pemilik seruan yang sempurna ini"))
     }
 
     func testIslamicCalendarHelperEnglish() {

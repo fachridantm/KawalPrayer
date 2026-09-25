@@ -236,17 +236,7 @@ final class AppState {
     }
 
     private func pickDuasForCurrentPrayer() {
-        let today = Calendar.current.component(.day, from: Date())
-        if today != dailyDuaDate {
-            dailyDuaDate = today
-            dailyDuaQueue = Dua.all.shuffled()
-        }
-
-        if !dailyDuaQueue.isEmpty {
-            currentDuas = [dailyDuaQueue.removeFirst()]
-        } else {
-            currentDuas = [Dua.all[0]]
-        }
+        currentDuas = [Dua.afterAdzan]
     }
 
     func dismissDoaBanner() {
