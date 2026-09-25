@@ -45,7 +45,7 @@ struct SurahBannerView: View {
                         .font(.system(size: 24, weight: .bold))
                         .foregroundStyle(bannerGreen)
                         .lineLimit(1)
-                        .minimumScaleFactor(0.8)
+                        .minimumScaleFactor(0.65)
 
                     Text("﴿")
                         .font(.system(size: DimensToken.SIZE_20, weight: .light))
@@ -58,6 +58,7 @@ struct SurahBannerView: View {
                         .strokeBorder(bannerGreen.opacity(FloatToken.PERCENT_40), lineWidth: OX.Border.WIDTH_1)
                         .background(bannerBackground)
                 )
+                .layoutPriority(1)
 
                 // Right Arabesque Flourish
                 ArabesqueFlourish(direction: .right, color: bannerGreen)
@@ -67,7 +68,7 @@ struct SurahBannerView: View {
             .padding(.horizontal, OX.Spacing.M)
         }
         .frame(height: DimensToken.SIZE_52)
-        .padding(.horizontal, OX.Spacing.XL)
+        .padding(.horizontal, OX.Spacing.M)
     }
 
     private var formattedArabicTitle: String {

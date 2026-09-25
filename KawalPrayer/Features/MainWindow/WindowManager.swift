@@ -33,8 +33,8 @@ final class WindowManager: NSObject, NSWindowDelegate {
             contentRect: NSRect(
                 x: 0,
                 y: 0,
-                width: 1000,
-                height: 660
+                width: 1060,
+                height: 700
             ),
             styleMask: [
                 .titled,
@@ -72,6 +72,33 @@ final class WindowManager: NSObject, NSWindowDelegate {
         mainWindow?.orderOut(nil)
         if appState?.settings.showDockWhenWindowOpen == true {
             NSApp.setActivationPolicy(.accessory)
+        }
+    }
+
+    /// Dynamically enforces comfortable geometry when switching tabs
+    func adjustWindowSize(for item: MainNavItem) {
+        guard let window = mainWindow else { return }
+
+        if item == .quran {
+            window.minSize = NSSize(
+                width: 980,
+                height: 600
+            )
+
+            if window.frame.width < 1040 || window.frame.height < 660 {
+                let targetWidth = max(window.frame.width, 1060)
+                let targetHeight = max(window.frame.height, 700)
+                var newFrame = window.frame
+                let deltaH = targetHeight - newFrame.height
+                newFrame.origin.y -= deltaH
+                newFrame.size = NSSize(width: targetWidth, height: targetHeight)
+                window.setFrame(newFrame, display: true, animate: true)
+            }
+        } else {
+            window.minSize = NSSize(
+                width: 820,
+                height: 540
+            )
         }
     }
 

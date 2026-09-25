@@ -25,7 +25,7 @@ struct QuranView: View {
                 showBookmarks: $showBookmarks,
                 onSelectSurah: { _ in showBookmarks = false }
             )
-            .frame(width: DimensToken.SIZE_80 * 3 + DimensToken.SIZE_16)
+            .frame(width: DimensToken.SIZE_80 * 3 + DimensToken.SIZE_40)
             .clipped()
 
             Divider()
@@ -73,7 +73,6 @@ struct QuranView: View {
                 emptyState
             }
         }
-        .padding(.top, DimensToken.SIZE_52)
         .onAppear {
             if let lastId = appState.settings.quranLastSurahId {
                 selectedSurahId = lastId

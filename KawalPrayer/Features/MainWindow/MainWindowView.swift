@@ -67,9 +67,15 @@ struct MainWindowView: View {
         }
         .navigationSplitViewStyle(.balanced)
         .frame(
-            minWidth: 820,
-            minHeight: 540
+            minWidth: selection == .quran ? 980 : 820,
+            minHeight: selection == .quran ? 600 : 540
         )
+        .onChange(of: selection) { _, newSelection in
+            WindowManager.shared.adjustWindowSize(for: newSelection)
+        }
+        .onAppear {
+            WindowManager.shared.adjustWindowSize(for: selection)
+        }
         .environment(\.locale, appState.settings.appLanguage.locale)
     }
 
