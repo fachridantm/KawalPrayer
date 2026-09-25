@@ -190,12 +190,22 @@
         }
       }
     },
-    "%@ %lld, %@" : {
+    "%@ %lld, %@ • %lld %@" : {
       "localizations" : {
         "id" : {
           "stringUnit" : {
             "state" : "new",
-            "value" : "%1$@ %2$lld, %3$@"
+            "value" : "%1$@ %2$lld, %3$@ • %4$lld %5$@"
+          }
+        }
+      }
+    },
+    "%@ • %lld %@ • %@" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@ • %2$lld %3$@ • %4$@"
           }
         }
       }
@@ -218,16 +228,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "%1$lld"
-          }
-        }
-      }
-    },
-    "%lld %@" : {
-      "localizations" : {
-        "id" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "%1$lld %2$@"
           }
         }
       }
@@ -2595,6 +2595,7 @@
       }
     },
     "Pilihan Tampilan Al-Quran" : {
+      "extractionState" : "stale",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -3674,6 +3675,7 @@
       }
     },
     "Ukuran Huruf Arab" : {
+      "extractionState" : "stale",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
