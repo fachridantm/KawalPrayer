@@ -43,11 +43,22 @@ struct QuranView: View {
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
             } else if let surahId = selectedSurahId,
                let surah = quranService.surah(byId: surahId) {
-                AyahDetailView(
-                    surah: surah,
-                    arabicFontSize: $appState.settings.quranArabicFontSize,
-                    scrollToAyah: $scrollToAyah
-                )
+                Group {
+                    if appState.settings.quranViewMode == .mushaf {
+                        MushafPageView(
+                            surah: surah,
+                            arabicFontSize: $appState.settings.quranArabicFontSize,
+                            scrollToAyah: $scrollToAyah,
+                            viewMode: $appState.settings.quranViewMode
+                        )
+                    } else {
+                        AyahDetailView(
+                            surah: surah,
+                            arabicFontSize: $appState.settings.quranArabicFontSize,
+                            scrollToAyah: $scrollToAyah
+                        )
+                    }
+                }
                 .id(surahId)
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
             } else {

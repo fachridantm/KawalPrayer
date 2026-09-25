@@ -1,0 +1,356 @@
+import SwiftUI
+import AppKit
+
+struct MushafPageView: View {
+
+    let surah: Surah
+    @Binding var arabicFontSize: Double
+    @Binding var scrollToAyah: Int?
+    @Binding var viewMode: QuranViewMode
+
+    @Environment(AppState.self) private var appState
+    @Environment(\.colorScheme) private var colorScheme
+
+    @State private var selectedAyahNumber: Int?
+    @State private var showCopiedAlert = false
+    @State private var starScale: CGFloat = 1.0
+
+    private var startPage: Int {
+        QuranReferenceHelper.startPage(forSurah: surah.id)
+    }
+
+    private var currentJuz: Int {
+        let ayahNum = selectedAyahNumber ?? 1
+        return QuranReferenceHelper.juz(forSurah: surah.id, ayah: ayahNum)
+    }
+
+    private var showBismillah: Bool {
+        surah.id != 1 && surah.id != 9
+    }
+
+    private var selectedAyah: Ayah? {
+        guard let num = selectedAyahNumber else { return nil }
+        return surah.ayahs.first { $0.numberInSurah == num }
+    }
+
+    private var isSelectedAyahBookmarked: Bool {
+        guard let ayah = selectedAyah else { return false }
+        let key = "\(ayah.surahId)_\(ayah.numberInSurah)"
+        return appState.settings.quranBookmarks.contains(key)
+    }
+
+    private var parchmentBackground: Color {
+        colorScheme == .dark
+            ? Color(red: 0.11, green: 0.11, blue: 0.10)
+            : Color(red: 0.985, green: 0.975, blue: 0.950)
+    }
+
+    private var parchmentPageInner: Color {
+        colorScheme == .dark
+            ? Color(red: 0.14, green: 0.14, blue: 0.13)
+            : Color(red: 0.995, green: 0.988, blue: 0.968)
+    }
+
+    private var parchmentBorder: Color {
+        colorScheme == .dark
+            ? Color(white: 0.22)
+            : Color(red: 0.88, green: 0.85, blue: 0.80)
+    }
+
+    var body: some View {
+        VStack(spacing: 0) {
+            // Top Navigation & Metadata Bar
+            topBar
+
+            Divider()
+
+            // Main Mushaf Page Container
+            ZStack(alignment: .bottom) {
+                VStack(spacing: 8) {
+                    // Surah Decorative Banner & Bismillah Header
+                    VStack(spacing: 10) {
+                        SurahBannerView(surah: surah)
+                            .padding(.top, 12)
+
+                        if showBismillah {
+                            Text("بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ")
+                                .font(.system(size: max(18, arabicFontSize * 0.72), weight: .regular))
+                                .foregroundStyle(colorScheme == .dark ? Color(white: 0.9) : Color(white: 0.15))
+                                .frame(maxWidth: .infinity)
+                                .padding(.vertical, 2)
+                        }
+                    }
+
+                    // Continuous Flowing Arabic Text
+                    MushafTextView(
+                        surah: surah,
+                        arabicFontSize: CGFloat(arabicFontSize),
+                        selectedAyahNumber: selectedAyahNumber,
+                        colorScheme: colorScheme,
+                        onSelectAyah: { ayahNum in
+                            withAnimation(.spring(response: 0.3, dampingFraction: 0.8)) {
+                                selectedAyahNumber = ayahNum
+                            }
+                        }
+                    )
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+
+                    // Page Footer Indicator (e.g. Page 453)
+                    HStack {
+                        Spacer()
+                        Text("\(startPage)")
+                            .font(.system(size: 11, weight: .medium, design: .serif))
+                            .foregroundStyle(.secondary)
+                            .padding(.trailing, 20)
+                            .padding(.bottom, 6)
+                    }
+                }
+                .padding(.horizontal, 16)
+                .background(parchmentPageInner)
+                .overlay(
+                    RoundedRectangle(cornerRadius: 8)
+                        .strokeBorder(parchmentBorder, lineWidth: 1)
+                        .padding(6)
+                )
+
+                // Interactive Selected Ayah Action Card & Translation Drawer
+                if let ayah = selectedAyah {
+                    selectedAyahCard(ayah: ayah)
+                        .transition(.move(edge: .bottom).combined(with: .opacity))
+                }
+            }
+            .background(parchmentBackground)
+        }
+        .onAppear {
+            if let target = scrollToAyah {
+                selectedAyahNumber = target
+                scrollToAyah = nil
+            }
+        }
+        .onChange(of: scrollToAyah) { _, target in
+            if let target = target {
+                withAnimation(.easeInOut) {
+                    selectedAyahNumber = target
+                }
+                scrollToAyah = nil
+            }
+        }
+    }
+
+    // MARK: - Top Bar
+
+    private var topBar: some View {
+        HStack(spacing: 12) {
+            // Surah Name (Left)
+            VStack(alignment: .leading, spacing: 2) {
+                Text(surah.name)
+                    .font(.headline)
+                    .fontWeight(.semibold)
+
+                let versesLabel = appState.settings.appLanguage == .id ? "Ayat" : (appState.settings.appLanguage == .en ? "Verses" : "آيات")
+                Text("\(surah.ayahCount) \(versesLabel)")
+                    .font(.caption2)
+                    .foregroundStyle(.secondary)
+            }
+
+            Spacer()
+
+            // Center/Right: Page & Juz Label
+            HStack(spacing: 6) {
+                let pageLabel = appState.settings.appLanguage == .id ? "Halaman" : (appState.settings.appLanguage == .en ? "Page" : "صفحة")
+                let juzLabel = appState.settings.appLanguage == .ar ? "الجزء \(QuranReferenceHelper.easternArabicNumerals(from: currentJuz))" : "Juz' \(currentJuz)"
+
+                Text("\(pageLabel) \(startPage), \(juzLabel)")
+                    .font(.subheadline)
+                    .fontWeight(.medium)
+                    .foregroundStyle(.secondary)
+            }
+
+            Spacer()
+
+            // View Mode Switcher
+            Picker("", selection: $viewMode) {
+                Label(String(localized: "Mushaf"), systemImage: "book.pages.fill")
+                    .tag(QuranViewMode.mushaf)
+                Label(String(localized: "Per Ayat"), systemImage: "list.bullet.rectangle.portrait.fill")
+                    .tag(QuranViewMode.verseList)
+            }
+            .pickerStyle(.segmented)
+            .frame(width: 170)
+            .onChange(of: viewMode) { _, newMode in
+                appState.settings.quranViewMode = newMode
+                appState.saveSettingsImmediately()
+            }
+
+            // Arabic Font Size Slider
+            HStack(spacing: 6) {
+                Image(systemName: "textformat.size.smaller")
+                    .font(.caption2)
+                    .foregroundStyle(.secondary)
+                Slider(value: $arabicFontSize, in: 18...42, step: 1)
+                    .frame(width: 80)
+                    .onChange(of: arabicFontSize) {
+                        appState.saveSettingsImmediately()
+                    }
+                Image(systemName: "textformat.size.larger")
+                    .font(.caption2)
+                    .foregroundStyle(.secondary)
+            }
+        }
+        .padding(.horizontal, 16)
+        .padding(.vertical, 10)
+        .background(.bar)
+    }
+
+    // MARK: - Selected Ayah Action Card & Translation Drawer
+
+    private func selectedAyahCard(ayah: Ayah) -> some View {
+        VStack(alignment: .leading, spacing: 10) {
+            // Header: Ayah Reference + Action Pill
+            HStack {
+                HStack(spacing: 6) {
+                    Text("\(surah.name) : \(ayah.numberInSurah)")
+                        .font(.subheadline)
+                        .fontWeight(.bold)
+                        .foregroundStyle(Color.accent(for: colorScheme))
+
+                    let juzLabel = "Juz' \(QuranReferenceHelper.juz(forSurah: ayah.surahId, ayah: ayah.numberInSurah))"
+                    Text("•  \(juzLabel)")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
+
+                Spacer()
+
+                // Floating Action Buttons
+                HStack(spacing: 8) {
+                    // Bookmark Button
+                    Button {
+                        toggleBookmark(ayah: ayah)
+                    } label: {
+                        HStack(spacing: 4) {
+                            Image(systemName: isSelectedAyahBookmarked ? "star.fill" : "star")
+                                .font(.caption)
+                                .foregroundStyle(isSelectedAyahBookmarked ? .yellow : .secondary)
+                                .scaleEffect(starScale)
+                            Text(isSelectedAyahBookmarked ? String(localized: "Tersimpan") : String(localized: "Simpan"))
+                                .font(.caption2)
+                        }
+                        .padding(.horizontal, 8)
+                        .padding(.vertical, 4)
+                        .background(Capsule().fill(.quaternary))
+                    }
+                    .buttonStyle(.plain)
+                    .help(String(localized: "Bookmark ayat"))
+
+                    // Copy Button
+                    Button {
+                        copyAyah(ayah: ayah)
+                    } label: {
+                        HStack(spacing: 4) {
+                            Image(systemName: showCopiedAlert ? "checkmark" : "doc.on.doc")
+                                .font(.caption)
+                                .foregroundStyle(showCopiedAlert ? .green : .secondary)
+                            Text(showCopiedAlert ? String(localized: "Tersalin") : String(localized: "Salin"))
+                                .font(.caption2)
+                        }
+                        .padding(.horizontal, 8)
+                        .padding(.vertical, 4)
+                        .background(Capsule().fill(.quaternary))
+                    }
+                    .buttonStyle(.plain)
+                    .help(String(localized: "Salin ayat"))
+
+                    // Close Button
+                    Button {
+                        withAnimation(.spring(response: 0.25, dampingFraction: 0.8)) {
+                            selectedAyahNumber = nil
+                        }
+                    } label: {
+                        Image(systemName: "xmark.circle.fill")
+                            .font(.body)
+                            .foregroundStyle(.secondary)
+                    }
+                    .buttonStyle(.plain)
+                    .help(String(localized: "Tutup"))
+                }
+            }
+
+            Divider()
+
+            // Translations
+            VStack(alignment: .leading, spacing: 6) {
+                // Indonesian
+                VStack(alignment: .leading, spacing: 2) {
+                    Text("ID")
+                        .font(.system(size: 9, weight: .bold))
+                        .foregroundStyle(.secondary)
+                    Text(ayah.translationId)
+                        .font(.subheadline)
+                        .foregroundStyle(.primary)
+                        .fixedSize(horizontal: false, vertical: true)
+                }
+
+                // English
+                VStack(alignment: .leading, spacing: 2) {
+                    Text("EN")
+                        .font(.system(size: 9, weight: .bold))
+                        .foregroundStyle(.secondary)
+                    Text(ayah.translationEn)
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                        .fixedSize(horizontal: false, vertical: true)
+                }
+            }
+            .frame(maxHeight: 120)
+        }
+        .padding(14)
+        .background(
+            RoundedRectangle(cornerRadius: 12)
+                .fill(.regularMaterial)
+                .shadow(color: .black.opacity(0.18), radius: 10, x: 0, y: -2)
+        )
+        .overlay(
+            RoundedRectangle(cornerRadius: 12)
+                .strokeBorder(Color.accent(for: colorScheme).opacity(0.35), lineWidth: 1)
+        )
+        .padding(.horizontal, 14)
+        .padding(.bottom, 12)
+    }
+
+    // MARK: - Actions
+
+    private func toggleBookmark(ayah: Ayah) {
+        let key = "\(ayah.surahId)_\(ayah.numberInSurah)"
+        withAnimation(.spring(response: 0.25, dampingFraction: 0.4)) {
+            if let index = appState.settings.quranBookmarks.firstIndex(of: key) {
+                appState.settings.quranBookmarks.remove(at: index)
+            } else {
+                appState.settings.quranBookmarks.insert(key, at: 0)
+            }
+            starScale = 1.7
+        }
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+            withAnimation(.spring(response: 0.3, dampingFraction: 0.4)) {
+                starScale = 1.0
+            }
+        }
+        appState.saveSettingsImmediately()
+    }
+
+    private func copyAyah(ayah: Ayah) {
+        let text = """
+        \(ayah.arabicText)
+
+        \(ayah.translationId)
+
+        \(ayah.translationEn)
+        """
+        NSPasteboard.general.clearContents()
+        NSPasteboard.general.setString(text, forType: .string)
+        showCopiedAlert = true
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
+            showCopiedAlert = false
+        }
+    }
+}

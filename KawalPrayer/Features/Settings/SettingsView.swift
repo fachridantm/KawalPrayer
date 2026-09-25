@@ -234,6 +234,22 @@ struct SettingsView: View {
                 }
             }
 
+            // MARK: Al-Qur'an
+            Section(String(localized: "Al-Qur'an")) {
+                Picker(String(localized: "Tampilan Al-Qur'an"), selection: $settings.quranViewMode) {
+                    ForEach(QuranViewMode.allCases) { mode in
+                        Text(mode.localizedName(for: settings.appLanguage)).tag(mode)
+                    }
+                }
+
+                Stepper(
+                    String(localized: "Ukuran Tulisan Arab: \(Int(settings.quranArabicFontSize)) pt"),
+                    value: $settings.quranArabicFontSize,
+                    in: 18...42,
+                    step: 1
+                )
+            }
+
             // MARK: Sistem & Startup
             Section(String(localized: "Sistem")) {
                 Toggle(String(localized: "Buka otomatis saat Login (Startup)"), isOn: $settings.launchAtLogin)

@@ -240,6 +240,41 @@ enum AppLanguage: String, Codable, CaseIterable {
     }
 }
 
+enum QuranViewMode: String, Codable, CaseIterable, Identifiable {
+    case mushaf     = "mushaf"
+    case verseList  = "verse_list"
+
+    var id: String { rawValue }
+
+    var icon: String {
+        switch self {
+        case .mushaf: "book.pages.fill"
+        case .verseList: "list.bullet.rectangle.portrait.fill"
+        }
+    }
+
+    var localizedName: String {
+        localizedName(for: .id)
+    }
+
+    func localizedName(for lang: AppLanguage) -> String {
+        switch self {
+        case .mushaf:
+            switch lang {
+            case .id: "Tampilan Mushaf"
+            case .en: "Mushaf View"
+            case .ar: "عرض المصحف"
+            }
+        case .verseList:
+            switch lang {
+            case .id: "Tampilan Per Ayat"
+            case .en: "Verse by Verse"
+            case .ar: "آية بآية"
+            }
+        }
+    }
+}
+
 struct PrayerSettings: Codable, Equatable {
     var isSoundEnabled          : Bool                    = true
     var isNotificationEnabled   : Bool                    = true
@@ -268,6 +303,7 @@ struct PrayerSettings: Codable, Equatable {
     var quranLastSurahId        : Int?                    = nil
     var quranArabicFontSize     : Double                  = 26
     var quranBookmarks          : [String]                = []
+    var quranViewMode           : QuranViewMode           = .mushaf
 
     var locale: Locale {
         appLanguage.locale
@@ -304,5 +340,6 @@ struct PrayerSettings: Codable, Equatable {
         quranLastSurahId        = try c.decodeIfPresent(Int.self,                   forKey: .quranLastSurahId)
         quranArabicFontSize     = try c.decodeIfPresent(Double.self,                forKey: .quranArabicFontSize)     ?? 26
         quranBookmarks          = try c.decodeIfPresent([String].self,              forKey: .quranBookmarks)          ?? []
+        quranViewMode           = try c.decodeIfPresent(QuranViewMode.self,         forKey: .quranViewMode)           ?? .mushaf
     }
 }

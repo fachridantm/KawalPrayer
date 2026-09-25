@@ -23,6 +23,8 @@ struct AyahDetailView: View {
     }
 
     var body: some View {
+        @Bindable var appState = appState
+
         VStack(spacing: 0) {
             // Header
             VStack(spacing: 4) {
@@ -37,24 +39,38 @@ struct AyahDetailView: View {
                     .font(.caption)
                     .foregroundStyle(.secondary)
 
-                // Font size slider
-                HStack(spacing: 8) {
-                    Image(systemName: "textformat.size.smaller")
-                        .font(.caption2)
-                        .foregroundStyle(.secondary)
-                    Slider(value: $arabicFontSize, in: 18...40, step: 1)
-                        .frame(width: 120)
-                        .onChange(of: arabicFontSize) {
-                            appState.saveSettingsImmediately()
-                        }
-                    Image(systemName: "textformat.size.larger")
-                        .font(.caption2)
-                        .foregroundStyle(.secondary)
+                // Controls: View mode picker & Font size slider
+                HStack(spacing: 16) {
+                    Picker("", selection: $appState.settings.quranViewMode) {
+                        Label(String(localized: "Mushaf"), systemImage: "book.pages.fill")
+                            .tag(QuranViewMode.mushaf)
+                        Label(String(localized: "Per Ayat"), systemImage: "list.bullet.rectangle.portrait.fill")
+                            .tag(QuranViewMode.verseList)
+                    }
+                    .pickerStyle(.segmented)
+                    .frame(width: 170)
+                    .onChange(of: appState.settings.quranViewMode) {
+                        appState.saveSettingsImmediately()
+                    }
+
+                    HStack(spacing: 8) {
+                        Image(systemName: "textformat.size.smaller")
+                            .font(.caption2)
+                            .foregroundStyle(.secondary)
+                        Slider(value: $arabicFontSize, in: 18...40, step: 1)
+                            .frame(width: 100)
+                            .onChange(of: arabicFontSize) {
+                                appState.saveSettingsImmediately()
+                            }
+                        Image(systemName: "textformat.size.larger")
+                            .font(.caption2)
+                            .foregroundStyle(.secondary)
+                    }
                 }
                 .padding(.top, 4)
             }
             .frame(maxWidth: .infinity)
-            .padding(.vertical, 16)
+            .padding(.vertical, 14)
 
             Divider()
 
