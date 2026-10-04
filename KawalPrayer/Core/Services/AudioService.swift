@@ -45,6 +45,7 @@ final class AudioService: NSObject {
         player?.stop()
         player = nil
         isPlaying = false
+        NotificationService.shared.dismissAdzanNotification()
         // Manual stop also triggers onAdzanFinished so Doa popup and Iqamah flow continue smoothly
         if wasPlaying {
             onAdzanFinished?()
@@ -58,6 +59,7 @@ extension AudioService: AVAudioPlayerDelegate {
     func audioPlayerDidFinishPlaying(_ player: AVAudioPlayer, successfully flag: Bool) {
         DispatchQueue.main.async { [weak self] in
             self?.isPlaying = false
+            NotificationService.shared.dismissAdzanNotification()
             self?.onAdzanFinished?()
         }
     }

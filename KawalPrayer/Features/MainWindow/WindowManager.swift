@@ -9,6 +9,20 @@ final class WindowManager: NSObject, NSWindowDelegate {
     private var mainWindow: NSWindow?
     private weak var appState: AppState?
 
+    var isMainWindowVisible: Bool {
+        mainWindow?.isVisible == true
+    }
+
+    func bringMainWindowToFront() {
+        if let window = mainWindow {
+            if appState?.settings.showDockWhenWindowOpen == true {
+                NSApp.setActivationPolicy(.regular)
+            }
+            window.makeKeyAndOrderFront(nil)
+            NSApp.activate(ignoringOtherApps: true)
+        }
+    }
+
     private override init() {
         super.init()
     }

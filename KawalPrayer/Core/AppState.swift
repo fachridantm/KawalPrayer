@@ -177,7 +177,10 @@ final class AppState {
             let delay = prayer.time.timeIntervalSinceNow
             guard delay > 0 else { continue }
 
-            let timer = Timer.scheduledTimer(withTimeInterval: delay, repeats: false) { [weak self] _ in
+            let timer = Timer.scheduledTimer(
+                withTimeInterval: delay,
+                repeats: false
+            ) { [weak self] _ in
                 Task { @MainActor [weak self] in
                     guard let self, self.settings.isSoundEnabled else { return }
                     self.currentAdzanPrayer = prayer.name.localizedName
@@ -185,18 +188,6 @@ final class AppState {
                         soundName: self.settings.selectedSound,
                         volumeLevel: self.settings.adzanVolume
                     )
-
-                    // Cancel pending scheduled notification and send immediate interactive notification
-                    if self.settings.isNotificationEnabled {
-                        UNUserNotificationCenter.current().removePendingNotificationRequests(
-                            withIdentifiers: ["prayer_\(prayer.name.rawValue)"]
-                        )
-                        NotificationService.shared.sendAdzanNotification(
-                            for: prayer.name.localizedName(for: self.settings.appLanguage),
-                            timeString: prayer.timeString,
-                            lang: self.settings.appLanguage
-                        )
-                    }
                 }
             }
             audioTimers.append(timer)
@@ -404,6 +395,7 @@ final class AppState {
     // MARK: - Stop All
 
     func stopAll() {
+        NotificationService.shared.dismissAdzanNotification()
         NotificationService.shared.cancelAll()
         AudioService.shared.stopAdzan()
 

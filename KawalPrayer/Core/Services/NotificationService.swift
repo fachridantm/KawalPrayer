@@ -75,13 +75,68 @@ final class NotificationService: NSObject {
         guard settings.isNotificationEnabled else { return }
 
         let center = UNUserNotificationCenter.current()
-        let prayerIds = PrayerName.allCases.map { "prayer_\($0.rawValue)" }
+        let prayerIds = PrayerName.allCases.flatMap { [
+            "prayer_\($0.rawValue)",
+            "reminder_\($0.rawValue)",
+            "adzan_\($0.rawValue)"
+        ] }
         center.removePendingNotificationRequests(withIdentifiers: prayerIds)
         setupNotificationCategories(for: settings.appLanguage)
 
+        let now = Date()
+
         for prayer in prayerTimes where prayer.name.isFardhu && !prayer.isPast && !settings.mutedPrayers.contains(prayer.name) {
-            let content = UNMutableNotificationContent()
             let pName = prayer.name.localizedName(for: settings.appLanguage)
+
+            // 1. Advance reminder notification if offset is configured (> 0) and in the future
+            if settings.notificationOffset > 0 {
+                let reminderDate = prayer.time.addingTimeInterval(-Double(settings.notificationOffset) * 60)
+                if reminderDate > now {
+                    let reminderContent = UNMutableNotificationContent()
+                    switch settings.appLanguage {
+                    case .id:
+                        reminderContent.title = "Pengingat \(pName)"
+                        reminderContent.body = "\(settings.notificationOffset) menit menuju \(pName) — \(prayer.timeString)"
+                    case .en:
+                        reminderContent.title = "\(pName) Reminder"
+                        reminderContent.body = "\(settings.notificationOffset) minutes until \(pName) — \(prayer.timeString)"
+                    case .ar:
+                        reminderContent.title = "تذكير صلاة \(pName)"
+                        reminderContent.body = "\(settings.notificationOffset) دقائق حتى صلاة \(pName) — \(prayer.timeString)"
+                    }
+
+                    reminderContent.sound = nil
+                    reminderContent.categoryIdentifier = Self.categoryPrayerAlert
+                    if let attachment = createIconAttachment() {
+                        reminderContent.attachments = [attachment]
+                    }
+
+                    let reminderTrigger = UNCalendarNotificationTrigger(
+                        dateMatching: Calendar.current.dateComponents(
+                            [.hour, .minute, .second],
+                            from: reminderDate
+                        ),
+                        repeats: false
+                    )
+
+                    let reminderRequest = UNNotificationRequest(
+                        identifier: "reminder_\(prayer.name.rawValue)",
+                        content: reminderContent,
+                        trigger: reminderTrigger
+                    )
+
+                    center.add(reminderRequest) { error in
+                        if let error {
+                            NSLog("[KawalPrayer] Reminder schedule error \(prayer.name.rawValue): \(error.localizedDescription)")
+                        }
+                    }
+                }
+            }
+
+            // 2. Exact prayer time alert (always fires at prayer.time)
+            guard prayer.time > now else { continue }
+
+            let content = UNMutableNotificationContent()
             switch settings.appLanguage {
             case .id:
                 content.title = "Waktu \(pName)"
@@ -100,13 +155,11 @@ final class NotificationService: NSObject {
                 content.attachments = [attachment]
             }
 
-            var fireDate = prayer.time
-            if settings.notificationOffset > 0 {
-                fireDate = prayer.time.addingTimeInterval(-Double(settings.notificationOffset) * 60)
-            }
-
             let trigger = UNCalendarNotificationTrigger(
-                dateMatching: Calendar.current.dateComponents([.hour, .minute, .second], from: fireDate),
+                dateMatching: Calendar.current.dateComponents(
+                    [.hour, .minute, .second],
+                    from: prayer.time
+                ),
                 repeats: false
             )
 
@@ -145,8 +198,19 @@ final class NotificationService: NSObject {
             content.attachments = [attachment]
         }
 
-        let notifId = "adzan_\(prayerName)_\(Int(Date().timeIntervalSince1970))"
+        // Use deterministic prayer identifier to prevent multiple duplicate banners for the same prayer
+        let notifId = "adzan_\(prayerName)"
         activeAdzanNotificationIds.insert(notifId)
+
+        let center = UNUserNotificationCenter.current()
+        // Remove any previously scheduled or delivered notifications to avoid duplicates
+        let scheduledIds = PrayerName.allCases.flatMap { [
+            "prayer_\($0.rawValue)",
+            "reminder_\($0.rawValue)",
+            "adzan_\($0.rawValue)"
+        ] }
+        center.removePendingNotificationRequests(withIdentifiers: scheduledIds)
+        center.removeDeliveredNotifications(withIdentifiers: scheduledIds)
 
         let request = UNNotificationRequest(
             identifier: notifId,
@@ -154,7 +218,6 @@ final class NotificationService: NSObject {
             trigger: nil
         )
 
-        let center = UNUserNotificationCenter.current()
         center.add(request) { [weak self] error in
             if let error {
                 NSLog("[KawalPrayer] Adzan notification error: \(error.localizedDescription)")
@@ -172,15 +235,39 @@ final class NotificationService: NSObject {
 
     func dismissAdzanNotification(id: String? = nil) {
         let center = UNUserNotificationCenter.current()
+        let scheduledIds = PrayerName.allCases.flatMap { [
+            "prayer_\($0.rawValue)",
+            "reminder_\($0.rawValue)",
+            "adzan_\($0.rawValue)"
+        ] }
+        var idsToRemove = Set(scheduledIds)
+        idsToRemove.formUnion(activeAdzanNotificationIds)
         if let id {
-            center.removeDeliveredNotifications(withIdentifiers: [id])
-            center.removePendingNotificationRequests(withIdentifiers: [id])
+            idsToRemove.insert(id)
+        }
+
+        let idsArray = Array(idsToRemove)
+        center.removeDeliveredNotifications(withIdentifiers: idsArray)
+        center.removePendingNotificationRequests(withIdentifiers: idsArray)
+
+        if let id {
             activeAdzanNotificationIds.remove(id)
         } else {
-            let ids = Array(activeAdzanNotificationIds)
-            center.removeDeliveredNotifications(withIdentifiers: ids)
-            center.removePendingNotificationRequests(withIdentifiers: ids)
             activeAdzanNotificationIds.removeAll()
+        }
+
+        // Catch any delivered notifications by category or prefix
+        center.getDeliveredNotifications { notifications in
+            let alertIds = notifications.filter { notif in
+                notif.request.content.categoryIdentifier == Self.categoryPrayerAlert
+                || notif.request.identifier.hasPrefix("adzan_")
+                || notif.request.identifier.hasPrefix("prayer_")
+                || notif.request.identifier.hasPrefix("reminder_")
+            }.map { $0.request.identifier }
+
+            if !alertIds.isEmpty {
+                center.removeDeliveredNotifications(withIdentifiers: alertIds)
+            }
         }
     }
 

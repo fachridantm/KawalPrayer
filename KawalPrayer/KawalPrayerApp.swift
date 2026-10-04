@@ -32,10 +32,31 @@ extension Color {
 @MainActor
 final class AppDelegate: NSObject, NSApplicationDelegate, UNUserNotificationCenterDelegate {
 
-    private(set) var appState = AppState()
+    private(set) var appState: AppState!
     private var statusBarController: StatusBarController?
 
+    func applicationWillFinishLaunching(_ notification: Notification) {
+        // Skip singleton check when running unit tests
+        guard ProcessInfo.processInfo.environment["XCTestConfigurationFilePath"] == nil,
+              NSClassFromString("XCTestCase") == nil else {
+            return
+        }
+
+        // Enforce single instance: if another instance is already running, activate it and exit this process
+        let bundleID = Bundle.main.bundleIdentifier ?? "com.outivox.KawalPrayer"
+        let runningApps = NSRunningApplication.runningApplications(withBundleIdentifier: bundleID)
+        let currentPID = ProcessInfo.processInfo.processIdentifier
+
+        if let existingApp = runningApps.first(where: { $0.processIdentifier != currentPID }) {
+            NSLog("[KawalPrayer] Another instance is already running (PID: \(existingApp.processIdentifier)). Activating existing instance and exiting.")
+            existingApp.activate(options: [.activateIgnoringOtherApps])
+            exit(0)
+        }
+    }
+
     func applicationDidFinishLaunching(_ notification: Notification) {
+        appState = AppState()
+
         // Apply saved theme appearance
         NSApp.appearance = appState.settings.appTheme.nsAppearance
 
@@ -55,17 +76,42 @@ final class AppDelegate: NSObject, NSApplicationDelegate, UNUserNotificationCent
         statusBarController = StatusBarController(appState: appState)
     }
 
-    // Handle interactive notification actions (e.g. Stop Adzan from banner)
+    func applicationShouldHandleReopen(_ sender: NSApplication, hasVisibleWindows flag: Bool) -> Bool {
+        NSApp.activate(ignoringOtherApps: true)
+        if WindowManager.shared.isMainWindowVisible {
+            WindowManager.shared.bringMainWindowToFront()
+        } else {
+            statusBarController?.showPopover()
+        }
+        return true
+    }
+
+    // Handle interactive notification actions (e.g. Stop Adzan from banner, click banner, dismiss)
     func userNotificationCenter(
         _ center: UNUserNotificationCenter,
         didReceive response: UNNotificationResponse,
         withCompletionHandler completionHandler: @escaping () -> Void
     ) {
         let action = response.actionIdentifier
-        NSLog("[KawalPrayer] User clicked notification action: \(action)")
+        let notifId = response.notification.request.identifier
+        NSLog("[KawalPrayer] User clicked notification action: \(action) for id: \(notifId)")
 
         if action == NotificationService.actionStopAdzan {
             NotificationService.shared.onStopAdzanActionTriggered?()
+            NotificationService.shared.dismissAdzanNotification(id: notifId)
+        } else if action == NotificationService.actionDismiss || action == UNNotificationDismissActionIdentifier {
+            NotificationService.shared.dismissAdzanNotification(id: notifId)
+        } else if action == UNNotificationDefaultActionIdentifier {
+            // User clicked the notification banner itself:
+            // 1. Activate the running app and bring it to front
+            NSApp.activate(ignoringOtherApps: true)
+            if WindowManager.shared.isMainWindowVisible {
+                WindowManager.shared.bringMainWindowToFront()
+            } else {
+                statusBarController?.showPopover()
+            }
+            // 2. Dismiss this notification from Notification Center
+            NotificationService.shared.dismissAdzanNotification(id: notifId)
         }
 
         completionHandler()
