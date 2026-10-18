@@ -25,6 +25,10 @@ if [ ! -d "$APP_PATH" ]; then
     exit 1
 fi
 
+echo "==> Stripping extended attributes and ad-hoc signing..."
+xattr -cr "$APP_PATH"
+codesign --force --deep --sign - "$APP_PATH"
+
 echo "==> Creating DMG ($DMG_NAME)..."
 rm -rf dmg_tmp "$DMG_NAME"
 mkdir -p dmg_tmp
