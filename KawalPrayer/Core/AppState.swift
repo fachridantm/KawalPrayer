@@ -73,11 +73,15 @@ final class AppState {
     var onShowPopoverRequested: (() -> Void)?
     var onStatusBarTitleChanged: (() -> Void)?
 
+    // Update service
+    var updateService        = UpdateService.shared
+
     // MARK: - Private
 
     private let locationService = LocationService()
     private var refreshTimer    : Timer?
     private var countdownTimer  : Timer?
+    private var updateCheckTimer: Timer?
     private var audioTimers     : [Timer] = []
     private var lastRefreshDay  : Int = Calendar.current.component(.day, from: Date())
 
@@ -105,6 +109,10 @@ final class AppState {
         startRefreshTimer()
         startCountdownTimer()
         setupLocationTracking()
+
+        if settings.autoCheckUpdates {
+            startUpdateCheckTimer()
+        }
 
         // Request notification permission on first launch
         Task {
@@ -162,13 +170,13 @@ final class AppState {
         qibla = QiblaCalculator.calculate(latitude: location.latitude, longitude: location.longitude)
     }
 
-    // MARK: - Audio Timers
+    // MARK: - Prayer Alert & Audio Timers
 
     private func scheduleAudioTimers() {
         audioTimers.forEach { $0.invalidate() }
         audioTimers.removeAll()
 
-        guard settings.isSoundEnabled else { return }
+        guard settings.isSoundEnabled || settings.isNotificationEnabled else { return }
 
         let upcoming = prayerTimes.filter {
             $0.name.isFardhu && !$0.isPast && !settings.mutedPrayers.contains($0.name)
@@ -182,12 +190,23 @@ final class AppState {
                 repeats: false
             ) { [weak self] _ in
                 Task { @MainActor [weak self] in
-                    guard let self, self.settings.isSoundEnabled else { return }
+                    guard let self else { return }
                     self.currentAdzanPrayer = prayer.name.localizedName
-                    AudioService.shared.playAdzan(
-                        soundName: self.settings.selectedSound,
-                        volumeLevel: self.settings.adzanVolume
-                    )
+
+                    if self.settings.isNotificationEnabled {
+                        NotificationService.shared.sendAdzanNotification(
+                            for: prayer.name.localizedName(for: self.settings.appLanguage),
+                            timeString: prayer.timeString,
+                            lang: self.settings.appLanguage
+                        )
+                    }
+
+                    if self.settings.isSoundEnabled {
+                        AudioService.shared.playAdzan(
+                            soundName: self.settings.selectedSound,
+                            volumeLevel: self.settings.adzanVolume
+                        )
+                    }
                 }
             }
             audioTimers.append(timer)
@@ -278,6 +297,37 @@ final class AppState {
             Task { @MainActor [weak self] in
                 self?.updateCountdown()
                 self?.updateIqamahCountdown()
+            }
+        }
+    }
+
+    func startUpdateCheckTimer() {
+        updateCheckTimer?.invalidate()
+        updateCheckTimer = nil
+
+        guard settings.autoCheckUpdates else { return }
+
+        // Initial check 5 seconds after startup
+        Task { [weak self] in
+            try? await Task.sleep(nanoseconds: 5_000_000_000)
+            guard let self, self.settings.autoCheckUpdates else { return }
+            await self.updateService.checkForUpdates(
+                autoDownload: self.settings.autoUpdateEnabled,
+                manual: false
+            )
+        }
+
+        // Periodic check every 6 hours (21600 seconds)
+        updateCheckTimer = Timer.scheduledTimer(
+            withTimeInterval: 21600,
+            repeats: true
+        ) { [weak self] _ in
+            Task { @MainActor [weak self] in
+                guard let self, self.settings.autoCheckUpdates else { return }
+                await self.updateService.checkForUpdates(
+                    autoDownload: self.settings.autoUpdateEnabled,
+                    manual: false
+                )
             }
         }
     }
@@ -444,6 +494,7 @@ final class AppState {
         recalculateQibla()
         refreshPrayerTimes()
         updateMenuBarDisplayText()
+        startUpdateCheckTimer()
     }
 
     private func applyLaunchAtLogin(_ enable: Bool) {

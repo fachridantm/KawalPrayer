@@ -257,6 +257,61 @@ struct SettingsView: View {
                 )
             }
 
+            // MARK: App Updates
+            Section(String(localized: "App Updates")) {
+                Toggle(
+                    String(localized: "Automatically Update"),
+                    isOn: $settings.autoUpdateEnabled
+                )
+
+                Toggle(
+                    String(localized: "Automatically Check for Updates"),
+                    isOn: $settings.autoCheckUpdates
+                )
+
+                HStack {
+                    Text(String(localized: "Current Version"))
+                    Spacer()
+                    Text(appState.updateService.currentVersion)
+                        .foregroundStyle(.secondary)
+                }
+
+                HStack {
+                    Button {
+                        Task {
+                            await appState.updateService.checkForUpdates(manual: true)
+                        }
+                    } label: {
+                        if case .checking = appState.updateService.status {
+                            HStack(spacing: DimensToken.SIZE_6) {
+                                ProgressView()
+                                    .controlSize(.mini)
+                                Text(String(localized: "Checking..."))
+                            }
+                        } else {
+                            Label(
+                                String(localized: "Check for Updates Now"),
+                                systemImage: "arrow.triangle.2.circlepath"
+                            )
+                        }
+                    }
+                    .disabled(appState.updateService.status == .checking)
+
+                    Spacer()
+
+                    if case .upToDate = appState.updateService.status {
+                        Text(String(localized: "Up to date"))
+                            .font(.caption)
+                            .foregroundStyle(ColorToken.Green)
+                    } else if case .error(let msg) = appState.updateService.status {
+                        Text(msg)
+                            .font(.caption)
+                            .foregroundStyle(ColorToken.Red)
+                            .lineLimit(1)
+                    }
+                }
+            }
+
             // MARK: Sistem & Startup
             Section(String(localized: "Sistem")) {
                 Toggle(String(localized: "Buka otomatis saat Login (Startup)"), isOn: $settings.launchAtLogin)

@@ -13,6 +13,12 @@ struct MenuBarView: View {
             headerView
             Divider()
 
+            // Update banner / button
+            if appState.updateService.isUpdateAvailable {
+                updateBannerView
+                Divider()
+            }
+
             // Doa setelah adzan banner
             if appState.showDoaBanner {
                 DuaAfterAdzanView()
@@ -286,4 +292,108 @@ struct MenuBarView: View {
         .padding(.horizontal, OX.Spacing.L)
         .padding(.vertical, DimensToken.SIZE_10)
     }
+
+    // MARK: - Update Banner
+
+    private var updateBannerView: some View {
+        HStack(spacing: OX.Spacing.M) {
+            Image(systemName: "arrow.triangle.2.circlepath.circle.fill")
+                .font(.title3)
+                .foregroundStyle(Color.accent(for: colorScheme))
+
+            VStack(
+                alignment: .leading,
+                spacing: DimensToken.SIZE_2
+            ) {
+                HStack(spacing: DimensToken.SIZE_4) {
+                    Text(String(localized: "Update Available"))
+                        .font(.caption)
+                        .fontWeight(.bold)
+                    if let version = appState.updateService.latestRelease?.version {
+                        Text("v\(version)")
+                            .font(.caption2)
+                            .foregroundStyle(.secondary)
+                    }
+                }
+
+                updateStatusSubtitle
+            }
+
+            Spacer()
+
+            updateActionButton
+        }
+        .padding(.horizontal, OX.Spacing.L)
+        .padding(.vertical, OX.Spacing.S)
+        .background(Color.accentBackground(for: colorScheme))
+    }
+
+    @ViewBuilder
+    private var updateStatusSubtitle: some View {
+        switch appState.updateService.status {
+        case .downloading(let progress):
+            HStack(spacing: DimensToken.SIZE_4) {
+                ProgressView(
+                    value: progress,
+                    total: FloatToken.PERCENT_100
+                )
+                .progressViewStyle(.linear)
+                .frame(width: DimensToken.SIZE_80)
+
+                Text(String(format: "%.0f%%", progress * 100))
+                    .font(.caption2)
+                    .foregroundStyle(.secondary)
+            }
+        case .readyToInstall:
+            Text(String(localized: "Ready to install"))
+                .font(.caption2)
+                .foregroundStyle(ColorToken.Green)
+        default:
+            Text(String(localized: "New version ready to download"))
+                .font(.caption2)
+                .foregroundStyle(.secondary)
+        }
+    }
+
+    @ViewBuilder
+    private var updateActionButton: some View {
+        switch appState.updateService.status {
+        case .downloading:
+            ProgressView()
+                .controlSize(.small)
+        case .readyToInstall(_, let localPath):
+            Button {
+                appState.updateService.installUpdate(localURL: localPath)
+            } label: {
+                Text(String(localized: "Install"))
+                    .font(.caption)
+                    .fontWeight(.semibold)
+                    .padding(.horizontal, OX.Spacing.S)
+                    .padding(.vertical, DimensToken.SIZE_4)
+                    .background(ColorToken.Green)
+                    .foregroundStyle(Color.white)
+                    .clipShape(RoundedRectangle(cornerRadius: OX.Radius.S))
+            }
+            .buttonStyle(.plain)
+        default:
+            Button {
+                if let release = appState.updateService.latestRelease {
+                    Task {
+                        await appState.updateService.downloadUpdate(release: release)
+                    }
+                }
+            } label: {
+                Text(String(localized: "Update"))
+                    .font(.caption)
+                    .fontWeight(.semibold)
+                    .padding(.horizontal, OX.Spacing.M)
+                    .padding(.vertical, DimensToken.SIZE_4)
+                    .background(Color.accent(for: colorScheme))
+                    .foregroundStyle(Color.white)
+                    .clipShape(RoundedRectangle(cornerRadius: OX.Radius.S))
+            }
+            .buttonStyle(.plain)
+        }
+    }
 }
+

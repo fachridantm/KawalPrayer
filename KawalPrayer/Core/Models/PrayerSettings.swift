@@ -300,6 +300,8 @@ struct PrayerSettings: Codable, Equatable {
     var quranArabicFontSize     : Double                  = 26
     var quranBookmarks          : [String]                = []
     var quranViewMode           : QuranViewMode           = .mushaf
+    var autoUpdateEnabled       : Bool                    = true
+    var autoCheckUpdates        : Bool                    = true
 
     var locale: Locale {
         appLanguage.locale
@@ -337,5 +339,7 @@ struct PrayerSettings: Codable, Equatable {
         quranArabicFontSize     = try c.decodeIfPresent(Double.self,                forKey: .quranArabicFontSize)     ?? 26
         quranBookmarks          = try c.decodeIfPresent([String].self,              forKey: .quranBookmarks)          ?? []
         quranViewMode           = try c.decodeIfPresent(QuranViewMode.self,         forKey: .quranViewMode)           ?? .mushaf
+        autoUpdateEnabled       = try c.decodeIfPresent(Bool.self,                  forKey: .autoUpdateEnabled)       ?? true
+        autoCheckUpdates        = try c.decodeIfPresent(Bool.self,                  forKey: .autoCheckUpdates)        ?? true
     }
 }
