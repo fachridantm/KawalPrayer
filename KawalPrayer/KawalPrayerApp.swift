@@ -11,6 +11,14 @@ extension AppTheme {
         case .dark:   NSAppearance(named: .darkAqua)
         }
     }
+
+    var colorScheme: ColorScheme? {
+        switch self {
+        case .system: nil
+        case .light:  .light
+        case .dark:   .dark
+        }
+    }
 }
 
 extension Color {

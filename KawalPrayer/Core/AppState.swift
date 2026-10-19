@@ -3,6 +3,7 @@ import CoreLocation
 import Observation
 import ServiceManagement
 import UserNotifications
+import AppKit
 
 enum IqamahState: Equatable {
     case idle
@@ -485,6 +486,7 @@ final class AppState {
         if let data = try? JSONEncoder().encode(settings) {
             UserDefaults.standard.set(data, forKey: "kawal_prayer_settings")
         }
+        NSApp.appearance = settings.appTheme.nsAppearance
         if !settings.useAutoLocation,
            let data = try? JSONEncoder().encode(location) {
             UserDefaults.standard.set(data, forKey: "kawal_manual_location")

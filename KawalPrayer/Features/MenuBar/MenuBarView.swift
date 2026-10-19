@@ -48,6 +48,7 @@ struct MenuBarView: View {
         .frame(width: DimensToken.SIZE_80 * 4 + DimensToken.SIZE_40)
         .background(OX.Color.surface(for: colorScheme))
         .environment(\.locale, appState.settings.appLanguage.locale)
+        .preferredColorScheme(appState.settings.appTheme.colorScheme)
     }
 
     // MARK: - Header

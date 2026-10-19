@@ -59,7 +59,7 @@ final class DesignTokensTests: XCTestCase {
         XCTAssertEqual(OX.Color.prayerActive(for: .light), ColorToken.Green)
         XCTAssertEqual(OX.Color.prayerActive(for: .dark), ColorToken.Green)
         XCTAssertEqual(OX.Color.nextPrayer(for: .light), ColorToken.Blue)
-        XCTAssertEqual(OX.Color.iqamahAlert(for: .light), ColorToken.Red)
+        XCTAssertEqual(OX.Color.iqamahAlert(for: .light), ColorToken.Red60)
         XCTAssertEqual(OX.Color.iqamahAlert(for: .dark), ColorToken.RedHalftone)
         XCTAssertNotNil(OX.Color.iqamahContainer(for: .light))
         XCTAssertNotNil(OX.Color.iqamahContainer(for: .dark))

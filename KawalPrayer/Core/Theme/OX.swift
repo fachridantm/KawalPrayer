@@ -104,7 +104,7 @@ public enum OX {
 
         // Iqamah / Urgent Alert Highlight
         public static func iqamahAlert(for scheme: ColorScheme) -> SwiftUI.Color {
-            scheme == .dark ? ColorToken.RedHalftone : ColorToken.Red
+            scheme == .dark ? ColorToken.RedHalftone : ColorToken.Red60
         }
 
         public static func iqamahContainer(for scheme: ColorScheme) -> SwiftUI.Color {

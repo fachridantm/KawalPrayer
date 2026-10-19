@@ -42,6 +42,7 @@ final class WindowManager: NSObject, NSWindowDelegate {
         let contentView = MainWindowView()
             .environment(appState)
             .environment(\.locale, appState.settings.appLanguage.locale)
+            .preferredColorScheme(appState.settings.appTheme.colorScheme)
 
         let window = NSWindow(
             contentRect: NSRect(
