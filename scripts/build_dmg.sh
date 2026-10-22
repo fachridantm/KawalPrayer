@@ -4,11 +4,13 @@ set -e
 PROJECT="KawalPrayer.xcodeproj"
 SCHEME="KawalPrayer"
 BUILD_DIR="build"
-DMG_NAME="KawalPrayer-v1.0.0.dmg"
+VERSION=$(grep -m1 "MARKETING_VERSION =" "$PROJECT/project.pbxproj" | sed -E 's/.*MARKETING_VERSION = ([0-9.]+);/\1/' | tr -d '[:space:]')
+BUILD_NUMBER=$(grep -m1 "CURRENT_PROJECT_VERSION =" "$PROJECT/project.pbxproj" | sed -E 's/.*CURRENT_PROJECT_VERSION = ([0-9]+);/\1/' | tr -d '[:space:]')
+DMG_NAME="KawalPrayer-v${VERSION}.dmg"
 
 export DEVELOPER_DIR="${DEVELOPER_DIR:-/Applications/Xcode.app/Contents/Developer}"
 
-echo "==> Building KawalPrayer ($SCHEME)..."
+echo "==> Building KawalPrayer v${VERSION} (Build ${BUILD_NUMBER}) [$SCHEME]..."
 xcodebuild \
     -project "$PROJECT" \
     -scheme "$SCHEME" \

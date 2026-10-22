@@ -589,7 +589,7 @@ private struct AboutView: View {
     @Environment(\.colorScheme) private var colorScheme
 
     private var appVersion: String {
-        Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "1.0.0"
+        appState.updateService.displayVersion
     }
 
     private var aboutDescription: String {

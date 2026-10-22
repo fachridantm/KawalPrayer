@@ -78,6 +78,14 @@ final class UpdateService: NSObject {
         Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "1.0.0"
     }
 
+    var currentBuild: String {
+        Bundle.main.infoDictionary?["CFBundleVersion"] as? String ?? "1"
+    }
+
+    var displayVersion: String {
+        "\(currentVersion) (\(currentBuild))"
+    }
+
     private let repoOwner = "fachridantm"
     private let repoName = "KawalPrayer"
 
@@ -88,8 +96,8 @@ final class UpdateService: NSObject {
     // MARK: - Version Comparison
 
     static func isVersion(_ remote: String, greaterThan current: String) -> Bool {
-        let cleanRemote = remote.trimmingCharacters(in: CharacterSet(charactersIn: "vV \t\n"))
-        let cleanCurrent = current.trimmingCharacters(in: CharacterSet(charactersIn: "vV \t\n"))
+        let cleanRemote = sanitizeVersionString(remote)
+        let cleanCurrent = sanitizeVersionString(current)
 
         let remoteComponents = cleanRemote.split(separator: ".").compactMap { Int($0) }
         let currentComponents = cleanCurrent.split(separator: ".").compactMap { Int($0) }
@@ -102,6 +110,15 @@ final class UpdateService: NSObject {
             if r < c { return false }
         }
         return false
+    }
+
+    private static func sanitizeVersionString(_ raw: String) -> String {
+        let trimmed = raw.trimmingCharacters(in: CharacterSet(charactersIn: "vV \t\n"))
+        let withoutMetadata = trimmed.split(
+            maxSplits: 1,
+            omittingEmptySubsequences: true
+        ) { $0 == "-" || $0 == "+" }.first
+        return String(withoutMetadata ?? Substring(trimmed))
     }
 
     // MARK: - Check For Updates

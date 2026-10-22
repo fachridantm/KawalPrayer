@@ -272,14 +272,17 @@ struct SettingsView: View {
                 HStack {
                     Text(String(localized: "Current Version"))
                     Spacer()
-                    Text(appState.updateService.currentVersion)
+                    Text(appState.updateService.displayVersion)
                         .foregroundStyle(.secondary)
                 }
 
                 HStack {
                     Button {
                         Task {
-                            await appState.updateService.checkForUpdates(manual: true)
+                            await appState.updateService.checkForUpdates(
+                                autoDownload: settings.autoUpdateEnabled,
+                                manual: true
+                            )
                         }
                     } label: {
                         if case .checking = appState.updateService.status {
@@ -299,15 +302,52 @@ struct SettingsView: View {
 
                     Spacer()
 
-                    if case .upToDate = appState.updateService.status {
+                    switch appState.updateService.status {
+                    case .upToDate:
                         Text(String(localized: "Up to date"))
                             .font(.caption)
                             .foregroundStyle(ColorToken.Green)
-                    } else if case .error(let msg) = appState.updateService.status {
+                    case .updateAvailable(let release):
+                        HStack(spacing: OX.Spacing.S) {
+                            Text("v\(release.version)")
+                                .font(.caption)
+                                .fontWeight(.semibold)
+                                .foregroundStyle(ColorToken.Blue)
+                            Button(String(localized: "Update")) {
+                                Task {
+                                    await appState.updateService.downloadUpdate(release: release)
+                                }
+                            }
+                        }
+                    case .downloading(let progress):
+                        HStack(spacing: DimensToken.SIZE_6) {
+                            ProgressView(
+                                value: progress,
+                                total: FloatToken.PERCENT_100
+                            )
+                            .progressViewStyle(.linear)
+                            .frame(width: DimensToken.SIZE_80)
+                            Text(String(format: "%.0f%%", progress * 100))
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                        }
+                    case .readyToInstall(let release, let localPath):
+                        HStack(spacing: OX.Spacing.S) {
+                            Text("v\(release.version)")
+                                .font(.caption)
+                                .fontWeight(.semibold)
+                                .foregroundStyle(ColorToken.Green)
+                            Button(String(localized: "Install")) {
+                                appState.updateService.installUpdate(localURL: localPath)
+                            }
+                        }
+                    case .error(let msg):
                         Text(msg)
                             .font(.caption)
                             .foregroundStyle(ColorToken.Red)
                             .lineLimit(1)
+                    case .idle, .checking:
+                        EmptyView()
                     }
                 }
             }

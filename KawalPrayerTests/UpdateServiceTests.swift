@@ -16,10 +16,26 @@ final class UpdateServiceTests: XCTestCase {
         XCTAssertFalse(UpdateService.isVersion("v1.0.0", greaterThan: "1.0.0"))
         XCTAssertFalse(UpdateService.isVersion("1.0.0", greaterThan: "v1.0.0"))
 
+        // Pre-release and build metadata suffixes
+        XCTAssertTrue(UpdateService.isVersion("v1.0.1-beta.1", greaterThan: "1.0.0"))
+        XCTAssertTrue(UpdateService.isVersion("v1.0.1+2", greaterThan: "1.0.0+1"))
+        XCTAssertFalse(UpdateService.isVersion("v1.0.0+5", greaterThan: "1.0.0"))
+
         // Older versions
         XCTAssertFalse(UpdateService.isVersion("0.9.9", greaterThan: "1.0.0"))
         XCTAssertFalse(UpdateService.isVersion("1.0.0", greaterThan: "1.0.1"))
         XCTAssertFalse(UpdateService.isVersion("v0.5.0", greaterThan: "v1.0.0"))
+    }
+
+    @MainActor
+    func testVersionAndBuildDisplayFormatting() {
+        let service = UpdateService.shared
+        XCTAssertFalse(service.currentVersion.isEmpty)
+        XCTAssertFalse(service.currentBuild.isEmpty)
+        XCTAssertEqual(
+            service.displayVersion,
+            "\(service.currentVersion) (\(service.currentBuild))"
+        )
     }
 
     func testUpdateSettingsDefaultValues() {
