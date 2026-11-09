@@ -56,6 +56,25 @@ struct SettingsView: View {
             Section(String(localized: "Notifikasi")) {
                 Toggle(String(localized: "Banner Notifikasi"), isOn: $settings.isNotificationEnabled)
 
+                Picker(
+                    String(localized: "Notification Display"),
+                    selection: $settings.notificationStyle
+                ) {
+                    ForEach(NotificationStyle.allCases) { style in
+                        Text(style.localizedName(for: settings.appLanguage))
+                            .tag(style)
+                    }
+                }
+                .disabled(!settings.isNotificationEnabled)
+
+                Button(String(localized: "Test Notification")) {
+                    NotificationService.shared.sendTestNotification(
+                        lang: settings.appLanguage,
+                        style: settings.notificationStyle
+                    )
+                }
+                .disabled(!settings.isNotificationEnabled)
+
                 Stepper(
                     String(localized: "Notif \(settings.notificationOffset) menit sebelum sholat"),
                     value: $settings.notificationOffset,

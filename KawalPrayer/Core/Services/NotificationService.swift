@@ -11,10 +11,42 @@ final class NotificationService: NSObject {
 
     var onStopAdzanActionTriggered: (() -> Void)?
     private var activeAdzanNotificationIds: Set<String> = []
+    private var islandReminderTimers: [Timer] = []
 
     private override init() {
         super.init()
         setupNotificationCategories()
+    }
+
+    // MARK: - Island Helpers
+
+    private static let reminderIslandSeconds: TimeInterval = 10
+    private static let iqamahIslandSeconds: TimeInterval   = 20
+
+    static func dismissTitle(for lang: AppLanguage) -> String {
+        switch lang {
+        case .id: "Tutup"
+        case .en: "Dismiss"
+        case .ar: "إغلاق"
+        }
+    }
+
+    static func stopAdzanTitle(for lang: AppLanguage) -> String {
+        switch lang {
+        case .id: "Hentikan Adzan"
+        case .en: "Stop Adzan"
+        case .ar: "إيقاف الأذان"
+        }
+    }
+
+    /// Presents a sample Adzan alert so the user can preview the selected style.
+    func sendTestNotification(lang: AppLanguage, style: NotificationStyle) {
+        sendAdzanNotification(
+            for: PrayerName.asr.localizedName(for: lang),
+            timeString: "15:24",
+            lang: lang,
+            style: style
+        )
     }
 
     // MARK: - Setup & Categories
@@ -83,6 +115,11 @@ final class NotificationService: NSObject {
         center.removePendingNotificationRequests(withIdentifiers: prayerIds)
         setupNotificationCategories(for: settings.appLanguage)
 
+        islandReminderTimers.forEach { $0.invalidate() }
+        islandReminderTimers.removeAll()
+        let useSystem = settings.notificationStyle.usesSystem
+        let useIsland = settings.notificationStyle.usesIsland
+
         let now = Date()
 
         for prayer in prayerTimes where prayer.name.isFardhu && !prayer.isPast && !settings.mutedPrayers.contains(prayer.name) {
@@ -125,10 +162,31 @@ final class NotificationService: NSObject {
                         trigger: reminderTrigger
                     )
 
-                    center.add(reminderRequest) { error in
-                        if let error {
-                            NSLog("[KawalPrayer] Reminder schedule error \(prayer.name.rawValue): \(error.localizedDescription)")
+                    if useSystem {
+                        center.add(reminderRequest) { error in
+                            if let error {
+                                NSLog("[KawalPrayer] Reminder schedule error \(prayer.name.rawValue): \(error.localizedDescription)")
+                            }
                         }
+                    }
+
+                    if useIsland {
+                        let alert = DynamicIslandAlert(
+                            kind: .reminder,
+                            title: reminderContent.title,
+                            body: reminderContent.body,
+                            dismissTitle: Self.dismissTitle(for: settings.appLanguage),
+                            autoDismissSeconds: Self.reminderIslandSeconds
+                        )
+                        let timer = Timer.scheduledTimer(
+                            withTimeInterval: reminderDate.timeIntervalSinceNow,
+                            repeats: false
+                        ) { _ in
+                            Task { @MainActor in
+                                DynamicIslandWindowController.shared.present(alert)
+                            }
+                        }
+                        islandReminderTimers.append(timer)
                     }
                 }
             }
@@ -168,9 +226,11 @@ final class NotificationService: NSObject {
                 content: content,
                 trigger: trigger
             )
-            center.add(request) { error in
-                if let error {
-                    NSLog("[KawalPrayer] Schedule error \(prayer.name.rawValue): \(error.localizedDescription)")
+            if useSystem {
+                center.add(request) { error in
+                    if let error {
+                        NSLog("[KawalPrayer] Schedule error \(prayer.name.rawValue): \(error.localizedDescription)")
+                    }
                 }
             }
         }
@@ -178,7 +238,12 @@ final class NotificationService: NSObject {
 
     // MARK: - Adzan Notification (Real-time with interactive actions)
 
-    func sendAdzanNotification(for prayerName: String, timeString: String, lang: AppLanguage = .id) {
+    func sendAdzanNotification(
+        for prayerName: String,
+        timeString: String,
+        lang: AppLanguage = .id,
+        style: NotificationStyle = .systemBanner
+    ) {
         setupNotificationCategories(for: lang)
         let content = UNMutableNotificationContent()
         switch lang {
@@ -197,6 +262,21 @@ final class NotificationService: NSObject {
         if let attachment = createIconAttachment() {
             content.attachments = [attachment]
         }
+
+        if style.usesIsland {
+            let alert = DynamicIslandAlert(
+                kind: .adzan,
+                title: content.title,
+                body: content.body,
+                actionTitle: Self.stopAdzanTitle(for: lang),
+                dismissTitle: Self.dismissTitle(for: lang),
+                onAction: { [weak self] in self?.onStopAdzanActionTriggered?() }
+            )
+            Task { @MainActor in
+                DynamicIslandWindowController.shared.present(alert)
+            }
+        }
+        guard style.usesSystem else { return }
 
         // Use deterministic prayer identifier to prevent multiple duplicate banners for the same prayer
         let notifId = "adzan_\(prayerName)"
@@ -234,6 +314,9 @@ final class NotificationService: NSObject {
     // MARK: - Dismissal
 
     func dismissAdzanNotification(id: String? = nil) {
+        Task { @MainActor in
+            DynamicIslandWindowController.shared.dismiss()
+        }
         let center = UNUserNotificationCenter.current()
         let scheduledIds = PrayerName.allCases.flatMap { [
             "prayer_\($0.rawValue)",
@@ -273,7 +356,11 @@ final class NotificationService: NSObject {
 
     // MARK: - Iqamah Notification
 
-    func sendIqamahNotification(for prayerName: String, lang: AppLanguage = .id) {
+    func sendIqamahNotification(
+        for prayerName: String,
+        lang: AppLanguage = .id,
+        style: NotificationStyle = .systemBanner
+    ) {
         let content = UNMutableNotificationContent()
         switch lang {
         case .id:
@@ -287,6 +374,21 @@ final class NotificationService: NSObject {
             content.body = "حان وقت إقامة الصلاة"
         }
         content.sound = .default
+
+        if style.usesIsland {
+            let alert = DynamicIslandAlert(
+                kind: .iqamah,
+                title: content.title,
+                body: content.body,
+                dismissTitle: Self.dismissTitle(for: lang),
+                autoDismissSeconds: Self.iqamahIslandSeconds
+            )
+            Task { @MainActor in
+                DynamicIslandWindowController.shared.present(alert)
+            }
+        }
+        guard style.usesSystem else { return }
+
         if let attachment = createIconAttachment() {
             content.attachments = [attachment]
         }
@@ -335,5 +437,7 @@ final class NotificationService: NSObject {
         center.removeAllPendingNotificationRequests()
         center.removeAllDeliveredNotifications()
         activeAdzanNotificationIds.removeAll()
+        islandReminderTimers.forEach { $0.invalidate() }
+        islandReminderTimers.removeAll()
     }
 }

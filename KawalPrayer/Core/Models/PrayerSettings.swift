@@ -271,7 +271,42 @@ enum QuranViewMode: String, Codable, CaseIterable, Identifiable {
     }
 }
 
+enum NotificationStyle: String, Codable, CaseIterable, Identifiable {
+    case dynamicIsland = "dynamic_island"
+    case systemBanner  = "system_banner"
+    case both          = "both"
+
+    var id: String { rawValue }
+
+    var usesIsland: Bool { self != .systemBanner }
+    var usesSystem: Bool { self != .dynamicIsland }
+
+    func localizedName(for lang: AppLanguage) -> String {
+        switch self {
+        case .dynamicIsland:
+            switch lang {
+            case .id: "Dynamic Island & Notch"
+            case .en: "Dynamic Island & Notch"
+            case .ar: "الجزيرة التفاعلية والنوتش"
+            }
+        case .systemBanner:
+            switch lang {
+            case .id: "Banner Sistem"
+            case .en: "System Banner"
+            case .ar: "إشعار النظام"
+            }
+        case .both:
+            switch lang {
+            case .id: "Keduanya"
+            case .en: "Both"
+            case .ar: "كلاهما"
+            }
+        }
+    }
+}
+
 struct PrayerSettings: Codable, Equatable {
+    var notificationStyle       : NotificationStyle       = .dynamicIsland
     var isSoundEnabled          : Bool                    = true
     var isNotificationEnabled   : Bool                    = true
     var isCountdownEnabled      : Bool                    = true
@@ -311,6 +346,7 @@ struct PrayerSettings: Codable, Equatable {
 
     init(from decoder: Decoder) throws {
         let c = try decoder.container(keyedBy: CodingKeys.self)
+        notificationStyle       = try c.decodeIfPresent(NotificationStyle.self,     forKey: .notificationStyle)       ?? .dynamicIsland
         isSoundEnabled          = try c.decodeIfPresent(Bool.self,                  forKey: .isSoundEnabled)          ?? true
         isNotificationEnabled   = try c.decodeIfPresent(Bool.self,                  forKey: .isNotificationEnabled)   ?? true
         isCountdownEnabled      = try c.decodeIfPresent(Bool.self,                  forKey: .isCountdownEnabled)      ?? true

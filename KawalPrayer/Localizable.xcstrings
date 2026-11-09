@@ -1,9 +1,7 @@
 {
   "sourceLanguage" : "id",
   "strings" : {
-    "" : {
-
-    },
+    "" : {},
     "\"Ya Allah, Tuhan pemilik seruan yang sempurna ini dan sholat yang akan ditegakkan, karuniakanlah kepada Muhammad wasilah dan keutamaan, dan bangkitkanlah beliau ke tempat terpuji yang telah Engkau janjikan.\"" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -95,12 +93,8 @@
         }
       }
     },
-    "﴾" : {
-
-    },
-    "﴿" : {
-
-    },
+    "﴾" : {},
+    "﴿" : {},
     "%@  %@" : {
       "localizations" : {
         "ar" : {
@@ -234,12 +228,8 @@
         }
       }
     },
-    "%lld verses" : {
-
-    },
-    "%lld آية" : {
-
-    },
+    "%lld verses" : {},
+    "%lld آية" : {},
     "%lld%%" : {
       "localizations" : {
         "ar" : {
@@ -262,15 +252,9 @@
         }
       }
     },
-    "•  %@" : {
-
-    },
-    "Active" : {
-
-    },
-    "Aktif" : {
-
-    },
+    "•  %@" : {},
+    "Active" : {},
+    "Aktif" : {},
     "Aktifkan Audio Adzan" : {
       "localizations" : {
         "ar" : {
@@ -694,9 +678,7 @@
         }
       }
     },
-    "Built with SwiftUI & Swift 6 • Outivox Design Token System" : {
-
-    },
+    "Built with SwiftUI & Swift 6 • Outivox Design Token System" : {},
     "Buka App" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -787,9 +769,7 @@
         }
       }
     },
-    "by Outivox" : {
-
-    },
+    "by Outivox" : {},
     "Cari surah..." : {
       "localizations" : {
         "ar" : {
@@ -845,9 +825,7 @@
         }
       }
     },
-    "Current prayer time" : {
-
-    },
+    "Current prayer time" : {},
     "Dibuat dengan SwiftUI & Swift 6" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -871,9 +849,7 @@
         }
       }
     },
-    "Dibuat dengan SwiftUI & Swift 6 • Outivox Design Token System" : {
-
-    },
+    "Dibuat dengan SwiftUI & Swift 6 • Outivox Design Token System" : {},
     "Doa Setelah Adzan" : {
       "localizations" : {
         "ar" : {
@@ -1054,9 +1030,7 @@
         }
       }
     },
-    "EN" : {
-
-    },
+    "EN" : {},
     "Format Menu Bar" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -1352,9 +1326,7 @@
         }
       }
     },
-    "ID" : {
-
-    },
+    "ID" : {},
     "Ikon Menu Bar" : {
       "localizations" : {
         "ar" : {
@@ -2185,9 +2157,7 @@
         }
       }
     },
-    "N" : {
-
-    },
+    "N" : {},
     "Nama kota" : {
       "localizations" : {
         "ar" : {
@@ -2232,12 +2202,8 @@
         }
       }
     },
-    "Next" : {
-
-    },
-    "Next prayer" : {
-
-    },
+    "Next" : {},
+    "Next prayer" : {},
     "Notif %lld menit sebelum" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -2349,9 +2315,7 @@
         }
       }
     },
-    "Passed" : {
-
-    },
+    "Passed" : {},
     "Pengaman Waktu (Ihtiyat): +%lld menit" : {
       "localizations" : {
         "ar" : {
@@ -2619,9 +2583,7 @@
         }
       }
     },
-    "Qibla Direction" : {
-
-    },
+    "Qibla Direction" : {},
     "Rabi'ul Akhir" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -3744,9 +3706,7 @@
         }
       }
     },
-    "Version %@" : {
-
-    },
+    "Version %@" : {},
     "Volume Adzan" : {
       "localizations" : {
         "ar" : {
@@ -3881,9 +3841,7 @@
         }
       }
     },
-    "اتجاه القبلة" : {
-
-    },
+    "اتجاه القبلة" : {},
     "الإحداثيات: %@، %@" : {
       "localizations" : {
         "id" : {
@@ -3894,18 +3852,10 @@
         }
       }
     },
-    "الإصدار %@" : {
-
-    },
-    "التالية" : {
-
-    },
-    "الصلاة التالية" : {
-
-    },
-    "انتهى" : {
-
-    },
+    "الإصدار %@" : {},
+    "التالية" : {},
+    "الصلاة التالية" : {},
+    "انتهى" : {},
     "بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ" : {
       "localizations" : {
         "ar" : {
@@ -3928,17 +3878,53 @@
         }
       }
     },
-    "تم التطوير باستخدام SwiftUI و Swift 6 • نظام Outivox للتصميم" : {
-
+    "تم التطوير باستخدام SwiftUI و Swift 6 • نظام Outivox للتصميم" : {},
+    "ش" : {},
+    "نشط" : {},
+    "وقت الصلاة الحالي" : {},
+    "Notification Display" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tampilan Notifikasi"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Notification Display"
+          }
+        },
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "طريقة عرض التنبيهات"
+          }
+        }
+      }
     },
-    "ش" : {
-
-    },
-    "نشط" : {
-
-    },
-    "وقت الصلاة الحالي" : {
-
+    "Test Notification" : {
+      "localizations" : {
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Uji Coba Notifikasi"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Test Notification"
+          }
+        },
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "اختبار التنبيه"
+          }
+        }
+      }
     }
   },
   "version" : "1.0"

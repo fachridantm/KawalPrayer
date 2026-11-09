@@ -20,6 +20,7 @@ public enum OX {
     // MARK: - Radius Scale (Matching BaseOxboxRadius in KawalEvent)
 
     public enum Radius {
+        public static let None: CGFloat = 0.0
         public static let XS   = DimensToken.SIZE_4   // 4.dp
         public static let S    = DimensToken.SIZE_8   // 8.dp
         public static let M    = DimensToken.SIZE_12  // 12.dp

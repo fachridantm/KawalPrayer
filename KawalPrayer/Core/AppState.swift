@@ -198,7 +198,8 @@ final class AppState {
                         NotificationService.shared.sendAdzanNotification(
                             for: prayer.name.localizedName(for: self.settings.appLanguage),
                             timeString: prayer.timeString,
-                            lang: self.settings.appLanguage
+                            lang: self.settings.appLanguage,
+                            style: self.settings.notificationStyle
                         )
                     }
 
@@ -276,7 +277,11 @@ final class AppState {
             iqamahState = .finished(prayerName: iqamahPrayerName)
             iqamahEndTime = nil
             dismissDoaBanner()
-            NotificationService.shared.sendIqamahNotification(for: iqamahPrayerName, lang: settings.appLanguage)
+            NotificationService.shared.sendIqamahNotification(
+                for: iqamahPrayerName,
+                lang: settings.appLanguage,
+                style: settings.notificationStyle
+            )
             updateMenuBarDisplayText()
             return
         }
