@@ -106,19 +106,24 @@ struct DynamicIslandView: View {
                     .foregroundStyle(alert.kind.accent)
             }
 
-            Text(alert.title)
-                .font(.system(size: DimensToken.SIZE_13, weight: .semibold))
-                .foregroundStyle(Color.white)
-
             Spacer()
 
-            Circle()
-                .fill(alert.kind.accent)
-                .frame(
-                    width: OX.Spacing.XS,
-                    height: OX.Spacing.XS
-                )
-                .opacity(isPulsing ? FloatToken.PERCENT_100 : FloatToken.PERCENT_30)
+            HStack(
+                alignment: .center,
+                spacing: OX.Spacing.XS
+            ) {
+                Circle()
+                    .fill(alert.kind.accent)
+                    .frame(
+                        width: OX.Spacing.XS,
+                        height: OX.Spacing.XS
+                    )
+                    .opacity(isPulsing ? FloatToken.PERCENT_100 : FloatToken.PERCENT_30)
+
+                Text(alert.title)
+                    .font(.system(size: DimensToken.SIZE_13, weight: .semibold))
+                    .foregroundStyle(Color.white)
+            }
         }
         .frame(height: max(anchorSize.height, DimensToken.SIZE_32))
     }
