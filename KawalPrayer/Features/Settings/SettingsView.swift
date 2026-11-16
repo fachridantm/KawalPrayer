@@ -17,6 +17,15 @@ struct SettingsView: View {
         PrayerName.allCases.filter { $0.isFardhu }
     }
 
+    private var isCheckingOrDownloading: Bool {
+        switch appState.updateService.status {
+        case .checking, .downloading:
+            return true
+        default:
+            return false
+        }
+    }
+
     var body: some View {
         Form {
 
@@ -317,7 +326,7 @@ struct SettingsView: View {
                             )
                         }
                     }
-                    .disabled(appState.updateService.status == .checking)
+                    .disabled(isCheckingOrDownloading)
 
                     Spacer()
 

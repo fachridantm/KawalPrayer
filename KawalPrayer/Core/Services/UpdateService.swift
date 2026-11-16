@@ -124,6 +124,11 @@ final class UpdateService: NSObject {
     // MARK: - Check For Updates
 
     func checkForUpdates(autoDownload: Bool = false, manual: Bool = false) async {
+        if case .downloading = status {
+            status = .error(String(localized: "Update download in progress. Please wait until it finishes."))
+            return
+        }
+
         status = .checking
 
         let endpointString = "https://api.github.com/repos/\(repoOwner)/\(repoName)/releases/latest"
