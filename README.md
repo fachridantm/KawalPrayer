@@ -2,7 +2,7 @@
 
 <div align="center">
   <img src="KawalPrayer/Assets.xcassets/AppIcon.appiconset/icon_128x128.png" width="96" height="96" alt="KawalPrayer Icon" />
-  <h3>Aplikasi Pengingat Waktu Sholat, Adzan, & Al-Quran Menu Bar untuk macOS</h3>
+  <h3>Native macOS Menu Bar Prayer Times, Adzan & Offline Quran App</h3>
   <p><b>by Outivox</b></p>
 
   [![macOS](https://img.shields.io/badge/macOS-14%2B-black?logo=apple&logoColor=white)](https://apple.com/macos)
@@ -14,69 +14,96 @@
 
 ---
 
-**KawalPrayer** adalah aplikasi menu bar macOS native yang dirancang untuk bekerja secara senyap di background tanpa mengotori Dock atau app switcher (`⌘Tab`). Dilengkapi dengan perhitungan astronomi hisab akurat standar Kementerian Agama RI (+2 menit Ihtiyat), Al-Quran 30 juz offline dengan tampilan Mushaf Madinah otentik, kompas arah kiblat, notifikasi interaktif, serta pop-up otomatis doa setelah adzan.
+**KawalPrayer** is a native macOS menu bar application designed to run silently in the background without cluttering the Dock or app switcher (`⌘Tab`). It features accurate astronomical prayer time calculations following Indonesia's Ministry of Religious Affairs (Kemenag RI, +2 min Ihtiyat), a complete offline 30-Juz Quran with an authentic Madinah Mushaf layout, a real-time Qibla compass, interactive notifications, Dynamic Island / notch alerts, and an automatic post-Adzan dua pop-up.
 
-Didesain dengan identitas visual khas **Outivox** berbasis **Outivox Design Token System** (`ColorToken`, `DimensToken`, `FloatToken`, dan `OX` facade) dengan aturan *Zero Raw Literals*.
-
----
-
-## 🌟 Fitur Unggulan
-
-### 1. Senyap di Background (`LSUIElement = true`)
-- Tinggal di macOS Menu Bar tanpa memunculkan ikon di Dock atau `⌘Tab` saat startup.
-- Jendela utama (Dashboard, Al-Quran, Pengaturan) hanya dibuka saat Anda memilih **"Buka KawalPrayer"**.
-- Menutup jendela (`⌘W` atau tombol merah) hanya menyembunyikannya; aplikasi tetap siaga menjaga jadwal waktu sholat.
-- Opsi *"Tampilkan di Dock saat Jendela Terbuka"* tersedia di Pengaturan bagi pengguna yang menginginkan integrasi Dock standar saat jendela aktif.
-
-### 2. Format Menu Bar & Ikon Dinamis
-- **5 Pilihan Tampilan Status Bar** (ideal untuk MacBook ber-notch maupun monitor lebar):
-  1. `Icon + Nama + Hitung Mundur` *(Default, contoh: `🌙 Subuh • 00:45`)*
-  2. `Icon + Hitung Mundur` *(contoh: `🌙 00:45`)*
-  3. `Icon + Nama Sholat` *(contoh: `🌙 Subuh`)*
-  4. `Icon + Waktu Sholat` *(contoh: `🌙 Subuh 04:35`)*
-  5. `Hanya Icon` *(contoh: `🌙`)*
-- **Ikon Menu Bar Dinamis**: Dapat menampilkan ikon sholat yang sedang aktif (mis. `sun.haze.fill` saat Dzuhur), sholat berikutnya, atau ikon bulan sabit statis.
-
-### 3. Deteksi Lokasi Persisten dengan Kecamatan/Distrik
-- Menggunakan CoreLocation untuk mendeteksi pergerakan secara hemat daya (filter jarak 3 km).
-- Memformat nama lokasi secara lengkap dan elegan: **`Kota/Wilayah, Kecamatan/Distrik`** (contoh: **`Central Jakarta, Gambir`** atau **`Bandung, Coblong`**).
-- **Penyimpanan Persisten**: Lokasi terakhir disimpan ke `UserDefaults` sehingga saat aplikasi dibuka kembali, lokasi langsung tampil seketika tanpa jeda atau reset sementara ke default.
-- Tombol **Perbarui Lokasi GPS** tersedia di header popover menu bar dan menu Pengaturan.
-
-### 4. Akurasi Jadwal Sholat Kemenag RI (+2 Menit Ihtiyat)
-- Perhitungan hisab astronomi offline dilengkapi **Pengaman Waktu (Ihtiyat)** standar Kementerian Agama RI (+2 menit default) agar waktu adzan cocok dengan masjid sekitar dan jadwal resmi Bimas Islam.
-- Pilihan madhab Ashar: **Syafi'i / Maliki / Hanbali** (bayangan 1×) atau **Hanafi** (bayangan 2×).
-- Pilihan hisab internasional: Muslim World League (MWL), ISNA, Umm al-Qura (Makkah), dan Egyptian.
-- **Hitung Mundur 24 Jam Tanpa Putus**: Setelah waktu Isya lewat, hitung mundur otomatis beralih menghitung waktu Subuh esok hari tanpa jeda.
-
-### 5. Pop-up Otomatis Doa Setelah Adzan & Iqamah Timer
-- Begitu adzan selesai (atau setelah pengguna menekan "Hentikan Adzan"), popover menu bar otomatis terbuka menampilkan kartu **Doa Setelah Adzan** lengkap dengan teks Arab, transliterasi Latin, dan terjemahan.
-- **Iqamah Timer**: Penghitung mundur jeda adzan dan iqamah (1–30 menit) dengan notifikasi *"Waktu iqamah <Sholat>!"* saat waktu tiba.
-
-### 6. Notifikasi Interaktif dengan Action Button
-- Banner notifikasi saat masuk waktu sholat dilengkapi tombol aksi:
-  - **"Hentikan Adzan"**: Menghentikan lantunan audio adzan langsung dari notifikasi tanpa perlu membuka aplikasi.
-  - **"Tutup"**: Menutup notifikasi.
-- **Auto-Dismiss**: Notifikasi otomatis dibersihkan dari Notification Center begitu audio adzan selesai diputar.
-
-### 7. Al-Quran 30 Juz Offline (Mushaf Madinah & Per Ayat)
-- **114 Surah Lengkap Offline** — 100% tanpa koneksi internet.
-- **Mode Tampilan Ganda**:
-  - **Mushaf Madinah**: Layout halaman mushaf berkesinambungan dengan kaligrafi surah otentik (`SurahBannerView`), nomor ayat lingkaran interaktif, dan terjemahan pop-up saat ayat diketuk.
-  - **Per Ayat**: Tampilan daftar vertikal per ayat dengan tombol salin dan bookmark instan.
-- Pencarian cepat dan slider ukuran font Arab (18–40pt).
-
-### 8. Kompas Arah Kiblat Real-Time
-- Menghitung derajat azimuth lingkaran besar (*Great Circle*) ke Ka'bah di Makkah (`21.4225° N, 39.8262° E`).
-- Kompas visual dengan jarum Ka'bah berwarna Outivox Green (`ColorToken.Green`) dan teks arah mata angin (mis. `295° BLB`).
+Built with the **Outivox** visual identity using the **Outivox Design Token System** (`ColorToken`, `DimensToken`, `FloatToken`, and `OX` facade) under a strict *Zero Raw Literals* rule.
 
 ---
 
-## 🏗️ Arsitektur & Pedoman Pengembangan
+## Installation
 
-Dokumentasi lengkap arsitektur dan pedoman AI agent tersedia di:
-- [**AGENTS.md**](AGENTS.md) — Aturan teknis dan guardrails utama.
-- [**ai-guidelines/INDEX.md**](ai-guidelines/INDEX.md) — Indeks dokumentasi teknis & spesifikasi fitur:
+1. Download the latest `KawalPrayer-v*.dmg` from [GitHub Releases](https://github.com/fachridantm/KawalPrayer/releases/latest).
+2. Open the downloaded `.dmg` file and drag `KawalPrayer.app` into your `/Applications` folder.
+
+### Opening the App (Bypassing macOS Gatekeeper)
+
+Because `KawalPrayer` is ad-hoc signed without a paid Apple Developer ID certificate, macOS Gatekeeper may show a warning such as *"KawalPrayer cannot be opened because the developer cannot be verified"* or *"Apple could not verify KawalPrayer is free of malware"*.
+
+You can allow it using either method below:
+
+#### Option 1: System Settings (Recommended)
+1. Double-click `KawalPrayer.app` in `/Applications` (or right-click → **Open**) and click **Done** / **Cancel** on the warning dialog.
+2. Open **System Settings** → **Privacy & Security**.
+3. Scroll down to the **Security** section.
+4. Click **Open Anyway** next to the message about `KawalPrayer`, then confirm with **Open**.
+
+#### Option 2: Terminal
+Run the following command to clear the macOS quarantine attribute:
+```bash
+xattr -cr /Applications/KawalPrayer.app
+```
+Then open `KawalPrayer.app` normally from `/Applications` or Spotlight.
+
+---
+
+## Key Features
+
+### 1. Silent Background Agent (`LSUIElement = true`)
+- Lives in the macOS Menu Bar without showing an icon in the Dock or `⌘Tab` on startup.
+- The main window (Dashboard, Quran, Settings) only opens when you select **"Open KawalPrayer"**.
+- Closing the window (`⌘W` or red close button) only hides it; the app stays active in the background to track prayer times.
+- An optional *"Show in Dock when Window is Open"* setting is available if you prefer standard Dock integration while the window is open.
+
+### 2. Menu Bar Formats & Dynamic Icons
+- **5 Status Bar Display Modes** (great for both notched MacBooks and wide displays):
+  1. `Icon + Name + Countdown` *(Default, e.g. `🌙 Fajr • 00:45`)*
+  2. `Icon + Countdown` *(e.g. `🌙 00:45`)*
+  3. `Icon + Prayer Name` *(e.g. `🌙 Fajr`)*
+  4. `Icon + Prayer Time` *(e.g. `🌙 Fajr 04:35`)*
+  5. `Icon Only` *(e.g. `🌙`)*
+- **Dynamic Menu Bar Icon**: Can display the current prayer icon (e.g. `sun.haze.fill` for Dhuhr), the next prayer icon, or a static crescent icon.
+
+### 3. Persistent Location Detection (City & District)
+- Uses `CoreLocation` for low-power movement detection (3 km distance filter).
+- Formats locations cleanly as **`City/Locality, District/SubLocality`** (e.g. **`Central Jakarta, Gambir`** or **`Bandung, Coblong`**).
+- **Persistent Storage**: The last resolved location is saved to `UserDefaults` so it appears immediately on launch without flickering or resetting to a fallback.
+- Includes a **Refresh GPS Location** button in both the menu bar popover header and Settings.
+
+### 4. Prayer Time Accuracy (Kemenag RI +2 Min Ihtiyat)
+- Offline astronomical calculation with **Ihtiyat** safety margin (+2 minutes default, matching Kemenag RI / Bimas Islam schedules).
+- Asr juristic method options: **Shafi'i / Maliki / Hanbali** (1× shadow) or **Hanafi** (2× shadow).
+- International calculation methods: Muslim World League (MWL), ISNA, Umm al-Qura (Makkah), and Egyptian.
+- **24-Hour Continuous Countdown**: After Isha passes, the countdown automatically transitions to the next day's Fajr.
+
+### 5. Dynamic Island / Notch Alerts, Post-Adzan Dua & Iqamah Timer
+- **Notch Alert**: Displays a sleek, non-intrusive Dynamic Island alert at the top of the screen when prayer time arrives, with **Stop Adzan** and **Dismiss** controls.
+- **Post-Adzan Dua**: Once Adzan finishes (or after clicking "Stop Adzan"), the menu bar popover automatically opens with the **Dua After Adzan** card (Arabic text, Latin transliteration, and translation).
+- **Iqamah Timer**: Configurable countdown between Adzan and Iqamah (1–30 minutes) with an *"Iqamah time for <Prayer>!"* notification.
+
+### 6. Interactive Notifications
+- Prayer-time notifications include quick action buttons:
+  - **"Stop Adzan"**: Stops Adzan audio directly from the notification banner.
+  - **"Dismiss"**: Closes the notification.
+- **Auto-Dismiss**: Automatically clears the notification from Notification Center once Adzan playback finishes.
+
+### 7. Offline 30-Juz Quran (Madinah Mushaf & Per-Ayah)
+- **All 114 Surahs Offline** — 100% available without an internet connection.
+- **Dual Reading Modes**:
+  - **Madinah Mushaf**: Continuous mushaf page layout with authentic surah calligraphy (`SurahBannerView`), interactive circular ayah numbers, and tap-to-view translation pop-ups.
+  - **Per-Ayah**: Vertical list view with instant copy and bookmark actions.
+- Fast search and adjustable Arabic font size slider (18–40pt).
+
+### 8. Real-Time Qibla Compass
+- Computes the Great Circle azimuth to the Kaaba in Makkah (`21.4225° N, 39.8262° E`).
+- Visual compass with an Outivox Green (`ColorToken.Green`) Kaaba needle and cardinal direction readout (e.g. `295° WNW`).
+
+---
+
+## Architecture & Development Guidelines
+
+Full architectural documentation and AI agent guidelines are available in:
+- [**AGENTS.md**](AGENTS.md) — Core technical rules and guardrails.
+- [**ai-guidelines/INDEX.md**](ai-guidelines/INDEX.md) — Technical documentation & feature specs:
   - [1. Architectural Patterns & Services](ai-guidelines/1-architectural-patterns.md)
   - [2. Design Tokens & Theming](ai-guidelines/2-design-tokens-theming.md)
   - [3. Code Style & Guardrails](ai-guidelines/3-code-style-and-guardrails.md)
@@ -85,11 +112,11 @@ Dokumentasi lengkap arsitektur dan pedoman AI agent tersedia di:
 
 ---
 
-## 🛠️ Cara Membangun (Build from Source)
+## Build from Source
 
-### Prasyarat
-- macOS 14.0 (Sonoma) atau lebih baru
-- Xcode 15 / 16 / 27+ di `/Applications/Xcode.app`
+### Prerequisites
+- macOS 14.0 (Sonoma) or newer
+- Xcode 15 / 16 / 27+ at `/Applications/Xcode.app`
 
 ### Build & Run
 ```bash
@@ -99,21 +126,21 @@ DEVELOPER_DIR=/Applications/Xcode.app/Contents/Developer xcodebuild \
   -scheme KawalPrayer \
   -configuration Debug build
 
-# Jalankan Unit Tests (29 tests)
+# Run Unit Tests
 DEVELOPER_DIR=/Applications/Xcode.app/Contents/Developer xcodebuild \
   -project KawalPrayer.xcodeproj \
   -scheme KawalPrayer test
 ```
 
-### Membuat File Installer DMG
-Jalankan script otomatis pembuatan DMG:
+### Build DMG Installer
+Run the automated DMG packaging script:
 ```bash
 ./scripts/build_dmg.sh
 ```
-File installer `KawalPrayer-v1.0.0.dmg` akan langsung siap di root folder.
+The installer `KawalPrayer-v<version>.dmg` will be generated in the repository root.
 
 ---
 
-## 📄 Lisensi & Hak Cipta
-Dibuat dengan ❤️ oleh **Outivox**.
-Didistribusikan di bawah lisensi MIT.
+## License & Copyright
+Made with ❤️ by **Outivox**.  
+Distributed under the MIT License.
