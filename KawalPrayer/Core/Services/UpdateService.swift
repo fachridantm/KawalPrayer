@@ -150,6 +150,11 @@ final class UpdateService: NSObject {
                 return
             }
 
+            if httpResponse.statusCode == 403 || httpResponse.statusCode == 429 {
+                await checkViaWebRedirect(autoDownload: autoDownload, manual: manual)
+                return
+            }
+
             guard httpResponse.statusCode == 200 else {
                 status = .error(String(localized: "Update server error"))
                 return
@@ -177,6 +182,61 @@ final class UpdateService: NSObject {
                 self.status = .updateAvailable(info)
 
                 if autoDownload, dmgAsset != nil {
+                    await downloadUpdate(release: info)
+                }
+            } else {
+                status = manual ? .upToDate : .idle
+            }
+        } catch {
+            status = manual ? .error(error.localizedDescription) : .idle
+        }
+    }
+
+    private func checkViaWebRedirect(autoDownload: Bool, manual: Bool) async {
+        let webUrlString = "https://github.com/\(repoOwner)/\(repoName)/releases/latest"
+        guard let webUrl = URL(string: webUrlString) else {
+            status = .error(String(localized: "Invalid update URL"))
+            return
+        }
+
+        var request = URLRequest(url: webUrl)
+        request.setValue("KawalPrayer-macOS", forHTTPHeaderField: "User-Agent")
+        request.timeoutInterval = 15
+
+        do {
+            let (_, response) = try await URLSession.shared.data(for: request)
+            guard let httpResponse = response as? HTTPURLResponse,
+                  let finalUrl = httpResponse.url,
+                  httpResponse.statusCode == 200 else {
+                status = .error(String(localized: "Update server rate limit reached"))
+                return
+            }
+
+            let tagName = finalUrl.lastPathComponent
+            let versionString = tagName.trimmingCharacters(in: CharacterSet(charactersIn: "vV \t\n"))
+            guard !versionString.isEmpty, tagName != "latest" else {
+                status = manual ? .upToDate : .idle
+                return
+            }
+
+            if Self.isVersion(versionString, greaterThan: currentVersion) {
+                let assetName = "KawalPrayer-\(tagName).dmg"
+                let downloadUrl = URL(
+                    string: "https://github.com/\(repoOwner)/\(repoName)/releases/download/\(tagName)/\(assetName)"
+                ) ?? finalUrl
+
+                let info = AppReleaseInfo(
+                    version: versionString,
+                    tagName: tagName,
+                    releaseNotes: "",
+                    publishedAt: nil,
+                    htmlUrl: finalUrl,
+                    downloadUrl: downloadUrl,
+                    assetName: assetName
+                )
+                self.latestRelease = info
+                self.status = .updateAvailable(info)
+                if autoDownload {
                     await downloadUpdate(release: info)
                 }
             } else {
