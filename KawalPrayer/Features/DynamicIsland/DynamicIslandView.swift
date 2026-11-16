@@ -28,6 +28,13 @@ struct DynamicIslandView: View {
                 )
                 .background(Color.black)
                 .clipShape(islandShape)
+                .overlay(
+                    islandShape
+                        .stroke(
+                            Color.white.opacity(FloatToken.PERCENT_15),
+                            lineWidth: OX.Border.WIDTH_1
+                        )
+                )
                 .shadow(
                     color: Color.black.opacity(FloatToken.PERCENT_50),
                     radius: OX.Spacing.L
@@ -40,10 +47,10 @@ struct DynamicIslandView: View {
             alignment: .top
         )
         .onAppear {
-            withAnimation(.spring(response: 0.45, dampingFraction: 0.75)) {
+            withAnimation(.spring(response: 0.45, dampingFraction: 0.78)) {
                 isExpanded = true
             }
-            withAnimation(.easeInOut(duration: 0.8).repeatForever(autoreverses: true)) {
+            withAnimation(.easeInOut(duration: 1.0).repeatForever(autoreverses: true)) {
                 isPulsing = true
             }
         }
@@ -52,50 +59,100 @@ struct DynamicIslandView: View {
     @ViewBuilder
     private var content: some View {
         if isExpanded {
-            VStack(spacing: OX.Spacing.S) {
-                // Header row hugs the notch: icon on the left, accent divider on the right
-                HStack {
-                    Image(systemName: alert.kind.icon)
-                        .foregroundStyle(alert.kind.accent)
-                        .opacity(isPulsing ? FloatToken.PERCENT_100 : FloatToken.PERCENT_50)
-                    Spacer()
-                    Text(alert.title)
-                        .font(.caption)
-                        .fontWeight(.semibold)
-                        .foregroundStyle(Color.white)
-                }
-                .frame(height: max(anchorSize.height, DimensToken.SIZE_32))
+            VStack(
+                alignment: .leading,
+                spacing: OX.Spacing.M
+            ) {
+                headerRow
 
                 Text(alert.body)
-                    .font(.system(size: DimensToken.SIZE_15, weight: .medium))
-                    .foregroundStyle(Color.white)
+                    .font(.system(size: DimensToken.SIZE_14, weight: .medium))
+                    .foregroundStyle(Color.white.opacity(FloatToken.PERCENT_90))
+                    .lineLimit(2)
                     .frame(
                         maxWidth: .infinity,
                         alignment: .leading
                     )
 
-                HStack(spacing: OX.Spacing.S) {
-                    if let actionTitle = alert.actionTitle {
-                        Button(actionTitle) {
-                            alert.onAction?()
-                            onDismiss()
-                        }
-                        .buttonStyle(.borderedProminent)
-                        .tint(alert.kind.accent)
-                    }
-                    Button(alert.dismissTitle) {
-                        onDismiss()
-                    }
-                    .buttonStyle(.bordered)
-                    .tint(Color.white)
-                }
-                .controlSize(.small)
+                Spacer(minLength: OX.Spacing.None)
+
+                actionRow
             }
-            .padding(.horizontal, OX.Spacing.XL)
+            .padding(.horizontal, OX.Spacing.L)
+            .padding(.top, OX.Spacing.S)
             .padding(.bottom, OX.Spacing.M)
-            .transition(.opacity)
+            .transition(.opacity.combined(with: .scale(scale: 0.96, anchor: .top)))
         } else {
             Color.clear
+        }
+    }
+
+    private var headerRow: some View {
+        HStack(
+            alignment: .center,
+            spacing: OX.Spacing.S
+        ) {
+            ZStack {
+                Circle()
+                    .fill(alert.kind.accent.opacity(FloatToken.PERCENT_15))
+                    .frame(
+                        width: DimensToken.SIZE_28,
+                        height: DimensToken.SIZE_28
+                    )
+                    .scaleEffect(isPulsing ? 1.08 : 0.95)
+
+                Image(systemName: alert.kind.icon)
+                    .font(.system(size: DimensToken.SIZE_13, weight: .semibold))
+                    .foregroundStyle(alert.kind.accent)
+            }
+
+            Text(alert.title)
+                .font(.system(size: DimensToken.SIZE_13, weight: .semibold))
+                .foregroundStyle(Color.white)
+
+            Spacer()
+
+            Circle()
+                .fill(alert.kind.accent)
+                .frame(
+                    width: OX.Spacing.XS,
+                    height: OX.Spacing.XS
+                )
+                .opacity(isPulsing ? FloatToken.PERCENT_100 : FloatToken.PERCENT_30)
+        }
+        .frame(height: max(anchorSize.height, DimensToken.SIZE_32))
+    }
+
+    private var actionRow: some View {
+        HStack(spacing: OX.Spacing.S) {
+            if let actionTitle = alert.actionTitle {
+                Button {
+                    alert.onAction?()
+                    onDismiss()
+                } label: {
+                    Text(actionTitle)
+                        .font(.system(size: DimensToken.SIZE_12, weight: .semibold))
+                        .foregroundStyle(Color.black)
+                        .frame(maxWidth: .infinity)
+                        .padding(.vertical, OX.Spacing.XS)
+                        .background(alert.kind.accent)
+                        .clipShape(Capsule())
+                }
+                .buttonStyle(.plain)
+            }
+
+            Button {
+                onDismiss()
+            } label: {
+                Text(alert.dismissTitle)
+                    .font(.system(size: DimensToken.SIZE_12, weight: .medium))
+                    .foregroundStyle(Color.white.opacity(FloatToken.PERCENT_85))
+                    .frame(maxWidth: .infinity)
+                    .padding(.vertical, OX.Spacing.XS)
+                    .background(Color.white.opacity(FloatToken.PERCENT_10))
+                    .clipShape(Capsule())
+            }
+            .buttonStyle(.plain)
         }
     }
 }
