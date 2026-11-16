@@ -1,0 +1,74 @@
+name: Release KawalPrayer
+
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: macos-latest
+    if: "!contains(github.event.head_commit.message, '[skip ci]')"
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Install git-cliff
+        run: brew install git-cliff
+
+      - name: Determine next version & generate release notes
+        id: cliff
+        run: |
+          NEXT_TAG=$(git cliff --bumped-version)
+          VERSION=${NEXT_TAG#v}
+          echo "tag=${NEXT_TAG}" >> "$GITHUB_OUTPUT"
+          echo "version=${VERSION}" >> "$GITHUB_OUTPUT"
+
+          git cliff --unreleased --tag "${NEXT_TAG}" --strip header > RELEASE_NOTES.md
+
+      - name: Check if tag already exists
+        id: tag_check
+        run: |
+          if git rev-parse "${{ steps.cliff.outputs.tag }}" >/dev/null 2>&1; then
+            echo "exists=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "exists=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Bump project version
+        if: steps.tag_check.outputs.exists == 'false'
+        run: |
+          VERSION="${{ steps.cliff.outputs.version }}"
+          CURRENT_BUILD=$(grep -m1 "CURRENT_PROJECT_VERSION" KawalPrayer.xcodeproj/project.pbxproj | sed 's/[^0-9]//g')
+          NEXT_BUILD=$((CURRENT_BUILD + 1))
+
+          sed -i '' "s/MARKETING_VERSION = .*;/MARKETING_VERSION = ${VERSION};/g" KawalPrayer.xcodeproj/project.pbxproj
+          sed -i '' "s/CURRENT_PROJECT_VERSION = .*;/CURRENT_PROJECT_VERSION = ${NEXT_BUILD};/g" KawalPrayer.xcodeproj/project.pbxproj
+
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add KawalPrayer.xcodeproj/project.pbxproj
+          git commit -m "chore(release): prepare ${{ steps.cliff.outputs.tag }} [skip ci]"
+          git tag "${{ steps.cliff.outputs.tag }}"
+          git push origin main --follow-tags
+
+      - name: Build DMG
+        if: steps.tag_check.outputs.exists == 'false'
+        run: |
+          chmod +x scripts/build_dmg.sh
+          ./scripts/build_dmg.sh
+
+      - name: Create GitHub Release
+        if: steps.tag_check.outputs.exists == 'false'
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.cliff.outputs.tag }}
+          name: ${{ steps.cliff.outputs.tag }}
+          body_path: RELEASE_NOTES.md
+          files: KawalPrayer-${{ steps.cliff.outputs.tag }}.dmg
