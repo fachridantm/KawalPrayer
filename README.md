@@ -6,6 +6,7 @@
   <p><b>by Outivox</b></p>
 
   [![macOS](https://img.shields.io/badge/macOS-14%2B-black?logo=apple&logoColor=white)](https://apple.com/macos)
+  [![Website](https://img.shields.io/badge/Website-kawalprayer.fachridantm.me-34A853?logo=safari&logoColor=white)](https://kawalprayer.fachridantm.me)
   [![Swift](https://img.shields.io/badge/Swift-5.9%20%2F%206-orange?logo=swift&logoColor=white)](https://swift.org)
   [![SwiftUI](https://img.shields.io/badge/SwiftUI-%40Observable-blue)](https://developer.apple.com/xcode/swiftui/)
   [![Outivox Design System](https://img.shields.io/badge/Outivox-Design%20Tokens-34A853)](ai-guidelines/2-design-tokens-theming.md)
