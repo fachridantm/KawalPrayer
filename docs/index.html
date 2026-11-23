@@ -2028,6 +2028,8 @@
       let shouldAnnounceNextSettle = false;
       let rafId = 0;
       let fallbackTimer = 0;
+      let unlockRaf1 = 0;
+      let unlockRaf2 = 0;
 
       const prefersReducedMotion = () => reducedMotionQuery.matches;
 
@@ -2064,13 +2066,30 @@
         });
       };
 
+      const cancelOverflowLock = () => {
+        if (unlockRaf1) {
+          cancelAnimationFrame(unlockRaf1);
+          unlockRaf1 = 0;
+        }
+        if (unlockRaf2) {
+          cancelAnimationFrame(unlockRaf2);
+          unlockRaf2 = 0;
+        }
+        if (track.style.overflowX === 'hidden') {
+          track.style.overflowX = '';
+        }
+      };
+
       const applyOrderAndCompensate = (nextCurrentProp, anchorSlide, lockOverflow) => {
-        const prevProp = track.style.getPropertyValue('--current');
-        const desiredProp = nextCurrentProp === null ? '' : String(nextCurrentProp);
+        const prevProp = track.style.getPropertyValue('--current').trim();
+        const desiredProp = nextCurrentProp === null ? 'initial' : String(nextCurrentProp);
         if (prevProp === desiredProp) return;
+
+        cancelOverflowLock();
 
         const before = anchorSlide.offsetLeft;
         track.style.scrollSnapType = 'none';
+        track.style.scrollBehavior = 'auto';
         if (lockOverflow) {
           track.style.overflowX = 'hidden';
         }
@@ -2085,12 +2104,16 @@
         const delta = after - before;
         if (delta !== 0) {
           track.scrollLeft += delta;
+          void track.scrollLeft;
         }
 
         track.style.scrollSnapType = '';
+        track.style.scrollBehavior = '';
         if (lockOverflow) {
-          requestAnimationFrame(() => {
-            requestAnimationFrame(() => {
+          unlockRaf1 = requestAnimationFrame(() => {
+            unlockRaf1 = 0;
+            unlockRaf2 = requestAnimationFrame(() => {
+              unlockRaf2 = 0;
               track.style.overflowX = '';
             });
           });
@@ -2098,6 +2121,7 @@
       };
 
       const scrollToSlide = (targetSlide, { announce = true } = {}) => {
+        cancelOverflowLock();
         const delta = slideCenterOffset(targetSlide);
         pendingTargetSlide = targetSlide;
         scrollStartLeft = track.scrollLeft;
