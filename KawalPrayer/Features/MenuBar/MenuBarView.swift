@@ -63,7 +63,7 @@ struct MenuBarView: View {
                     Image(systemName: appState.activeMenuBarIconName)
                         .font(.headline)
                         .foregroundStyle(Color.accent(for: colorScheme))
-                    Text("KawalPrayer")
+                    Text("Kawal Prayer")
                         .font(.headline)
                         .fontWeight(.bold)
                 }
@@ -269,7 +269,7 @@ struct MenuBarView: View {
                 WindowManager.shared.showMainWindow(appState: appState)
             } label: {
                 Label(
-                    String(localized: "Buka KawalPrayer"),
+                    String(localized: "Buka Kawal Prayer"),
                     systemImage: "macwindow"
                 )
             }

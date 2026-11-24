@@ -1,6 +1,6 @@
 # Feature: Offline Quran & Mushaf
 
-KawalPrayer features a complete offline Quran reader with dual visualization modes: an authentic Medina Mushaf page layout and a vertical per-ayah translation view.
+Kawal Prayer features a complete offline Quran reader with dual visualization modes: an authentic Medina Mushaf page layout and a vertical per-ayah translation view.
 
 ---
 

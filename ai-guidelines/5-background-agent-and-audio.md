@@ -1,6 +1,6 @@
 # 5. Background Agent & Audio Lifecycle
 
-KawalPrayer operates as a quiet macOS background agent designed to run 24/7 without cluttering the user's workspace.
+Kawal Prayer operates as a quiet macOS background agent designed to run 24/7 without cluttering the user's workspace.
 
 ---
 

@@ -1,6 +1,6 @@
-# Agent Guidelines & Guardrails — KawalPrayer
+# Agent Guidelines & Guardrails — Kawal Prayer
 
-Welcome to the **KawalPrayer** repository. Follow these strict rules and guidelines when reading, writing, and refactoring code across the codebase.
+Welcome to the **Kawal Prayer** repository. Follow these strict rules and guidelines when reading, writing, and refactoring code across the codebase.
 
 For in-depth architectural and implementation guides, refer to the [AI Guidelines Index](ai-guidelines/INDEX.md):
 - [1. Architectural Patterns & Services](ai-guidelines/1-architectural-patterns.md)
@@ -16,7 +16,7 @@ Feature Guidelines:
 
 ## 1. Project Overview & Identity
 
-- **Application Name**: KawalPrayer
+- **Application Name**: Kawal Prayer
 - **Bundle Identifier**: `com.outivox.KawalPrayer` (Tests: `com.outivox.KawalPrayerTests`)
 - **Platform**: macOS 14.0+ (Sonoma, Sequoia, and newer)
 - **Architecture**: Native Swift 5.9 / Swift 6, SwiftUI with `@Observable` macro, AppKit integration (`NSStatusItem`, `NSPopover`, `NSWindowController`).

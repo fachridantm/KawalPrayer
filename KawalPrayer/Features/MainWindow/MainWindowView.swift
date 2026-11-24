@@ -99,7 +99,7 @@ struct MainWindowView: View {
                     alignment: .leading,
                     spacing: DimensToken.SIZE_2
                 ) {
-                    Text("KawalPrayer")
+                    Text("Kawal Prayer")
                         .font(.headline)
                         .fontWeight(.bold)
                     Text(appState.location.cityName)
@@ -623,7 +623,7 @@ private struct AboutView: View {
                 )
 
             VStack(spacing: DimensToken.SIZE_6) {
-                Text("KawalPrayer")
+                Text("Kawal Prayer")
                     .font(.largeTitle)
                     .fontWeight(.bold)
 

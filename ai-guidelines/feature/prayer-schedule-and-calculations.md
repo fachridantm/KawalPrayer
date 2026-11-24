@@ -1,6 +1,6 @@
 # Feature: Prayer Schedule & Calculations
 
-KawalPrayer calculates prayer times mathematically offline based on solar astronomical algorithms.
+Kawal Prayer calculates prayer times mathematically offline based on solar astronomical algorithms.
 
 ---
 
@@ -29,7 +29,7 @@ $$\text{Hour Angle} = \arccos\left(\frac{\sin(\operatorname{arccot}(t + \tan|\te
 ## 2. Kemenag RI Safety Margin (+2 Minutes Ihtiyat)
 
 - In Indonesia, official prayer schedules published by the Ministry of Religious Affairs (Kemenag RI / Bimas Islam) incorporate a **+2 minute Ihtiyat (safety margin)** added to calculated times (except Syuruq where 2 minutes are subtracted).
-- KawalPrayer includes this +2 minute Ihtiyat by default so times match local mosques perfectly.
+- Kawal Prayer includes this +2 minute Ihtiyat by default so times match local mosques perfectly.
 - Users can customize this offset in Settings (`ihtiyatMinutes`).
 
 ---

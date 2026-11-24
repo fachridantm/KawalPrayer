@@ -807,24 +807,24 @@
         }
       }
     },
-    "Buka KawalPrayer": {
+    "Buka Kawal Prayer": {
       "localizations": {
         "ar": {
           "stringUnit": {
             "state": "translated",
-            "value": "فتح KawalPrayer"
+            "value": "فتح Kawal Prayer"
           }
         },
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Open KawalPrayer"
+            "value": "Open Kawal Prayer"
           }
         },
         "id": {
           "stringUnit": {
             "state": "translated",
-            "value": "Buka KawalPrayer"
+            "value": "Buka Kawal Prayer"
           }
         }
       }
@@ -1779,24 +1779,24 @@
         }
       }
     },
-    "KawalPrayer": {
+    "Kawal Prayer": {
       "localizations": {
         "ar": {
           "stringUnit": {
             "state": "translated",
-            "value": "KawalPrayer"
+            "value": "Kawal Prayer"
           }
         },
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "KawalPrayer"
+            "value": "Kawal Prayer"
           }
         },
         "id": {
           "stringUnit": {
             "state": "translated",
-            "value": "KawalPrayer"
+            "value": "Kawal Prayer"
           }
         }
       }

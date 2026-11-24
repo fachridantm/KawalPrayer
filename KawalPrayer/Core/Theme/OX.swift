@@ -42,7 +42,7 @@ public enum OX {
     // MARK: - Semantic Color Facade
 
     public enum Color {
-        // Brand Primary (Outivox Green for KawalPrayer identity)
+        // Brand Primary (Outivox Green for Kawal Prayer identity)
         public static let primary            = ColorToken.Green
         public static let onPrimary          = SwiftUI.Color.white
 

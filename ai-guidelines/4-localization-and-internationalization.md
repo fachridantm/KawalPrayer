@@ -1,6 +1,6 @@
 # 4. Localization & Internationalization
 
-KawalPrayer is fully localized for three primary languages:
+Kawal Prayer is fully localized for three primary languages:
 - **Bahasa Indonesia (`.id`)** — Default
 - **English (`.en`)**
 - **Arabic (`.ar`)** — With Right-to-Left (RTL) Arabic typography and Mushaf support

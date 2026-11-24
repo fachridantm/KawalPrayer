@@ -1,6 +1,6 @@
 # 2. Design Tokens & Theming (Outivox Design System)
 
-KawalPrayer strictly implements the **Outivox Design Token System** ported from the [KawalEvent](file:///Users/fachridantm/Library/CloudStorage/OneDrive-uinjkt.ac.id/StudioProjects/KawalEvent) repository:
+Kawal Prayer strictly implements the **Outivox Design Token System** ported from the [KawalEvent](file:///Users/fachridantm/Library/CloudStorage/OneDrive-uinjkt.ac.id/StudioProjects/KawalEvent) repository:
 
 ```
 Core/Theme/
@@ -28,7 +28,7 @@ To prevent visual inconsistencies, code plagiarism, and magic numbers:
 
 ### Primary Google/Outivox Palettes:
 - **Blue**: `ColorToken.Blue` (`#4285F4`), scales `Blue10` (`#E6F3FF`) through `Blue90` (`#003666`).
-- **Green** (Primary KawalPrayer Brand): `ColorToken.Green` (`#34A853`), scales `Green10` (`#E6EEE8`) through `Green90` (`#003510`).
+- **Green** (Primary Kawal Prayer Brand): `ColorToken.Green` (`#34A853`), scales `Green10` (`#E6EEE8`) through `Green90` (`#003510`).
 - **Yellow**: `ColorToken.Yellow` (`#F9AB00`), scales `Yellow10` (`#FFFFFBEE`) through `Yellow90` (`#997309`).
 - **Red**: `ColorToken.Red` (`#EA4335`), scales `Red10` (`#FBE9EA`) through `Red90` (`#6E1215`).
 

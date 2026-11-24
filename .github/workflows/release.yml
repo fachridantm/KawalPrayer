@@ -1,4 +1,4 @@
-name: Release KawalPrayer
+name: Release Kawal Prayer
 
 on:
   push:

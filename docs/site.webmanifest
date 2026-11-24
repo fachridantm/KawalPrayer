@@ -1,6 +1,6 @@
 {
-  "name": "KawalPrayer",
-  "short_name": "KawalPrayer",
+  "name": "Kawal Prayer",
+  "short_name": "Kawal Prayer",
   "description": "Native macOS menu bar app for accurate prayer times, Adzan alerts, real-time Qibla compass, and offline 30-Juz Quran.",
   "start_url": "/",
   "display": "standalone",

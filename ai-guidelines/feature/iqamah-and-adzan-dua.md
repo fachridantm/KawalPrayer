@@ -1,6 +1,6 @@
 # Feature: Iqamah & Dua After Adzan
 
-KawalPrayer coordinates post-adzan workflows including automated Dua presentation and Iqamah countdown timers.
+Kawal Prayer coordinates post-adzan workflows including automated Dua presentation and Iqamah countdown timers.
 
 ---
 

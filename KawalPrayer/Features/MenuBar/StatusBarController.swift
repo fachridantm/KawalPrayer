@@ -26,7 +26,7 @@ final class StatusBarController: NSObject {
 
         // Template icon adapts automatically to light/dark menu bar
         let config = NSImage.SymbolConfiguration(pointSize: 13, weight: .medium)
-        if let image = NSImage(systemSymbolName: "moon.stars.fill", accessibilityDescription: "KawalPrayer")?.withSymbolConfiguration(config) {
+        if let image = NSImage(systemSymbolName: "moon.stars.fill", accessibilityDescription: "Kawal Prayer")?.withSymbolConfiguration(config) {
             image.isTemplate = true
             button.image = image
             button.imagePosition = .imageLeading
@@ -68,7 +68,7 @@ final class StatusBarController: NSObject {
         // Dynamic icon based on active current prayer or user settings
         let iconName = appState.activeMenuBarIconName
         let config = NSImage.SymbolConfiguration(pointSize: 13, weight: .medium)
-        if let image = NSImage(systemSymbolName: iconName, accessibilityDescription: "KawalPrayer")?.withSymbolConfiguration(config) {
+        if let image = NSImage(systemSymbolName: iconName, accessibilityDescription: "Kawal Prayer")?.withSymbolConfiguration(config) {
             image.isTemplate = true
             button.image = image
             button.imagePosition = .imageLeading

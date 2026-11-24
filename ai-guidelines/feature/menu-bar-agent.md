@@ -1,6 +1,6 @@
 # Feature: Menu Bar Agent
 
-The Menu Bar Agent is the primary touchpoint of KawalPrayer. It gives users immediate, at-a-glance awareness of prayer schedules and countdowns.
+The Menu Bar Agent is the primary touchpoint of Kawal Prayer. It gives users immediate, at-a-glance awareness of prayer schedules and countdowns.
 
 ---
 

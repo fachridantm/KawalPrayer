@@ -83,7 +83,7 @@ fi
 echo "==> Committing and tagging ${TAG}..."
 git add "$PBXPROJ"
 git commit -m "chore(release): bump version to ${TAG} (build ${NEW_BUILD})"
-git tag -f -a "$TAG" -m "KawalPrayer ${TAG} (Build ${NEW_BUILD})"
+git tag -f -a "$TAG" -m "Kawal Prayer ${TAG} (Build ${NEW_BUILD})"
 
 echo "==> Pushing main and ${TAG} to origin..."
 git push origin main --tags
@@ -94,7 +94,7 @@ if command -v gh >/dev/null 2>&1; then
         gh release upload "$TAG" "$DMG_NAME" --clobber
     else
         gh release create "$TAG" "$DMG_NAME" \
-            --title "KawalPrayer ${TAG}" \
+            --title "Kawal Prayer ${TAG}" \
             --generate-notes
     fi
     echo "==> Release published: $(gh release view "$TAG" --json url -q .url)"

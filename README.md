@@ -1,7 +1,7 @@
-# KawalPrayer
+# Kawal Prayer
 
 <div align="center">
-  <img src="KawalPrayer/Assets.xcassets/AppIcon.appiconset/icon_128x128.png" width="96" height="96" alt="KawalPrayer Icon" />
+  <img src="KawalPrayer/Assets.xcassets/AppIcon.appiconset/icon_128x128.png" width="96" height="96" alt="Kawal Prayer Icon" />
   <h3>Native macOS Menu Bar Prayer Times, Adzan & Offline Quran App</h3>
   <p><b>by Outivox</b></p>
 
@@ -15,7 +15,7 @@
 
 ---
 
-**KawalPrayer** is a native macOS menu bar application designed to run silently in the background without cluttering the Dock or app switcher (`⌘Tab`). It features accurate astronomical prayer time calculations following Indonesia's Ministry of Religious Affairs (Kemenag RI, +2 min Ihtiyat), a complete offline 30-Juz Quran with an authentic Madinah Mushaf layout, a real-time Qibla compass, interactive notifications, Dynamic Island / notch alerts, and an automatic post-Adzan dua pop-up.
+**Kawal Prayer** is a native macOS menu bar application designed to run silently in the background without cluttering the Dock or app switcher (`⌘Tab`). It features accurate astronomical prayer time calculations following Indonesia's Ministry of Religious Affairs (Kemenag RI, +2 min Ihtiyat), a complete offline 30-Juz Quran with an authentic Madinah Mushaf layout, a real-time Qibla compass, interactive notifications, Dynamic Island / notch alerts, and an automatic post-Adzan dua pop-up.
 
 Built with the **Outivox** visual identity using the **Outivox Design Token System** (`ColorToken`, `DimensToken`, `FloatToken`, and `OX` facade) under a strict *Zero Raw Literals* rule.
 
@@ -28,7 +28,7 @@ Built with the **Outivox** visual identity using the **Outivox Design Token Syst
 
 ### Opening the App (Bypassing macOS Gatekeeper)
 
-Because `KawalPrayer` is ad-hoc signed without a paid Apple Developer ID certificate, macOS Gatekeeper may show a warning such as *"KawalPrayer cannot be opened because the developer cannot be verified"* or *"Apple could not verify KawalPrayer is free of malware"*.
+Because `Kawal Prayer` is ad-hoc signed without a paid Apple Developer ID certificate, macOS Gatekeeper may show a warning such as *"Kawal Prayer cannot be opened because the developer cannot be verified"* or *"Apple could not verify Kawal Prayer is free of malware"*.
 
 You can allow it using either method below:
 
@@ -36,7 +36,7 @@ You can allow it using either method below:
 1. Double-click `KawalPrayer.app` in `/Applications` (or right-click → **Open**) and click **Done** / **Cancel** on the warning dialog.
 2. Open **System Settings** → **Privacy & Security**.
 3. Scroll down to the **Security** section.
-4. Click **Open Anyway** next to the message about `KawalPrayer`, then confirm with **Open**.
+4. Click **Open Anyway** next to the message about `Kawal Prayer`, then confirm with **Open**.
 
 #### Option 2: Terminal
 Run the following command to clear the macOS quarantine attribute:
@@ -51,7 +51,7 @@ Then open `KawalPrayer.app` normally from `/Applications` or Spotlight.
 
 ### 1. Silent Background Agent (`LSUIElement = true`)
 - Lives in the macOS Menu Bar without showing an icon in the Dock or `⌘Tab` on startup.
-- The main window (Dashboard, Quran, Settings) only opens when you select **"Open KawalPrayer"**.
+- The main window (Dashboard, Quran, Settings) only opens when you select **"Open Kawal Prayer"**.
 - Closing the window (`⌘W` or red close button) only hides it; the app stays active in the background to track prayer times.
 - An optional *"Show in Dock when Window is Open"* setting is available if you prefer standard Dock integration while the window is open.
 

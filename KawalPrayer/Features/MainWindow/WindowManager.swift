@@ -61,7 +61,7 @@ final class WindowManager: NSObject, NSWindowDelegate {
             defer: false
         )
 
-        window.title = "KawalPrayer"
+        window.title = "Kawal Prayer"
         window.minSize = NSSize(
             width: 820,
             height: 540

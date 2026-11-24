@@ -10,7 +10,7 @@ DMG_NAME="KawalPrayer-v${VERSION}.dmg"
 
 export DEVELOPER_DIR="${DEVELOPER_DIR:-/Applications/Xcode.app/Contents/Developer}"
 
-echo "==> Building KawalPrayer v${VERSION} (Build ${BUILD_NUMBER}) [$SCHEME]..."
+echo "==> Building Kawal Prayer v${VERSION} (Build ${BUILD_NUMBER}) [$SCHEME]..."
 xcodebuild \
     -project "$PROJECT" \
     -scheme "$SCHEME" \
@@ -38,7 +38,7 @@ cp -r "$APP_PATH" dmg_tmp/
 ln -s /Applications dmg_tmp/Applications
 
 hdiutil create \
-    -volname "KawalPrayer" \
+    -volname "Kawal Prayer" \
     -srcfolder dmg_tmp \
     -ov -format UDZO \
     "$DMG_NAME"

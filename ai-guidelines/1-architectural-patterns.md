@@ -1,6 +1,6 @@
 # 1. Architectural Patterns & Services
 
-KawalPrayer is engineered following clean architecture principles tailored for modern macOS and SwiftUI:
+Kawal Prayer is engineered following clean architecture principles tailored for modern macOS and SwiftUI:
 
 ```
 ┌────────────────────────────────────────────────────────┐
@@ -72,7 +72,7 @@ All external services are decoupled from the UI and interact solely through `App
    - Manages the `NSPopover` containing `MenuBarView`.
    - Closes popover when clicking outside or when explicitly requested.
 2. **`WindowManager`** (`Features/MainWindow/WindowManager.swift`):
-   - Creates a modern, unified `NSWindow` hosting `MainWindowView` when "Buka KawalPrayer" is clicked.
+   - Creates a modern, unified `NSWindow` hosting `MainWindowView` when "Buka Kawal Prayer" is clicked.
    - Supports hide-on-close (`isReleasedWhenClosed = false`), preserving window state without creating multiple window instances.
    - Dynamically toggles macOS Dock visibility (`NSApp.setActivationPolicy`) based on user preference (`showDockWhenWindowOpen`).
 

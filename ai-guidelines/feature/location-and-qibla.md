@@ -1,6 +1,6 @@
 # Feature: Location & Qibla Direction
 
-KawalPrayer incorporates automatic CoreLocation monitoring and spherical trigonometric Qibla calculations.
+Kawal Prayer incorporates automatic CoreLocation monitoring and spherical trigonometric Qibla calculations.
 
 ---
 

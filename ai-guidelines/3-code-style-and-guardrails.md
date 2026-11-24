@@ -1,6 +1,6 @@
 # 3. Code Style & Guardrails
 
-This document establishes the technical rules and formatting requirements enforced across the KawalPrayer repository.
+This document establishes the technical rules and formatting requirements enforced across the Kawal Prayer repository.
 
 ---
 

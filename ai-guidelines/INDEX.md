@@ -1,6 +1,6 @@
-# KawalPrayer AI Guidelines & Technical Documentation Index
+# Kawal Prayer AI Guidelines & Technical Documentation Index
 
-Welcome to the comprehensive documentation index for **KawalPrayer**. This directory contains architectural specifications, design token standards, coding guardrails, and feature implementation guides for developers and AI agents.
+Welcome to the comprehensive documentation index for **Kawal Prayer**. This directory contains architectural specifications, design token standards, coding guardrails, and feature implementation guides for developers and AI agents.
 
 ---
 

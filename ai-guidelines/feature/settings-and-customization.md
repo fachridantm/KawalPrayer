@@ -9,7 +9,7 @@ The Settings module (`Features/Settings/SettingsView.swift`) provides granular c
 - **Menu Bar Icon Source**: Current Prayer icon, Next Prayer icon, or Static Moon.
 - **Theme**: System, Light, Dark.
 - **Show Syuruq**: Toggles display of sunrise time in schedule and popover.
-- **Show Dock Icon**: Toggles whether KawalPrayer appears in the macOS Dock when its main window is active.
+- **Show Dock Icon**: Toggles whether Kawal Prayer appears in the macOS Dock when its main window is active.
 
 ---
 
