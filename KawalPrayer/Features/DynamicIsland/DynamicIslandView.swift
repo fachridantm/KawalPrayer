@@ -4,10 +4,23 @@ struct DynamicIslandView: View {
 
     let alert: DynamicIslandAlert
     let anchorSize: CGSize
+    let hasPhysicalNotch: Bool
     let onDismiss: () -> Void
 
     @State private var isExpanded = false
     @State private var isPulsing = false
+
+    private var expandedHeight: CGFloat {
+        hasPhysicalNotch
+            ? anchorSize.height + DimensToken.ISLAND_HEIGHT
+            : DimensToken.ISLAND_HEIGHT
+    }
+
+    private var topContentPadding: CGFloat {
+        hasPhysicalNotch
+            ? anchorSize.height + OX.Spacing.S
+            : OX.Spacing.L
+    }
 
     private var islandShape: UnevenRoundedRectangle {
         UnevenRoundedRectangle(
@@ -23,7 +36,7 @@ struct DynamicIslandView: View {
             content
                 .frame(
                     width: isExpanded ? DimensToken.ISLAND_WIDTH : anchorSize.width,
-                    height: isExpanded ? DimensToken.ISLAND_HEIGHT : anchorSize.height,
+                    height: isExpanded ? expandedHeight : anchorSize.height,
                     alignment: .top
                 )
                 .background(Color.black)
@@ -65,21 +78,12 @@ struct DynamicIslandView: View {
             ) {
                 headerRow
 
-                Text(alert.body)
-                    .font(.system(size: DimensToken.SIZE_14, weight: .medium))
-                    .foregroundStyle(Color.white.opacity(FloatToken.PERCENT_90))
-                    .lineLimit(2)
-                    .frame(
-                        maxWidth: .infinity,
-                        alignment: .leading
-                    )
-
                 Spacer(minLength: OX.Spacing.None)
 
                 actionRow
             }
             .padding(.horizontal, OX.Spacing.L)
-            .padding(.top, OX.Spacing.S)
+            .padding(.top, topContentPadding)
             .padding(.bottom, OX.Spacing.M)
             .transition(.opacity.combined(with: .scale(scale: 0.96, anchor: .top)))
         } else {
@@ -90,42 +94,69 @@ struct DynamicIslandView: View {
     private var headerRow: some View {
         HStack(
             alignment: .center,
-            spacing: OX.Spacing.S
+            spacing: OX.Spacing.M
         ) {
             ZStack {
                 Circle()
                     .fill(alert.kind.accent.opacity(FloatToken.PERCENT_15))
                     .frame(
-                        width: DimensToken.SIZE_28,
-                        height: DimensToken.SIZE_28
+                        width: DimensToken.SIZE_36,
+                        height: DimensToken.SIZE_36
                     )
                     .scaleEffect(isPulsing ? 1.08 : 0.95)
 
                 Image(systemName: alert.kind.icon)
-                    .font(.system(size: DimensToken.SIZE_13, weight: .semibold))
+                    .font(
+                        .system(
+                            size: DimensToken.SIZE_16,
+                            weight: .semibold
+                        )
+                    )
                     .foregroundStyle(alert.kind.accent)
             }
 
-            Spacer()
-
-            HStack(
-                alignment: .center,
-                spacing: OX.Spacing.XS
+            VStack(
+                alignment: .leading,
+                spacing: OX.Spacing.XS2
             ) {
-                Circle()
-                    .fill(alert.kind.accent)
-                    .frame(
-                        width: OX.Spacing.XS,
-                        height: OX.Spacing.XS
-                    )
-                    .opacity(isPulsing ? FloatToken.PERCENT_100 : FloatToken.PERCENT_30)
+                HStack(
+                    alignment: .center,
+                    spacing: OX.Spacing.XS
+                ) {
+                    Circle()
+                        .fill(alert.kind.accent)
+                        .frame(
+                            width: OX.Spacing.XS,
+                            height: OX.Spacing.XS
+                        )
+                        .opacity(isPulsing ? FloatToken.PERCENT_100 : FloatToken.PERCENT_30)
 
-                Text(alert.title)
-                    .font(.system(size: DimensToken.SIZE_13, weight: .semibold))
-                    .foregroundStyle(Color.white)
+                    Text(alert.title)
+                        .font(
+                            .system(
+                                size: DimensToken.SIZE_14,
+                                weight: .semibold
+                            )
+                        )
+                        .foregroundStyle(Color.white)
+                        .lineLimit(1)
+                }
+
+                Text(alert.body)
+                    .font(
+                        .system(
+                            size: DimensToken.SIZE_13,
+                            weight: .medium
+                        )
+                    )
+                    .foregroundStyle(Color.white.opacity(FloatToken.PERCENT_80))
+                    .lineLimit(2)
             }
+            .frame(
+                maxWidth: .infinity,
+                alignment: .leading
+            )
         }
-        .frame(height: max(anchorSize.height, DimensToken.SIZE_32))
     }
 
     private var actionRow: some View {

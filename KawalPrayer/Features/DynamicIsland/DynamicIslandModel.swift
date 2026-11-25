@@ -38,9 +38,9 @@ struct DynamicIslandAlert: Identifiable {
 
 /// Layout constants for the island (no raw literals in views).
 extension DimensToken {
-    static let ISLAND_WIDTH: CGFloat       = 380.0
-    static let ISLAND_HEIGHT: CGFloat      = 130.0
-    static let ISLAND_PANEL_HEIGHT: CGFloat = 160.0
+    static let ISLAND_WIDTH: CGFloat            = 380.0
+    static let ISLAND_HEIGHT: CGFloat           = 116.0
+    static let ISLAND_PANEL_HEIGHT: CGFloat     = 192.0
     static let ISLAND_FALLBACK_NOTCH_W: CGFloat = 160.0
     static let ISLAND_FALLBACK_NOTCH_H: CGFloat = 32.0
 }

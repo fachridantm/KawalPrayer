@@ -20,7 +20,10 @@ final class DynamicIslandWindowController {
         currentAlertId = alert.id
 
         let width = DimensToken.ISLAND_WIDTH
-        let height = DimensToken.ISLAND_PANEL_HEIGHT
+        let height = max(
+            DimensToken.ISLAND_PANEL_HEIGHT,
+            screen.islandAnchorSize.height + DimensToken.ISLAND_HEIGHT + OX.Spacing.XL4
+        )
         let frame = NSRect(
             x: screen.frame.midX - width / 2,
             y: screen.frame.maxY - height,
@@ -45,6 +48,7 @@ final class DynamicIslandWindowController {
             rootView: DynamicIslandView(
                 alert: alert,
                 anchorSize: screen.islandAnchorSize,
+                hasPhysicalNotch: screen.hasPhysicalNotch,
                 onDismiss: { [weak self] in self?.dismiss(id: alert.id) }
             )
         )
